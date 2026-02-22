@@ -29,9 +29,7 @@ def render_translation_ui():
     if st.button("Traducir", type="primary") and input_text.strip():
         with st.spinner("Traduciendo..."):
             try:
-                from src.inference.engine import TranslationEngine
-
-                engine = get_engine()
+                engine = get_engine(st.session_state.get("backend", "rag"))
                 result = engine.translate(input_text, direction=dir_code)
                 st.success("Traducción:")
                 st.write(result)
@@ -121,10 +119,10 @@ def render_chat_ui():
 
 
 @st.cache_resource
-def get_engine():
+def get_engine(backend: str = "rag"):
     """Initialize and cache the translation engine."""
     from src.inference.engine import TranslationEngine
-    return TranslationEngine()
+    return TranslationEngine(backend=backend)
 
 
 def main():
@@ -138,6 +136,25 @@ def main():
             ["Traducción", "Diccionario", "POS Tagger", "Chat"],
             label_visibility="collapsed",
         )
+
+        st.divider()
+        st.header("Backend")
+        backend = st.radio(
+            "Motor de traducción",
+            ["RAG + Gemini", "Neural (LoRA)", "Hybrid (Neural + RAG)"],
+            help=(
+                "**RAG**: Recupera ejemplos similares y usa Gemini API.\n\n"
+                "**Neural**: Usa el modelo LoRA entrenado localmente.\n\n"
+                "**Hybrid**: Neural traduce, Gemini refina con ejemplos RAG."
+            ),
+            label_visibility="collapsed",
+        )
+        backend_map = {
+            "RAG + Gemini": "rag",
+            "Neural (LoRA)": "neural",
+            "Hybrid (Neural + RAG)": "hybrid",
+        }
+        st.session_state["backend"] = backend_map[backend]
 
     if mode == "Traducción":
         render_translation_ui()

@@ -14,5 +14,31 @@ finetune:
   batch_size: 4
   learning_rate_multiplier: 1.0
 
+# LoRA: neural network adapter over open-source LLM
+lora:
+  # Base model options:
+  #   - "mistralai/Mistral-7B-v0.3"  (recommended: good multilingual, efficient)
+  #   - "meta-llama/Llama-3.1-8B"    (strong baseline, needs HF token)
+  #   - "facebook/nllb-200-distilled-600M" (smaller, translation-specific)
+  base_model: "mistralai/Mistral-7B-v0.3"
+  # LoRA hyperparameters
+  rank: 16                # Adapter rank (higher = more capacity, more memory)
+  alpha: 32               # Scaling factor (typically 2x rank)
+  dropout: 0.05           # Regularization
+  target_modules:         # Which layers get adapters
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  # Training
+  epochs: 10
+  batch_size: 4
+  learning_rate: 2.0e-4
+  gradient_accumulation_steps: 4  # Effective batch = batch_size * grad_accum = 16
+  max_seq_length: 512
+
 evaluation:
   metrics: ["bleu", "chrf"]

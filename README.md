@@ -1,15 +1,17 @@
 # Ayoreo-Spanish Translation Chatbot
 
-Chatbot de traducción entre la lengua **Ayoreo** (familia Zamuco) y el **Español**, usando RAG + few-shot prompting sobre Google Gemini.
+Chatbot de traducción entre la lengua **Ayoreo** (familia Zamuco) y el **Español**, con múltiples backends de traducción: RAG + few-shot, red neuronal LoRA, o un híbrido de ambos.
 
 ## Arquitectura
 
 1. **Data Collection**: Scraping de [ayore.org](https://ayore.org) para obtener textos paralelos Ayoreo-Español, diccionario y gramática.
 2. **Processing**: Limpieza, alineación de oraciones y construcción de corpus paralelo.
 3. **POS Tagging**: Etiquetado morfosintáctico del Ayoreo (híbrido: reglas + transferencia desde español).
-4. **Translation**: RAG + few-shot prompting — se recuperan ejemplos similares del corpus y se envían como contexto al LLM.
-5. **Fine-tuning** (opcional): Ajuste fino sobre modelo open-source o vía API.
-6. **UI**: Aplicación Streamlit con modos de traducción, diccionario, POS tagger y chat.
+4. **Traducción — 3 backends disponibles**:
+   - **RAG**: Recupera ejemplos similares del corpus → few-shot prompt → Gemini API.
+   - **Neural (LoRA)**: Red neuronal adapter entrenada sobre Mistral/LLaMA. El adapter (~1-5% de parámetros) se monta como overhead sobre el LLM congelado y le enseña Ayoreo.
+   - **Hybrid**: El modelo LoRA genera una traducción inicial, luego RAG + Gemini la refinan.
+5. **UI**: Aplicación Streamlit con modos de traducción, diccionario, POS tagger y chat.
 
 ## Setup
 
@@ -37,6 +39,16 @@ python scripts/run_scraper.py
 
 # Procesar datos
 python scripts/run_processing.py
+
+# Entrenar red neuronal (LoRA adapter)
+pip install -e ".[training]"
+python scripts/run_finetune.py
+
+# Solo preparar datos para Gemini API (sin entrenamiento local)
+python scripts/run_finetune.py --gemini-only
+
+# Usar otro modelo base
+python scripts/run_finetune.py --base-model meta-llama/Llama-3.1-8B
 ```
 
 ## Estructura del proyecto
@@ -48,8 +60,8 @@ ayoreo_chatbot/
 │   ├── scraping/                 # Scraping de ayore.org
 │   ├── processing/               # Limpieza, alineación, corpus
 │   ├── pos_tagging/              # POS tagger para Ayoreo
-│   ├── training/                 # Fine-tuning y evaluación
-│   ├── inference/                # Traducción, RAG, diccionario
+│   ├── training/                 # LoRA trainer, fine-tuning, evaluación
+│   ├── inference/                # Traducción (RAG, LoRA, hybrid), diccionario
 │   └── utils/                    # Logging, config
 ├── data/
 │   ├── raw/                      # Datos crudos (scrapeados)

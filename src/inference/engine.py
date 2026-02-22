@@ -1,4 +1,4 @@
-"""Main translation engine: orchestrates RAG retrieval, dictionary, and LLM."""
+"""Main translation engine: orchestrates RAG, neural (LoRA), dictionary, and LLM."""
 
 from src.inference.dictionary_lookup import DictionaryLookup
 from src.inference.rag_retriever import RAGRetriever
@@ -8,20 +8,31 @@ from src.utils.logger import get_logger
 
 log = get_logger(__name__)
 
+# Translation backends
+BACKEND_RAG = "rag"       # RAG + few-shot prompting via Gemini API
+BACKEND_NEURAL = "neural"  # Local LoRA adapter over Mistral/LLaMA
+BACKEND_HYBRID = "hybrid"  # Neural translation + RAG context for LLM refinement
+
 
 class TranslationEngine:
     """Orchestrates the full translation pipeline.
 
-    1. Retrieve similar examples from corpus (RAG)
-    2. Look up words in dictionary
-    3. Build few-shot prompt
-    4. Call Gemini for translation
+    Supports multiple backends:
+    - 'rag': Retrieve similar examples -> few-shot prompt -> Gemini API
+    - 'neural': Local LoRA adapter over open-source LLM (Mistral/LLaMA)
+    - 'hybrid': Neural does first pass, RAG + LLM refines the output
     """
 
-    def __init__(self):
+    def __init__(self, backend: str = BACKEND_RAG):
+        """
+        Args:
+            backend: Translation backend ('rag', 'neural', or 'hybrid').
+        """
+        self.backend = backend
         self._retriever = None
         self._dictionary = None
         self._tagger = None
+        self._lora_translator = None
 
     @property
     def retriever(self) -> RAGRetriever:
@@ -41,6 +52,13 @@ class TranslationEngine:
             self._tagger = RuleBasedTagger()
         return self._tagger
 
+    @property
+    def lora_translator(self):
+        if self._lora_translator is None:
+            from src.inference.lora_translator import LoRATranslator
+            self._lora_translator = LoRATranslator()
+        return self._lora_translator
+
     def translate(self, text: str, direction: str = "ayo_to_es") -> str:
         """Translate text between Ayoreo and Spanish.
 
@@ -51,21 +69,74 @@ class TranslationEngine:
         Returns:
             Translated text.
         """
-        # 1. Retrieve similar examples
+        if self.backend == BACKEND_NEURAL:
+            return self._translate_neural(text, direction)
+        elif self.backend == BACKEND_HYBRID:
+            return self._translate_hybrid(text, direction)
+        else:
+            return self._translate_rag(text, direction)
+
+    def _translate_rag(self, text: str, direction: str) -> str:
+        """RAG backend: retrieve examples -> few-shot prompt -> Gemini."""
         examples = self.retriever.retrieve(text, k=8)
 
-        # 2. Dictionary lookup for individual words
         tokens = tokenize(text)
         dict_entries = []
         for token in tokens:
-            results = self.dictionary.lookup(token)
-            dict_entries.extend(results)
+            dict_entries.extend(self.dictionary.lookup(token))
 
-        # 3. Build prompt
         prompt = build_translation_prompt(text, examples, dict_entries, direction)
-
-        # 4. Call LLM
         return translate_with_gemini(prompt)
+
+    def _translate_neural(self, text: str, direction: str) -> str:
+        """Neural backend: LoRA adapter over Mistral/LLaMA."""
+        return self.lora_translator.translate(text, direction=direction)
+
+    def _translate_hybrid(self, text: str, direction: str) -> str:
+        """Hybrid backend: neural first pass, then RAG + LLM refinement.
+
+        1. LoRA adapter generates initial translation
+        2. RAG retrieves similar examples
+        3. Gemini refines the translation using both
+        """
+        neural_output = self.lora_translator.translate(text, direction=direction)
+        examples = self.retriever.retrieve(text, k=5)
+
+        tokens = tokenize(text)
+        dict_entries = []
+        for token in tokens:
+            dict_entries.extend(self.dictionary.lookup(token))
+
+        if direction == "ayo_to_es":
+            src_lang, tgt_lang = "Ayoreo", "Español"
+        else:
+            src_lang, tgt_lang = "Español", "Ayoreo"
+
+        refinement_prompt = (
+            f"Un modelo de traducción generó esta traducción de {src_lang} a {tgt_lang}:\n\n"
+            f"Original ({src_lang}): {text}\n"
+            f"Traducción automática ({tgt_lang}): {neural_output}\n\n"
+            f"Revisá y mejorá la traducción usando estos ejemplos de referencia:\n"
+        )
+        for ex in examples:
+            src_key = "ayoreo" if direction == "ayo_to_es" else "spanish"
+            tgt_key = "spanish" if direction == "ayo_to_es" else "ayoreo"
+            refinement_prompt += (
+                f"  {src_lang}: {ex[src_key]}\n  {tgt_lang}: {ex[tgt_key]}\n\n"
+            )
+
+        if dict_entries:
+            refinement_prompt += "Vocabulario:\n"
+            for entry in dict_entries[:10]:
+                hw = entry.get("headword", entry.get("ayoreo", ""))
+                defn = entry.get("definition_es", entry.get("spanish", ""))
+                refinement_prompt += f"  {hw} = {defn}\n"
+
+        refinement_prompt += (
+            f"\nDevolvé solo la traducción mejorada a {tgt_lang}, sin explicaciones:"
+        )
+
+        return translate_with_gemini(refinement_prompt)
 
     def lookup_word(self, word: str) -> list[dict]:
         """Look up a word in the dictionary."""
@@ -79,3 +150,11 @@ class TranslationEngine:
         """POS-tag Ayoreo text."""
         tokens = tokenize(text)
         return self.tagger.tag(tokens)
+
+    @property
+    def neural_available(self) -> bool:
+        """Check if a trained LoRA adapter is available."""
+        try:
+            return self.lora_translator.is_available
+        except Exception:
+            return False
