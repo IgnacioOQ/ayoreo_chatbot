@@ -1,0 +1,26 @@
+# Web UI
+streamlit>=1.30
+
+# Scraping
+requests>=2.31
+beautifulsoup4>=4.12
+lxml>=5.0
+pdfplumber>=0.11
+
+# Config & data
+pyyaml>=6.0
+pandas>=2.1
+python-dotenv>=1.0
+
+# NLP
+spacy>=3.7
+sentence-transformers>=2.3
+
+# LLM API
+google-genai>=1.0
+
+# Evaluation
+sacrebleu>=2.4
+
+# Vector store
+chromadb>=0.4

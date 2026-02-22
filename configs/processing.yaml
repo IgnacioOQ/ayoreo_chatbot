@@ -1,0 +1,16 @@
+cleaning:
+  unicode_normalization: "NFC"
+  strip_html: true
+  collapse_whitespace: true
+
+alignment:
+  strategy: "paragraph_then_sentence"
+  # If sentence counts differ within a paragraph, keep as paragraph-level pair
+  fallback: "paragraph"
+
+splitting:
+  train_ratio: 0.8
+  val_ratio: 0.1
+  # test gets the remainder (0.1)
+  seed: 42
+  stratify_by: "type"

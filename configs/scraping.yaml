@@ -1,0 +1,31 @@
+base_url: "https://ayore.org"
+languages: ["es", "ayo"]
+delay_seconds: 1.5
+max_retries: 3
+timeout_seconds: 30
+
+sections:
+  - path: "cultura/creencias"
+    type: "narrative"
+  - path: "cultura/relatos-personales"
+    type: "narrative"
+  - path: "cultura/comidas"
+    type: "narrative"
+  - path: "cultura/juegos"
+    type: "narrative"
+  - path: "cultura/medicina"
+    type: "narrative"
+  - path: "cultura/canciones-nativas"
+    type: "song"
+  - path: "cultura/historia-oral"
+    type: "narrative"
+  - path: "cultura/tradiciones-orales"
+    type: "narrative"
+  - path: "cultura/ensenanzas"
+    type: "narrative"
+
+pdf_resources:
+  - url: "/es/idioma/diccionarios/"
+    type: "dictionary"
+  - url: "/es/idioma/gramatica/"
+    type: "grammar"

@@ -1,0 +1,18 @@
+rag:
+  embedding_model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  retrieval_k: 8
+  vector_store: "chromadb"
+
+llm:
+  provider: "gemini"
+  model: "gemini-2.0-flash"
+
+finetune:
+  # Optional: for Gemini fine-tuning API
+  base_model: "gemini-2.0-flash"
+  epochs: 5
+  batch_size: 4
+  learning_rate_multiplier: 1.0
+
+evaluation:
+  metrics: ["bleu", "chrf"]

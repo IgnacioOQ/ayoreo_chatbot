@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "ayoreo-chatbot"
+version = "0.1.0"
+description = "Chatbot de traducción Ayoreo-Español con RAG + fine-tuning"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    # Web UI
+    "streamlit>=1.30",
+    # Scraping
+    "requests>=2.31",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+    "pdfplumber>=0.11",
+    # Config & data
+    "pyyaml>=6.0",
+    "pandas>=2.1",
+    "python-dotenv>=1.0",
+    # NLP
+    "spacy>=3.7",
+    "sentence-transformers>=2.3",
+    # LLM API
+    "google-genai>=1.0",
+    # Evaluation
+    "sacrebleu>=2.4",
+    # Vector store
+    "chromadb>=0.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "ruff>=0.2",
+    "ipykernel>=6.27",
+]
+training = [
+    "transformers>=4.36",
+    "peft>=0.7",
+    "datasets>=2.16",
+    "accelerate>=0.25",
+]
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
