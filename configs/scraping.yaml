@@ -4,28 +4,50 @@ delay_seconds: 1.5
 max_retries: 3
 timeout_seconds: 30
 
+# Sections with their paths in both languages
+# The ES and AYO versions use DIFFERENT slug conventions
 sections:
-  - path: "cultura/creencias"
+  - path_es: "cultura/creencias"
+    path_ayo: "culture/beliefs"
     type: "narrative"
-  - path: "cultura/relatos-personales"
+    estimated_pages: 11
+  - path_es: "cultura/relatos-personales"
+    path_ayo: "culture/first-person-narratives"
     type: "narrative"
-  - path: "cultura/comidas"
+    estimated_pages: 14
+  - path_es: "cultura/comidas"
+    path_ayo: "culture/foods"
     type: "narrative"
-  - path: "cultura/juegos"
+    estimated_pages: 1
+  - path_es: "cultura/juegos"
+    path_ayo: "culture/games"
     type: "narrative"
-  - path: "cultura/medicina"
+    estimated_pages: 6
+  - path_es: "cultura/medicina"
+    path_ayo: "culture/medicine"
     type: "narrative"
-  - path: "cultura/canciones-nativas"
+    estimated_pages: 1
+  - path_es: "cultura/canciones-nativas"
+    path_ayo: "culture/native-songs"
     type: "song"
-  - path: "cultura/historia-oral"
+    estimated_pages: 22
+  - path_es: "cultura/historia-oral"
+    path_ayo: "culture/oral-history"
     type: "narrative"
-  - path: "cultura/tradiciones-orales"
+    estimated_pages: 12
+  - path_es: "cultura/tradiciones-orales"
+    path_ayo: "culture/oral-traditions"
     type: "narrative"
-  - path: "cultura/ensenanzas"
+    estimated_pages: 15
+  - path_es: "cultura/ensenanzas"
+    path_ayo: "culture/teachings"
     type: "narrative"
+    estimated_pages: 50
 
 pdf_resources:
-  - url: "/es/idioma/diccionarios/"
+  - url: "https://ayore.org/wp-content/uploads/2018/10/ayore-dictionary.pdf"
     type: "dictionary"
-  - url: "/es/idioma/gramatica/"
+    filename: "ayore-dictionary.pdf"
+  - url_page: "https://ayore.org/es/idioma/gramatica/"
     type: "grammar"
+    # PDF URL to be discovered from the grammar page
