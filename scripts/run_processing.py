@@ -28,7 +28,11 @@ def main():
     train, val, test = split_corpus(corpus)
     save_splits(train, val, test)
 
-    log.info("Processing pipeline complete.")
+    log.info("Processing pipeline core complete.")
+    
+    # 4. Build Dictionary and POS dataset (Warning: Requires GOOGLE_API_KEY)
+    log.info("Note: To build the Dictionary and POS dataset you must run `python scripts/build_dictionary.py` first (requires API key), followed by `python scripts/build_pos_dataset.py`.")
+    log.info("Pipeline finished.")
 
 
 if __name__ == "__main__":
