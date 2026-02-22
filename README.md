@@ -4,7 +4,11 @@ Chatbot de traducción entre la lengua **Ayoreo** (familia Zamuco) y el **Españ
 
 ## Arquitectura
 
-1. **Data Collection**: Scraping de [ayore.org](https://ayore.org) para obtener textos paralelos Ayoreo-Español, diccionario y gramática.
+1. **Data Collection**: Scraping de [ayore.org](https://ayore.org) usando BeautifulSoup y `requests`.
+   - Se exploran iterativamente secciones culturales (ej. enseñanzas, relatos) en español y ayoreo.
+   - Las páginas se emparejan por su posición en los índices de cada idioma (`crawler.py`).
+   - Se extrae texto principal, glosarios y metadatos (narrador, año, ubicación) usando reglas y expresiones regulares (`page_scraper.py`).
+   - Se descargan recursos en PDF como diccionarios y gramática pura (`pdf_scraper.py`).
 2. **Processing**: Limpieza, alineación de oraciones y construcción de corpus paralelo.
 3. **POS Tagging**: Etiquetado morfosintáctico del Ayoreo (híbrido: reglas + transferencia desde español).
 4. **Traducción — 3 backends disponibles**:

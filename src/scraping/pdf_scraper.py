@@ -31,7 +31,10 @@ def download_pdf(url: str, filename: str) -> Path:
         return path
 
     log.info(f"Downloading PDF: {url}")
-    response = requests.get(url, timeout=60)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    response = requests.get(url, timeout=60, headers=headers)
     response.raise_for_status()
 
     with open(path, "wb") as f:
