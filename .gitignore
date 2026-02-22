@@ -14,7 +14,7 @@ build/
 *.egg
 
 # Data (raw data can be large, keep processed in repo if small)
-data/splits/
+
 
 # IDE
 .vscode/
