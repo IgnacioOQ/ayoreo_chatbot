@@ -1,7 +1,8 @@
 # Markdown-JSON Hybrid Schema Conventions
 - status: active
 - type: guideline
-- context_dependencies: {"project_root": "README.md"}
+- id: md_json_hybrid_schema_conventions
+- label: [core]
 <!-- content -->
 This document defines the strict conventions for the **Markdown-JSON Hybrid Schema** used in this project for hierarchical task coordination and agentic planning.
 
@@ -63,44 +64,83 @@ The following fields are standard, but the schema allows extensibility.
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `status` | `enum` | `todo`, `in-progress`, `done`, `blocked`, `recurring`, `active`|
-| `type` | `enum` | **Core**: `plan`, `task` <br>**Agentic**: `agent_skill`, `protocol`<br>**Knowledge**: `guideline`, `log`, `context` |
-| `owner` | `string` | The agent or user assigned to this (e.g., `dev-1`, `claude`) |
-| `estimate` | `string` | Time estimate (e.g., `1d`, `4h`) |
-| `blocked_by`| `list` | List of explicit dependencies (IDs or relative paths) |
-| `priority` | `enum` | `draft`, `low`, `medium`, `high`, `critical` (Optional) |
-| `id` | `string` | Unique identifier for the node (e.g., `project.component.task`). Used for robust merging and dependency tracking. |
-| `context_dependencies` | `dict` | map of semantic aliases to file paths (e.g., `{ "guideline": "CONVENTIONS.md" }`). Defines required reading for this node. |
-| `last_checked` | `string` | This is the date of the last time this node was modified, including change of status. |
+| `status` | `enum` | `todo`, `in-progress`, `done`, `blocked`, `recurring`, `active` **(Mandatory)**|
+| `type` | `enum` | `agent_skill`, `log`, `guideline`, `plan`, `task`, `documentation` **(Mandatory)** |
+| `owner` | `string` | The agent or user assigned to this (e.g., `dev-1`, `claude`) **(Optional)** |
+| `estimate` | `string` | Time estimate (e.g., `1d`, `4h`) **(Optional)** |
+| `blocked_by`| `list` | List of explicit dependencies (IDs or relative paths) **(Optional)** |
+| `priority` | `enum` | `draft`, `low`, `medium`, `high`, `critical` **(Optional)** |
+| `id` | `string` | Unique identifier for the node (e.g., `project.component.task`). Used for robust merging and dependency tracking. **(Optional)** |
+| `last_checked` | `string` | This is the date of the last time this node was modified, including change of status. **(Optional)** |
+| `label` | `list` | Array of strings (e.g., 'template', 'draft') **(Optional)** |
+
+<!-- MERGED FROM NEWER VERSION -->
+
+The following fields are standard, but the schema allows extensibility.
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `status` | `enum` | `todo`, `in-progress`, `done`, `blocked`, `recurring`, `active` **(Mandatory)**|
+| `type` | `enum` | `agent_skill`, `log`, `guideline`, `plan`, `task`, `documentation` **(Mandatory)** |
+| `owner` | `string` | The agent or user assigned to this (e.g., `dev-1`, `claude`) **(Optional)** |
+| `estimate` | `string` | Time estimate (e.g., `1d`, `4h`) **(Optional)** |
+| `blocked_by`| `list` | List of explicit dependencies (IDs or relative paths) **(Optional)** |
+| `priority` | `enum` | `draft`, `low`, `medium`, `high`, `critical` **(Optional)** |
+| `id` | `string` | Unique identifier for the node (e.g., `project.component.task`). Used for robust merging and dependency tracking. **(Optional)** |
+| `last_checked` | `string` | This is the date of the last time this node was modified, including change of status. **(Optional)** |
+| `label` | `list` | Array of strings (e.g., 'template', 'draft') **(Optional)** |
 
 ### Type Definitions
+- id: markdown_json_hybrid_schema_conventions.implement_user_auth.type_definitions
+- status: active
+- type: context
+- last_checked: 2026-01-31
+<!-- content -->
+- **`agent_skill`**: (Capability) Defines a persona, specialized toolset, or prompting strategy.
+- **`log`**: (Historical) Append-only records of actions, decisions, or outputs.
+- **`guideline`**: (Normative) Static rules, conventions, and high-level documentation (read-only reference).
 - **`plan`**: (Finite) A high-level objective with a clear beginning and end. Usually the root node.
 - **`task`**: (Finite) A specific, actionable unit of work. Usually a sub-node of a plan.
-- **`recurring`**: (Infinite) A maintenance loop or checklist that resets periodically (e.g. housekeeping).
-- **`agent_skill`**: (Capability) Defines a persona, specialized toolset, or prompting strategy.
-- **`protocol`**: (Interaction) Strict rules for inter-agent communication or system behavior.
-- **`guideline`**: (Normative) Static rules, conventions, and high-level documentation (read-only reference).
-- **`log`**: (Historical) Append-only records of actions, decisions, or outputs.
-- **`context`**: (Informational) Passive knowledge, textbooks, or reference material.
+- **`documentation`**: (Informational) General documentation, textbooks, or reference material.
 
 For extended fields consider:
  - The key is entirely lowercase
  - The key has no spaces (words are separated with dash or underscore)
  - The value is single line
 
-### 4. Context Dependencies
+### Standard Labels
+- id: markdown_json_hybrid_schema_conventions.standard_labels
+- status: active
+- type: context
+- last_checked: 2026-02-23
+<!-- content -->
+Labels are lists of strings, allowing multiple keywords for a single node. The repository uses these standard labels:
+
+- **`agent`**: Agent skills or configurations.
+- **`planning`**: Project plans, roadmaps, or objective outlines.
+- **`draft`**: Markdowns that are incomplete, under construction, or lack clarity.
+- **`guide`**: Guidelines, instructions, or best practices.
+- **`template`**: General content that needs to be specified for particular projects (e.g., `README.md`, `AGENTS.md` often serve as templates).
+- **`core`**: Essential project documentation defining the foundation of the repository (e.g., `MD_CONVENTIONS.md`).
+- **`infrastructure`**: Deployment, CI/CD, and Cloud resource documentation.
+- **`frontend`**: Client-side application, UI, and usage documentation.
+- **`backend`**: Server-side logic, parsing, dependency resolution, and MCP server documentation.
+- **`reference`**: Textbooks, external manuals, or deep-dive reference materials for context injection.
+
+### 4. Dependencies
 - status: active
 <!-- content -->
-A node may define a `context_dependencies` map to declare external files required to understand or execute it.
+Dependencies are managed centrally in `dependency_registry.json`. 
 
-**Structure**: A JSON-style dictionary where:
-- **Key**: A semantic alias (e.g., `role`, `guideline`, `schema`) describing *why* the file is needed.
-- **Value**: Relative path to the dependency.
+**Do not add `context_dependencies` metadata to files.**
 
-**Resolution Protocol (Recursive)**:
-1.  **Depth-First**: Agents must resolve dependencies recursively. If File A depends on B, and B depends on C, the agent reads C, then B, then A.
-2.  **Flat Definition**: Avoid defining the entire tree in one file. Each file should only declare its immediate dependencies.
-3.  **Aliases**: Use consistent keys (e.g., `manager_agent`, `conventions`) to help the LLM categorize the context.
+To add a dependency:
+1.  Use `python manager/dependency_manager.py add <file> <dependency>` (if available).
+2.  Or manually edit `dependency_registry.json`.
+
+**Resolution Protocol**:
+1.  **Registry First**: Tools and agents look up the current file in the registry to find its dependencies.
+2.  **Recursive Resolution**: Dependencies are resolved recursively to build the full context.
 
 ### 5. Context & Description
 - status: active
@@ -146,11 +186,29 @@ Some text here first.
 ```markdown
 
 ### Database Schema
+- status: active
+- owner: dev-2
+- estimate: 1d
+<!-- content -->
 status: done
 owner: dev-2
 
 ```
 *Warning: While some parsers might handle this, prefer bullet points `- key: value` for readability and stricter parsing.*
+
+<!-- MERGED FROM NEWER VERSION -->
+
+Set up PostgreSQL schema for users and sessions.
+```
+
+<!-- MERGED FROM NEWER VERSION -->
+
+Some text here first.
+
+- status: done
+
+```
+*Error: Metadata block must immediately follow the header.*
 
 ## Parsing Logic (for Developers)
 - status: active
@@ -244,4 +302,4 @@ When generating or modifying files in this repository, AI agents MUST adhere to 
         - status: active
         Content starts here...
         ```
-4.  **Use Allowed Fields**: Only use metadata keys explicitly listed in the "Allowed Fields" section (`status`, `type`, `owner`, `estimate`, `blocked_by`, `priority`, `id`, `last_checked`) unless you have a specific, documented reason to extend the schema.
+4.  **Use Allowed Fields**: Only use metadata keys explicitly listed in the "Allowed Fields" section (`status`, `type`, `owner`, `estimate`, `blocked_by`, `priority`, `id`, `last_checked`, `label`) unless you have a specific, documented reason to extend the schema.

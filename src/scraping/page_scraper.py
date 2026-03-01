@@ -41,6 +41,23 @@ def _find_content_div(soup) -> Tag | None:
     return soup.body
 
 
+def _html_to_markdown_basic(tag: Tag) -> str:
+    """Convert a BeautifulSoup tag to text while preserving basic bold/italic formatting."""
+    import copy
+    copied = copy.copy(tag)
+    # Convert bold
+    for b in copied.find_all(["b", "strong"]):
+        text = b.get_text(strip=True)
+        if text:
+            b.replace_with(f"**{text}**")
+    # Convert italics
+    for i in copied.find_all(["i", "em"]):
+        text = i.get_text(strip=True)
+        if text:
+            i.replace_with(f"*{text}*")
+    return copied.get_text(strip=True)
+
+
 def _extract_metadata(text: str) -> dict:
     """Extract narrator, location, date, and transcriber from page text.
 
@@ -176,7 +193,7 @@ def extract_page_content(soup) -> dict:
     # Extract body text (paragraphs only, skip nav/footer)
     paragraphs = []
     for p in content_div.find_all(["p", "blockquote"]):
-        text = p.get_text(strip=True)
+        text = _html_to_markdown_basic(p)
         if text and len(text) > 10:  # Skip very short fragments
             paragraphs.append(text)
 
@@ -184,7 +201,7 @@ def extract_page_content(soup) -> dict:
 
     # If no <p> tags found, fall back to full text extraction
     if not body:
-        body = content_div.get_text(separator="\n", strip=True)
+        body = _html_to_markdown_basic(content_div)
 
     # Glossary
     glossary = _extract_glossary(content_div)

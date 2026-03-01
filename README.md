@@ -187,11 +187,11 @@ ayoreo_chatbot/
 ├── scripts/
 │   └── run_scraper.py            # Entry point del pipeline de scraping
 ├── tests/                        # Tests
-└── docs/reference/               # Guías para agentes (SCRAPER_SKILL_AYOREO.md, etc.)
+└── docs/reference/               # Guías para agentes (HTML_SCRAPING_SKILL.md, etc.)
 ```
 
 ## Fuentes de datos
 
 - [ayore.org](https://ayore.org) — Textos paralelos ES/EN/AYO, diccionario, gramática
 - Ver [fuentes.txt](fuentes.txt) para URLs específicas
-- Ver [docs/reference/SCRAPER_SKILL_AYOREO.md](docs/reference/SCRAPER_SKILL_AYOREO.md) para detalles técnicos del scraper
+- Ver [docs/reference/HTML_SCRAPING_SKILL.md](docs/reference/HTML_SCRAPING_SKILL.md) para detalles técnicos del scraper

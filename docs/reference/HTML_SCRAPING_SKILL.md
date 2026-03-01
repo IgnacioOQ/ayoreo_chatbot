@@ -42,6 +42,10 @@ The key insight of web scraping is that **every piece of target content has an H
 `ayore.org` (and many WordPress sites) use **WPML** (WordPress Multilingual Plugin) to serve the same content in multiple languages. WPML inserts a language switcher widget into each page that links to the exact equivalent URL in every other language.
 
 ### Why This Matters — Empirically Validated
+- id: html_scraping_skill.why_this_matters__empirically_validated
+- status: active
+- type: context
+<!-- content -->
 
 **Do NOT rely on positional pairing** (matching story #1 in ES with story #1 in AYO by crawling index pages independently). This breaks silently if:
 - A story exists in one language but not another
@@ -54,6 +58,10 @@ The key insight of web scraping is that **every piece of target content has an H
 **Instead: use the WPML switcher on each scraped page** to get the exact URL mapping between language versions.
 
 ### WPML Language Switcher HTML
+- id: html_scraping_skill.wpml_language_switcher_html
+- status: active
+- type: context
+<!-- content -->
 
 ```html
 <div class="wpml-ls-statics-shortcode_actions wpml-ls wpml-ls-legacy-list-horizontal">
@@ -75,6 +83,10 @@ The key insight of web scraping is that **every piece of target content has an H
 ```
 
 ### Key Observations
+- id: html_scraping_skill.key_observations
+- status: active
+- type: context
+<!-- content -->
 
 | Indicator | Meaning |
 | :--- | :--- |
@@ -87,6 +99,10 @@ The key insight of web scraping is that **every piece of target content has an H
 > The switcher shows only the **other** languages, not the current page's language. If you are on the ES page, the switcher lists EN and AYO — not ES.
 
 ### Python: Extract Language URLs from WPML Switcher
+- id: html_scraping_skill.python_extract_language_urls_from_wpml_switcher
+- status: active
+- type: context
+<!-- content -->
 
 ```python
 def extract_language_urls(soup) -> dict[str, str]:
@@ -112,6 +128,10 @@ def extract_language_urls(soup) -> dict[str, str]:
 ```
 
 ### Recommended Crawl Strategy
+- id: html_scraping_skill.recommended_crawl_strategy
+- status: active
+- type: context
+<!-- content -->
 
 1. **Crawl the ES index** to get all Spanish story URLs (ES is always the most complete)
 2. **For each ES story page**, fetch the page and call `extract_language_urls()` to get the exact EN and AYO URLs
@@ -131,6 +151,10 @@ This is more reliable than crawling three index pages and pairing by position.
 `ayore.org` is a WordPress site serving trilingual content (Spanish, English, Ayoré).
 
 ### URL Structure
+- id: html_scraping_skill.url_structure
+- status: active
+- type: context
+<!-- content -->
 
 | Language | URL pattern | Notes |
 | :--- | :--- | :--- |
@@ -142,6 +166,10 @@ This is more reliable than crawling three index pages and pairing by position.
 > English and Ayoré share the same section-path slugs (e.g. `culture/first-person-narratives`), but English has no language prefix in the URL. Spanish uses different, Spanish-language slugs (e.g. `cultura/relatos-personales`).
 
 ### Content Sections
+- id: html_scraping_skill.content_sections
+- status: active
+- type: context
+<!-- content -->
 
 | ES path | EN/AYO path | Type |
 | :--- | :--- | :--- |
@@ -156,6 +184,10 @@ This is more reliable than crawling three index pages and pairing by position.
 | `cultura/medicina` | `culture/medicine` | narrative |
 
 ### WordPress Content DOM
+- id: html_scraping_skill.wordpress_content_dom
+- status: active
+- type: context
+<!-- content -->
 
 | Element | Selector | Notes |
 | :--- | :--- | :--- |
@@ -166,6 +198,10 @@ This is more reliable than crawling three index pages and pairing by position.
 | Glossary terms | `strong`/`b` + sibling text with `–` or `-` | Ayoreo term → Spanish definition |
 
 ### Metadata Patterns (regex)
+- id: html_scraping_skill.metadata_patterns_regex
+- status: active
+- type: context
+<!-- content -->
 
 ```python
 # Narrator
@@ -180,6 +216,10 @@ r"(?:Translat(?:ed|ado) (?:to Spanish )?(?:by|por))[:\s]+(.+?)(?:\n|$)"
 ```
 
 ### Output Schema per Story
+- id: html_scraping_skill.output_schema_per_story
+- status: active
+- type: context
+<!-- content -->
 
 ```json
 {
@@ -231,6 +271,10 @@ def fetch_page(url: str) -> BeautifulSoup | None:
 <!-- content -->
 
 ### 1. Filter Anchor Fragments Before Processing
+- id: html_scraping_skill.1_filter_anchor_fragments_before_processing
+- status: active
+- type: context
+<!-- content -->
 
 Index pages often contain navigation links like `/section/#masthead` (back-to-top, logo anchors, etc.) that share the section path but are not real story pages. Always drop them first:
 
@@ -244,6 +288,10 @@ if "#" in href:
 > Without this filter, `#masthead` links get collected as story URLs, scrape the section index page instead of a story, and produce a bogus entry in the output.
 
 ### 2. URL Deduplication
+- id: html_scraping_skill.2_url_deduplication
+- status: active
+- type: context
+<!-- content -->
 
 ```python
 seen_urls = set()
@@ -255,6 +303,10 @@ for a_tag in soup.find_all("a", href=True):
 ```
 
 ### 3. Language Guard (for no-prefix English URLs)
+- id: html_scraping_skill.3_language_guard_for_no-prefix_english_urls
+- status: active
+- type: context
+<!-- content -->
 
 When crawling the English index (no `/en/` prefix), AYO and ES sibling links will also contain the section path. Filter them out by checking the URL's language prefix:
 
@@ -269,6 +321,10 @@ if lang is not None and url_lang != lang:
 ```
 
 ### 4. Single Output File + Incremental Merge
+- id: html_scraping_skill.4_single_output_file__incremental_merge
+- status: active
+- type: context
+<!-- content -->
 
 All stories from all sections are stored in **one JSON file** (`data/raw/stories.json`), keyed by `story_id`. Running the scraper section by section builds up the file incrementally without overwriting previously scraped sections.
 
