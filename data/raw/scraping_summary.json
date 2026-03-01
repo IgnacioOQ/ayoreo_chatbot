@@ -1,8 +1,108 @@
 {
-  "total_discovered": 15,
-  "scraped": 15,
+  "total_discovered": 25,
+  "scraped": 25,
   "failed": 0,
   "pages": [
+    {
+      "story_id": "relatos-personales__cotade-me-he-entregado-dupade",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/cotade-me-he-entregado-dupade/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/cotade-i-gave-myself-to-him/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/cotate-e-ye%cc%83ra-yu-to-ome-dupade/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__dapure-yo-odiaba-a-dupade",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/dapure-yo-odiaba-a-dupade/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/dapure-i-killed-my-babies/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/dapure-yetaque-dupade-nanique/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__enuedate-perdido-en-la-selva-se-encuenta-agua-en-los-arboles",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/enuedate-perdido-en-la-selva-se-encuenta-agua-en-los-arboles/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/enuedate-lost-in-jungle-finds-water-in-trees/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enuedate-ayore-do-yu/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__enuedate-yojide-intento-quitarme-a-mis-hijos",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/enuedate-yojide-intento-quitarme-a-mis-hijos/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/enueidate-yojide-tries-to-take-my-children-away/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enueidate-atata-uje-i%cc%83ri-iji-tobite-nanique/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__enueidate-se-burla-de-gutodate-y-termina-en-una-pelea",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/enueidate-se-burla-de-gutodate-y-termina-en-una-pelea/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/enueidate-belittling-gutodate-ends-up-in-fight/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enueidate-bajn%cc%83arone-jiei-cho-guto-ujn%cc%83arone/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__gayujna-pero-mas-tarde-me-entere-de-lo-que-era-realmente-bueno",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/gayujna-pero-mas-tarde-me-entere-de-lo-que-era-realmente-bueno/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/gayujna-i-found-out-what-was-truly-good/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/gayujna-ejode-ga-yiraja-uje-cucha-omi-cuse/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__guibejnane-fuimos-a-las-salinas",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/guibejnane-fuimos-a-las-salinas/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/guibejnane-going-to-the-salt-beds/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/guibejnane-yibagui-echoi-casicaite/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__jomone-quiero-que-sepas-las-cosas-que-he-hecho",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/jomone-quiero-que-sepas-las-cosas-que-he-hecho/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/jomone-sorry-for-how-ive-failed-in-my-life/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/jomone-yipota-jeta-araja-yipesudode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__lidiade-los-que-tienen-oidos-abiertos-oyen-la-palabra-de-dupade",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/lidiade-los-que-tienen-oidos-abiertos-oyen-la-palabra-de-dupade/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/lidiade-i-want-to-share-gods-words/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/lidiade-angoninguite-guesatigo/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__me-encantan-los-testimonios",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/me-encantan-los-testimonios/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/dajunangue-i-like-to-hear-the-stories-they-tell/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/dajunangue-yirasique-yujodie-chequei-ojn%cc%83ane/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
     {
       "story_id": "relatos-personales__me-tiraron-al-agua",
       "section": "relatos-personales",
@@ -14,101 +114,11 @@
       "has_ayo": true
     },
     {
-      "story_id": "relatos-personales__cotade-me-he-entregado-dupade",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/cotade-me-he-entregado-dupade/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/cotade-i-gave-myself-to-him/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enuedate-ayore-do-yu/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__ucuetodacode-a-la-medianoche-algo-se-me-aparecio",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/ucuetodacode-a-la-medianoche-algo-se-me-aparecio/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/dajunangue-i-like-to-hear-the-stories-they-tell/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enueidate-bajn%cc%83arone-jiei-cho-guto-ujn%cc%83arone/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__enuedate-perdido-en-la-selva-se-encuenta-agua-en-los-arboles",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/enuedate-perdido-en-la-selva-se-encuenta-agua-en-los-arboles/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/dapure-i-killed-my-babies/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enueidate-atata-uje-i%cc%83ri-iji-tobite-nanique/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__enueidate-se-burla-de-gutodate-y-termina-en-una-pelea",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/enueidate-se-burla-de-gutodate-y-termina-en-una-pelea/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/gayujna-i-found-out-what-was-truly-good/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/guibejnane-yibagui-echoi-casicaite/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__guibejnane-fuimos-a-las-salinas",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/guibejnane-fuimos-a-las-salinas/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/jomone-sorry-for-how-ive-failed-in-my-life/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/oidabiade-dacasute-yu-iji-monte-nanique/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
       "story_id": "relatos-personales__oidabiade-yo-era-un-guerrero-feroz",
       "section": "relatos-personales",
       "url_es": "https://ayore.org/es/cultura/relatos-personales/oidabiade-yo-era-un-guerrero-feroz/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/lidiade-i-want-to-share-gods-words/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/sama-rosade-chaca-yedodie-iji-yodi/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__me-encantan-los-testimonios",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/me-encantan-los-testimonios/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/sama-rosade-put-my-face-under-water/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/jomone-yipota-jeta-araja-yipesudode/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__jomone-quiero-que-sepas-las-cosas-que-he-hecho",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/jomone-quiero-que-sepas-las-cosas-que-he-hecho/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/guibejnane-going-to-the-salt-beds/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/dapure-yetaque-dupade-nanique/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__gayujna-pero-mas-tarde-me-entere-de-lo-que-era-realmente-bueno",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/gayujna-pero-mas-tarde-me-entere-de-lo-que-era-realmente-bueno/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/enueidate-belittling-gutodate-ends-up-in-fight/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/lidiade-angoninguite-guesatigo/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__lidiade-los-que-tienen-oidos-abiertos-oyen-la-palabra-de-dupade",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/lidiade-los-que-tienen-oidos-abiertos-oyen-la-palabra-de-dupade/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/enueidate-yojide-tries-to-take-my-children-away/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/gayujna-ejode-ga-yiraja-uje-cucha-omi-cuse/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/oidabiade-i-was-a-fierce-warrior/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/oidabiade-dacasute-yu-iji-monte-nanique/",
       "has_es": true,
       "has_en": true,
       "has_ayo": true
@@ -117,38 +127,128 @@
       "story_id": "relatos-personales__sama-rosade-me-puso-la-cara-bajo-el-agua",
       "section": "relatos-personales",
       "url_es": "https://ayore.org/es/cultura/relatos-personales/sama-rosade-me-puso-la-cara-bajo-el-agua/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/oidabiade-i-was-a-fierce-warrior/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/dajunangue-yirasique-yujodie-chequei-ojn%cc%83ane/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/sama-rosade-put-my-face-under-water/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/sama-rosade-chaca-yedodie-iji-yodi/",
       "has_es": true,
       "has_en": true,
       "has_ayo": true
     },
     {
-      "story_id": "relatos-personales__dapure-yo-odiaba-a-dupade",
+      "story_id": "relatos-personales__ucuetodacode-a-la-medianoche-algo-se-me-aparecio",
       "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/dapure-yo-odiaba-a-dupade/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/enuedate-lost-in-jungle-finds-water-in-trees/",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/ucuetodacode-a-la-medianoche-algo-se-me-aparecio/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/ucuetodacode-at-midnight-something-appeared-to-me-2/",
       "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/ucuetodacode-dejninga-ga-cucharique-a-chiqueta-raja-yu/",
       "has_es": true,
       "has_en": true,
       "has_ayo": true
     },
     {
-      "story_id": "relatos-personales__enuedate-yojide-intento-quitarme-a-mis-hijos",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/enuedate-yojide-intento-quitarme-a-mis-hijos/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/ucuetodacode-at-midnight-something-appeared-to-me-2/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/cotate-e-ye%cc%83ra-yu-to-ome-dupade/",
+      "story_id": "creencias__creencias-al-pie-del-totem",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/creencias-al-pie-del-totem/",
+      "url_en": "https://ayore.org/culture/beliefs/cajoide-at-the-foot-of-the-totem/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/cajoide-namacade/",
       "has_es": true,
       "has_en": true,
       "has_ayo": true
     },
     {
-      "story_id": "relatos-personales__#masthead",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/#masthead",
-      "url_en": "https://ayore.org/culture/first-person-narratives/#masthead",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/#masthead",
+      "story_id": "creencias__cajoide-las-cosas-que-suceden-para-traer-el-pajaro",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/cajoide-las-cosas-que-suceden-para-traer-el-pajaro/",
+      "url_en": "https://ayore.org/culture/beliefs/cajoide-things-pop-out-to-bring-the-bird/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/cajoide-las-cosas-que-suceden-para-traer-el-pajaro/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "creencias__cajoide-el-soplo-del-silbato",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/cajoide-el-soplo-del-silbato/",
+      "url_en": "https://ayore.org/culture/beliefs/cajoide-the-blowing-of-the-whistle/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/cajoide-ore-chipotingara-potadie/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "creencias__cajoide-cuando-un-jaguar-es-matado",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/cajoide-cuando-un-jaguar-es-matado/",
+      "url_en": "https://ayore.org/culture/beliefs/cajoide-when-a-jaguar-is-killed/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/cajoide-ore-tare-gai/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "creencias__dejabi-asojna-el-pajaro-dios-era-nuestro-enemigo",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/dejabi-asojna-el-pajaro-dios-era-nuestro-enemigo/",
+      "url_en": "https://ayore.org/culture/beliefs/dejabi-asojna-the-bird-god-was-our-enemy/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/iquide-chugupere-cho-dajnare/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "creencias__iquede-victimas-del-pajaro-dios",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/iquede-victimas-del-pajaro-dios/",
+      "url_en": "https://ayore.org/culture/beliefs/dupade-is-everywhere-around-us/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/iquede-dupade-esta-en-todas-partes-a-nuestro-alrededor/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "creencias__oidabiade-hace-mucho-tiempo-rezamos-al-sol",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/oidabiade-hace-mucho-tiempo-rezamos-al-sol/",
+      "url_en": "https://ayore.org/culture/beliefs/long-ago-we-prayed-to-the-sun/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/oidabiade-ore-pijnane-aja-guede/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "creencias__oidabiade-el-armadillo-era-un-portador-de-armas",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/oidabiade-el-armadillo-era-un-portador-de-armas/",
+      "url_en": "https://ayore.org/culture/beliefs/the-armadillo-was-a-weapon-carrier/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/oidabiade-coracha-jnungori-u/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "creencias__oidabiade-llegaron-al-borde-de-dia",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/oidabiade-llegaron-al-borde-de-dia/",
+      "url_en": "https://ayore.org/culture/beliefs/they-came-to-the-edge-of-day/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/oidabiade-ore-chise-diri/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "creencias__oidabiade-cosas-que-nuestros-padres-temieron",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/oidabiade-cosas-que-nuestros-padres-temieron/",
+      "url_en": "https://ayore.org/culture/beliefs/things-our-fathers-feared/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/oidabiade-yocayode-ore-todode-cucha/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "creencias__iquide-el-pajaro-podria-matar-o-danar-a-los-ayoreos",
+      "section": "creencias",
+      "url_es": "https://ayore.org/es/cultura/creencias/iquide-el-pajaro-podria-matar-o-danar-a-los-ayoreos/",
+      "url_en": "https://ayore.org/culture/beliefs/victims-of-the-bird-god/",
+      "url_ayo": "https://ayore.org/ayo/culture/beliefs/iquide-chugupere-chuje-ayoreode/",
       "has_es": true,
       "has_en": true,
       "has_ayo": true

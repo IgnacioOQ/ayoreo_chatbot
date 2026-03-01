@@ -11,7 +11,7 @@ sections:
   - path_es: "cultura/creencias"
     path_en: "culture/beliefs"
     path_ayo: "culture/beliefs"
-    type: "narrative"
+    type: "beliefs"
     estimated_pages: 11
   - path_es: "cultura/relatos-personales"
     path_en: "culture/first-person-narratives"
