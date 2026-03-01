@@ -6,7 +6,7 @@
 - id: scraper-skill-ayoreo
 <!-- content -->
 
-This document defines general implementation patterns for web scraping, with specific lessons learned from scraping `ayore.org` (a trilingual WordPress/WPML site).
+This document defines general implementation patterns for web scraping, with specific lessons learned from scraping `ayore.org` (a trilingual WordPress/WPML site) and `bible.com` (a trilingual Bible source).
 
 ---
 
@@ -349,6 +349,99 @@ STORIES_PATH.write_text(json.dumps(stories, ensure_ascii=False, indent=2))
 ```
 
 **Do NOT save individual per-story JSON files.** One file is easier to load, version, and pass to downstream processing steps.
+
+---
+
+## Bible.com Scraping: Linked-List Traversal
+- status: active
+- type: context
+<!-- content -->
+
+Beyond `ayore.org`, a second data source is [Bible.com](https://www.bible.com), which hosts a complete Ayoré Bible translation. This section documents the scraping patterns specific to `bible.com`.
+
+### Source Versions
+
+| Language | Version ID | URL suffix |
+| :------- | :--------- | :--------- |
+| Ayoré    | `2825`     | `.AYORE`   |
+| Español  | `3291`     | `.VBL`     |
+| English  | `1932`     | `.FBV`     |
+
+URL pattern: `bible.com/es-ES/bible/{version_id}/{BOOK}.{chapter}.{suffix}`
+
+### Traversal Strategy: "Siguiente capítulo" Link
+
+Instead of hardcoding the 66 books of the Bible and their chapter counts, the scraper (`scripts/scrape_bible.py`) follows a **linked-list approach**:
+
+1. Start at `GEN.1.AYORE`
+2. Parse the chapter's verses
+3. Find the `<a>` tag whose text contains `"Siguiente capítulo"` — this link points to the next chapter, or the first chapter of the next book when a book ends
+4. Construct ES and EN URLs by swapping the version ID and suffix
+5. Repeat until no "Siguiente capítulo" link exists
+
+This guarantees that only chapters available in the Ayoré translation are scraped.
+
+### HTML Indicators for Bible.com
+
+| Indicator | Selector / Attribute | Purpose |
+| :-------- | :------------------- | :------ |
+| Verse container | `[data-usfm="GEN.1.1"]` | Each verse is wrapped in a `<span>` with the USFM reference |
+| Verse label | `<span class="ChapterContent-module__cat7xG__label">` | The visible verse number — must be removed before text extraction |
+| Merged verses | `data-usfm="1SA.31.11+1SA.31.12"` | Two verses combined into one block by translators |
+| Next chapter | `<a>` with text `"Siguiente capítulo"` | Link to the next chapter/book |
+| Chapter title | `<h1>` | e.g. "Génesis 1", "Éxodo 15" |
+
+### Merged Verse Handling
+
+The Ayoré translation sometimes combines two verses into one for grammatical or cultural reasons. Bible.com marks these with a `+` in the `data-usfm` attribute:
+
+```html
+<span data-usfm="1SA.31.11+1SA.31.12">11-12 Uje jnanione...</span>
+```
+
+The scraper:
+1. Splits the USFM tag on `+`
+2. Extracts all verse numbers belonging to the current chapter
+3. Joins them with `-` to produce a ranged header: `"1 Samuel 31,11-12"`
+
+### Validation Layers
+
+1. **Inline mismatch detection:** After scraping each chapter in all 3 languages, compare verse counts. If they differ (common due to merged verses), the warning is stored in:
+   - `"warnings"` array inside the chapter entry in `bible.json`
+   - `"mismatches"` array in `bible_scraping_summary.json`
+
+2. **Exogenous completeness:** `scripts/verify_bible_completeness.py` compares scraped chapters against the canonical 66-book, 1189-chapter standard and reports gaps.
+
+### Safe Resumption
+
+The script saves `bible.json` to disk after **every chapter**. On restart, it loads the existing file and skips any chapter whose `story_id` already exists. This means:
+- The multi-hour scraping job can be interrupted with `Ctrl+C` at any time
+- Re-running `python scripts/scrape_bible.py` resumes from where it left off
+- No data is ever lost
+
+### Output Schema per Chapter
+
+```json
+{
+  "story_id": "bible__gen-1",
+  "url_es": "...", "url_en": "...", "url_ayo": "...",
+  "type": "faith",
+  "section": "Génesis",
+  "chapter_usfm": "GEN.1",
+  "title_es": "Génesis 1",
+  "title_en": "Genesis 1",
+  "title_ayo": "Génesis 1",
+  "body_es": "...", "body_en": "...", "body_ayo": "...",
+  "body_decomposition": {
+    "es": [{"header": "Génesis 1,1", "text": "En el principio..."}],
+    "en": [{"header": "Genesis 1,1", "text": "In the beginning..."}],
+    "ayo": [{"header": "Génesis 1,1", "text": "Iji taningai uje..."}]
+  },
+  "warnings": []
+}
+```
+
+All chapters are saved in `data/raw/bible/bible.json`. The execution log is saved in `data/raw/bible/bible_scraping_summary.json`.
 
 ---
 

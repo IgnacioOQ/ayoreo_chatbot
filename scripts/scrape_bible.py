@@ -45,13 +45,24 @@ def extract_chapter_data(url: str, expected_usfm_prefix: str) -> dict:
     verse_elements = soup.find_all(attrs={"data-usfm": True})
     verses_map = {}
     
+    chapter_num = title.split()[-1]
+    
     for el in verse_elements:
         usfm = el.get("data-usfm")
-        # Ensure it belongs directly to this chapter (e.g. GEN.1.X)
-        if not usfm.startswith(expected_usfm_prefix + "."):
+        # Handle merged verses like "1SA.31.11+1SA.31.12"
+        usfm_parts = usfm.split("+")
+        # Ensure at least one part belongs to this chapter
+        if not any(p.startswith(expected_usfm_prefix + ".") for p in usfm_parts):
             continue
-            
-        verse_num_str = usfm.split(".")[-1]
+        
+        # Build verse number string: single verse or range (e.g. "11-12")
+        verse_nums = []
+        for p in usfm_parts:
+            if p.startswith(expected_usfm_prefix + "."):
+                verse_nums.append(p.split(".")[-1])
+        if not verse_nums:
+            continue
+        verse_num_str = "-".join(verse_nums) if len(verse_nums) > 1 else verse_nums[0]
         
         # Scrub verse index artifacts from HTML spans
         for label in el.find_all("span", class_=lambda c: c and 'label' in c.lower() and 'chaptercontent' in c.lower()):
@@ -61,7 +72,7 @@ def extract_chapter_data(url: str, expected_usfm_prefix: str) -> dict:
         if not text:
             continue
             
-        header = f"{section} {title.split()[-1]},{verse_num_str}"
+        header = f"{section} {chapter_num},{verse_num_str}"
         
         if header not in verses_map:
             verses_map[header] = []
@@ -162,6 +173,23 @@ def main(test_run=False):
             body_en = "\\n\\n".join([d["text"] for d in en_data["decomposition"]])
             body_ayo = "\\n\\n".join([d["text"] for d in ayo_data["decomposition"]])
             
+            # Phase 3: Intrinsic Validation (Mismatch Monitoring)
+            warnings = []
+            counts = {
+                "es": es_data["verse_count"],
+                "en": en_data["verse_count"],
+                "ayo": ayo_data["verse_count"]
+            }
+            if len(set(counts.values())) > 1:
+                msg = f"Translation Verse Mismatch: {counts}"
+                print(f"  [Warning] {msg}")
+                warnings.append(msg)
+                summary["mismatches"].append({
+                    "story_id": story_id,
+                    "counts": counts,
+                    "timestamp": datetime.now().isoformat()
+                })
+            
             output_data[story_id] = {
                 "story_id": story_id,
                 "url_es": es_url,
@@ -180,23 +208,9 @@ def main(test_run=False):
                     "es": es_data["decomposition"],
                     "en": en_data["decomposition"],
                     "ayo": ayo_data["decomposition"]
-                }
+                },
+                "warnings": warnings
             }
-            
-            # Phase 3: Intrinsic Validation (Mismatch Monitoring)
-            counts = {
-                "es": es_data["verse_count"],
-                "en": en_data["verse_count"],
-                "ayo": ayo_data["verse_count"]
-            }
-            if len(set(counts.values())) > 1:
-                print(f"  [Warning] Translation Verse Mismatch detected: {counts}")
-                # Save discrepancy record for subsequent auditing
-                summary["mismatches"].append({
-                    "story_id": story_id,
-                    "counts": counts,
-                    "timestamp": datetime.now().isoformat()
-                })
                 
             if story_id not in summary["history"]:
                 summary["history"].append(story_id)

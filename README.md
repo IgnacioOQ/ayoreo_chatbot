@@ -116,17 +116,81 @@ Todos los relatos se guardan en un único archivo `data/raw/ayoreoorg/ayoreoorg.
   }
 }
 ```
-
 ---
 
-## Fuente de datos: Bible.com (Génesis)
+## Fuente de datos: Bible.com
 
-Además del contenido de [ayore.org](https://ayore.org), se extrajo la versión de los 50 capítulos del libro del **Génesis** directamente desde [Bible.com](https://www.bible.com) en sus tres idiomas equivalentes:
-- Español: Texto bíblico `VBL`
-- Inglés: Texto bíblico `FBV`
-- Ayoré: Texto bíblico `AYORE`
+Además del contenido cultural de [ayore.org](https://ayore.org), se extrae la **Biblia completa** (todos los libros disponibles traducidos al Ayoré) desde [Bible.com](https://www.bible.com) en tres traducciones paralelas:
 
-El script de extracción `scripts/scrape_bible.py` solicita los archivos HTML de cada capítulo iterativamente y usa atributos domóticos (tales como las clases `ChapterContent...__label` incrustadas en los bloques de visualización de los versículos) para estructurar una matriz paralela de oraciones limpiadas directamente en el subesquema `body_decomposition`. Esta variante se almacena de forma independiente bajo `data/raw/bible/bible.json`.
+| Idioma | Versión | ID | Ejemplo URL |
+| :----- | :------ | :- | :---------- |
+| Ayoré | Ayore Biblia | `2825` | `bible.com/es-ES/bible/2825/GEN.1.AYORE` |
+| Español | La Biblia: La Palabra de Dios para Todos | `3291` | `bible.com/es-ES/bible/3291/GEN.1.VBL` |
+| Inglés | Free Bible Version | `1932` | `bible.com/es-ES/bible/1932/GEN.1.FBV` |
+
+### Estrategia de scraping: recorrido encadenado
+
+En lugar de mantener un diccionario de los 66 libros canónicos y sus cantidades de capítulos, el script `scripts/scrape_bible.py` usa una **estrategia de lista enlazada**:
+
+1. Comienza en Génesis 1 (versión Ayoré).
+2. Descarga el HTML y extrae versículos usando el atributo `data-usfm` presente en cada `<span>`.
+3. Busca el enlace `"Siguiente capítulo"` en la página, que apunta al siguiente capítulo o al primer capítulo del siguiente libro (ej. Génesis 50 → Éxodo 1).
+4. Construye automáticamente las URLs equivalentes para Español y English reemplazando el ID de versión y el sufijo.
+5. Repite hasta que no haya más enlace "Siguiente capítulo".
+
+Esto garantiza que solo se scrapean capítulos que realmente existen en la traducción Ayoré, sin generar requests a páginas vacías.
+
+### Extracción de versículos
+
+Cada versículo está marcado en el HTML con:
+- `data-usfm="GEN.1.1"` → identifica libro, capítulo y versículo
+- `<span class="ChapterContent-module__cat7xG__label">1</span>` → número visible del versículo
+
+El scraper elimina los `<span>` de etiqueta antes de extraer el texto, produciendo contenido limpio sin números residuales.
+
+**Versículos fusionados:** La traducción Ayoré a veces combina dos versículos en uno por razones gramaticales o culturales. Bible.com marca estos con `data-usfm="1SA.31.11+1SA.31.12"`. El scraper detecta el `+`, separa las partes, y genera un header con rango (ej. `"1 Samuel 31,11-12"`). El texto completo se preserva.
+
+### Validación y warnings
+
+El script implementa dos capas de validación:
+
+1. **Mismatch de versículos (inline):** Después de extraer cada capítulo en los tres idiomas, se comparan las cantidades de versículos. Si difieren (ej. Ayoré tiene 30 pero Español/Inglés tienen 31), se registra un warning:
+   - En el campo `"warnings"` del entry en `bible.json` (para inspección granular)
+   - En el array `"mismatches"` de `bible_scraping_summary.json` (para auditoría global)
+   
+   > Estos mismatches son informativos, no errores. Reflejan decisiones legítimas de los traductores al fusionar versículos.
+
+2. **Completitud exógena:** El script `scripts/verify_bible_completeness.py` compara `bible.json` contra el canon bíblico estándar (66 libros, 1189 capítulos) y reporta qué capítulos faltan.
+
+### Reanudación segura
+
+El scraping de toda la Biblia toma varias horas. El script guarda `bible.json` a disco después de cada capítulo, y al reiniciarse detecta los capítulos ya almacenados y los salta automáticamente.
+
+### Output
+
+Cada capítulo se almacena como una entrada en `data/raw/bible/bible.json`:
+
+```json
+{
+  "bible__gen-1": {
+    "story_id": "bible__gen-1",
+    "url_es": "https://www.bible.com/es-ES/bible/3291/GEN.1.VBL",
+    "url_en": "https://www.bible.com/es-ES/bible/1932/GEN.1.FBV",
+    "url_ayo": "https://www.bible.com/es-ES/bible/2825/GEN.1.AYORE",
+    "type": "faith",
+    "section": "Génesis",
+    "chapter_usfm": "GEN.1",
+    "title_es": "Génesis 1", "title_en": "Genesis 1", "title_ayo": "Génesis 1",
+    "body_es": "...", "body_en": "...", "body_ayo": "...",
+    "body_decomposition": {
+      "es": [{"header": "Génesis 1,1", "text": "En el principio..."}],
+      "en": [{"header": "Genesis 1,1", "text": "In the beginning..."}],
+      "ayo": [{"header": "Génesis 1,1", "text": "Iji taningai uje..."}]
+    },
+    "warnings": []
+  }
+}
+```
 
 ---
 
