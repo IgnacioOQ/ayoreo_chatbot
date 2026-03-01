@@ -153,3 +153,16 @@ with st.form("correction_form"):
         # Hydrate disk map
         save_dataset(st.session_state.dataset)
         st.success("✅ Corrections saved successfully!")
+
+st.markdown("---")
+st.header("💾 Export Dataset")
+st.markdown("If you are running this app on the web (Streamlit Cloud), your saves are temporary and isolated to the server. Click below to download your updated JSON file, and then send it to the repository owner to merge the updates!")
+
+json_string = json.dumps(st.session_state.dataset, indent=2, ensure_ascii=False)
+st.download_button(
+    label="Download Updated ayoreoorg.json",
+    data=json_string,
+    file_name="ayoreoorg.json",
+    mime="application/json",
+    use_container_width=True
+)
