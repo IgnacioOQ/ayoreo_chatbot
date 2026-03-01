@@ -3,6 +3,7 @@
 - type: agent_skill
 - label: [agent]
 - last_checked: 2026-03-01
+- id: scraper-skill-ayoreo
 <!-- content -->
 
 This document defines general implementation patterns for web scraping, with specific lessons learned from scraping `ayore.org` (a trilingual WordPress/WPML site).
@@ -40,12 +41,15 @@ The key insight of web scraping is that **every piece of target content has an H
 
 `ayore.org` (and many WordPress sites) use **WPML** (WordPress Multilingual Plugin) to serve the same content in multiple languages. WPML inserts a language switcher widget into each page that links to the exact equivalent URL in every other language.
 
-### Why This Matters
+### Why This Matters — Empirically Validated
 
 **Do NOT rely on positional pairing** (matching story #1 in ES with story #1 in AYO by crawling index pages independently). This breaks silently if:
 - A story exists in one language but not another
 - Stories are listed in different orders per language
 - New stories are added asynchronously
+
+> [!CAUTION]
+> **Production result (2026-03-01):** When scraping `relatos-personales` (14 stories), positional pairing produced the **wrong EN/AYO URL for 13 out of 14 stories**. The WPML switcher corrected every single one. Positional pairing is essentially useless for this site.
 
 **Instead: use the WPML switcher on each scraped page** to get the exact URL mapping between language versions.
 
@@ -114,6 +118,9 @@ def extract_language_urls(soup) -> dict[str, str]:
 3. **Store all three** under a shared `story_id` (use the ES slug as canonical key)
 
 This is more reliable than crawling three index pages and pairing by position.
+
+> [!NOTE]
+> AYO URLs often contain percent-encoded Ayoreo characters (e.g. `cotate-e-ye%cc%83ra-yu` where `%cc%83` = the ñ tilde). These are valid URLs; `requests` handles them correctly as long as you don't double-encode them.
 
 ---
 
@@ -223,7 +230,20 @@ def fetch_page(url: str) -> BeautifulSoup | None:
 - status: active
 <!-- content -->
 
-### 1. URL Deduplication
+### 1. Filter Anchor Fragments Before Processing
+
+Index pages often contain navigation links like `/section/#masthead` (back-to-top, logo anchors, etc.) that share the section path but are not real story pages. Always drop them first:
+
+```python
+# Drop anchor fragments — not real pages
+if "#" in href:
+    continue
+```
+
+> [!CAUTION]
+> Without this filter, `#masthead` links get collected as story URLs, scrape the section index page instead of a story, and produce a bogus entry in the output.
+
+### 2. URL Deduplication
 
 ```python
 seen_urls = set()
@@ -234,7 +254,7 @@ for a_tag in soup.find_all("a", href=True):
     seen_urls.add(url)
 ```
 
-### 2. Language Guard (for no-prefix English URLs)
+### 3. Language Guard (for no-prefix English URLs)
 
 When crawling the English index (no `/en/` prefix), AYO and ES sibling links will also contain the section path. Filter them out by checking the URL's language prefix:
 
@@ -248,16 +268,25 @@ if lang is not None and url_lang != lang:
     continue  # skip links from other languages
 ```
 
-### 3. Incremental Scraping
+### 4. Single Output File + Incremental Merge
 
-Merge new scrape results with existing data by URL key, so historical records are retained:
+All stories from all sections are stored in **one JSON file** (`data/raw/stories.json`), keyed by `story_id`. Running the scraper section by section builds up the file incrementally without overwriting previously scraped sections.
 
 ```python
-existing = json.loads(path.read_text()) if path.exists() else {}
-for item in new_items:
-    existing[item["url_es"]] = item   # update or add
-path.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
+STORIES_PATH = PROJECT_ROOT / "data" / "raw" / "stories.json"
+
+# Load existing stories
+stories = json.loads(STORIES_PATH.read_text()) if STORIES_PATH.exists() else {}
+
+# Merge new results (update or add by story_id)
+for page_data in new_results:
+    stories[page_data["story_id"]] = page_data
+
+# Save back
+STORIES_PATH.write_text(json.dumps(stories, ensure_ascii=False, indent=2))
 ```
+
+**Do NOT save individual per-story JSON files.** One file is easier to load, version, and pass to downstream processing steps.
 
 ---
 
@@ -267,9 +296,20 @@ path.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
 
 - [ ] All three language versions discovered for each story
 - [ ] Language URLs sourced from WPML switcher (not positional pairing)
+- [ ] Anchor fragment URLs (`#`) filtered out in the crawler
 - [ ] UTF-8 encoding enforced — no mojibake in Ayoreo/Spanish text
 - [ ] `story_id` present and consistent across all three language versions
 - [ ] Glossary extracted from ES pages
 - [ ] Metadata (narrator, location, year) extracted where present
 - [ ] No duplicate URLs within a section
 - [ ] Empty/boilerplate pages flagged with a warning log
+- [ ] All stories saved to a single `stories.json` (not individual files)
+- [ ] Incremental merge: re-running a section updates only that section's entries
+
+## Production Run Log
+- status: active
+<!-- content -->
+
+| Date | Section | Stories scraped | WPML corrections | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| 2026-03-01 | `relatos-personales` | 14 | 13/14 (93%) | Positional pairing wrong for almost every story |
