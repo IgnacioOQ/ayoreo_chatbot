@@ -95,7 +95,7 @@ Dentro de cada página de relato, el contenido principal se encuentra en:
 
 ### Output
 
-Todos los relatos se guardan en un único archivo `data/raw/stories.json`, indexado por `story_id` (ej. `relatos-personales__cotade-me-he-entregado-dupade`). Cada entrada contiene el texto en los tres idiomas:
+Todos los relatos se guardan en un único archivo `data/raw/ayoreoorg.json`, indexado por `story_id` (ej. `relatos-personales__cotade-me-he-entregado-dupade`). Cada entrada contiene el texto en los tres idiomas, junto con el contenido particionado estructuralmente:
 
 ```json
 {
@@ -104,10 +104,15 @@ Todos los relatos se guardan en un único archivo `data/raw/stories.json`, index
     "url_es": "https://ayore.org/es/cultura/relatos-personales/cotade-me-he-entregado-dupade/",
     "url_en": "https://ayore.org/culture/first-person-narratives/cotade-i-gave-myself-to-him/",
     "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/cotate-e-ye%cc%83ra-yu-to-ome-dupade/",
+    "type": "personal_narrative",
     "title_es": "...", "title_en": "...", "title_ayo": "...",
     "body_es":  "...", "body_en":  "...", "body_ayo":  "...",
-    "glossary": [{"ayoreo": "Dupade", "spanish": "Dios"}],
-    "metadata": {"narrator": "Cotade", "location": "Campo Loro, Paraguay", "year": "1985"}
+    "body_decomposition": {
+      "es": [{"header": null, "text": "..."}],
+      "en": [{"header": null, "text": "..."}],
+      "ayo": [{"header": null, "text": "..."}]
+    },
+    ...
   }
 }
 ```

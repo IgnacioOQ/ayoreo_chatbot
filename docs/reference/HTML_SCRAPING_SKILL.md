@@ -194,8 +194,9 @@ This is more reliable than crawling three index pages and pairing by position.
 | Main content | `div.entry-content` | Primary WordPress content div |
 | Fallback | `article`, `div.post-content`, `main` | Try in order |
 | Page title | `h1` | First `<h1>` on page |
-| Body text | `p`, `blockquote` within content div | Skip fragments < 10 chars |
+| Body text | `p`, `blockquote` within content div | Skip fragments < 10 chars. Always invoke a helper to convert `<b>` and `<i>` to `**` and `*` Markdown natively before extracting text. |
 | Glossary terms | `strong`/`b` + sibling text with `–` or `-` | Ayoreo term → Spanish definition |
+| Body Decomposition | `scripts/add_body_decomposition.py` | Executed post-scrape. Iterates through the raw bodies and splits non-greedy `**headers**` and `\n\n` paragraphs into objects. |
 
 ### Metadata Patterns (regex)
 - id: html_scraping_skill.metadata_patterns_regex
@@ -228,9 +229,14 @@ r"(?:Translat(?:ed|ado) (?:to Spanish )?(?:by|por))[:\s]+(.+?)(?:\n|$)"
     "url_en":  "https://ayore.org/culture/first-person-narratives/cotade-i-gave-myself-to-him/",
     "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/cotate-e-ye%cc%83ra-yu-to-ome-dupade/",
     "section": "relatos-personales",
-    "type": "narrative",
+    "type": "personal_narrative",
     "title_es": "...", "title_en": "...", "title_ayo": "...",
     "body_es":  "...", "body_en":  "...", "body_ayo":  "...",
+    "body_decomposition": {
+      "es": [{"header": null, "text": "..."}],
+      "en": [{"header": null, "text": "..."}],
+      "ayo": [{"header": null, "text": "..."}]
+    },
     "glossary": [{"ayoreo": "Dupade", "spanish": "Dios"}],
     "metadata": {
         "narrator": "Cotade",
