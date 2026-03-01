@@ -36,7 +36,11 @@ def extract_chapter_data(url: str, expected_usfm_prefix: str) -> dict:
     title = h1.text.strip() if h1 else "Unknown Title"
     
     # Extract Section (e.g. "Éxodo") by stripping numbers
-    section = re.sub(r'\\d+', '', title).strip()
+    parts = title.rsplit(' ', 1)
+    if len(parts) == 2 and parts[1].isdigit():
+        section = parts[0]
+    else:
+        section = title
     
     verse_elements = soup.find_all(attrs={"data-usfm": True})
     verses_map = {}
