@@ -1,6 +1,6 @@
 {
-  "execution_date": "2026-03-01T19:21:28.217191",
-  "total_chapters_scraped": 52,
+  "execution_date": "2026-03-01T20:17:13.989371",
+  "total_chapters_scraped": 244,
   "sources": {
     "ayo": "https://www.bible.com/es-ES/bible/2825/GEN.{chapter}.AYORE",
     "es": "https://www.bible.com/es-ES/bible/3291/GEN.{chapter}.VBL",
@@ -76,10 +76,1300 @@
         "ayo": 24
       },
       "timestamp": "2026-03-01T19:21:28.217177"
+    },
+    {
+      "story_id": "bible__gen-5",
+      "counts": {
+        "es": 32,
+        "en": 32,
+        "ayo": 30
+      },
+      "timestamp": "2026-03-01T19:23:59.984225"
+    },
+    {
+      "story_id": "bible__gen-9",
+      "counts": {
+        "es": 29,
+        "en": 29,
+        "ayo": 28
+      },
+      "timestamp": "2026-03-01T19:24:08.706830"
+    },
+    {
+      "story_id": "bible__gen-10",
+      "counts": {
+        "es": 32,
+        "en": 32,
+        "ayo": 27
+      },
+      "timestamp": "2026-03-01T19:24:10.720716"
+    },
+    {
+      "story_id": "bible__gen-14",
+      "counts": {
+        "es": 24,
+        "en": 24,
+        "ayo": 18
+      },
+      "timestamp": "2026-03-01T19:24:20.610128"
+    },
+    {
+      "story_id": "bible__gen-15",
+      "counts": {
+        "es": 21,
+        "en": 21,
+        "ayo": 20
+      },
+      "timestamp": "2026-03-01T19:24:23.700080"
+    },
+    {
+      "story_id": "bible__gen-17",
+      "counts": {
+        "es": 27,
+        "en": 27,
+        "ayo": 24
+      },
+      "timestamp": "2026-03-01T19:24:28.702050"
+    },
+    {
+      "story_id": "bible__gen-21",
+      "counts": {
+        "es": 34,
+        "en": 34,
+        "ayo": 33
+      },
+      "timestamp": "2026-03-01T19:24:39.797837"
+    },
+    {
+      "story_id": "bible__gen-22",
+      "counts": {
+        "es": 24,
+        "en": 24,
+        "ayo": 21
+      },
+      "timestamp": "2026-03-01T19:24:42.210845"
+    },
+    {
+      "story_id": "bible__gen-23",
+      "counts": {
+        "es": 20,
+        "en": 20,
+        "ayo": 14
+      },
+      "timestamp": "2026-03-01T19:24:44.432669"
+    },
+    {
+      "story_id": "bible__gen-24",
+      "counts": {
+        "es": 67,
+        "en": 67,
+        "ayo": 62
+      },
+      "timestamp": "2026-03-01T19:24:47.031539"
+    },
+    {
+      "story_id": "bible__gen-25",
+      "counts": {
+        "es": 34,
+        "en": 34,
+        "ayo": 33
+      },
+      "timestamp": "2026-03-01T19:24:49.713803"
+    },
+    {
+      "story_id": "bible__gen-28",
+      "counts": {
+        "es": 22,
+        "en": 22,
+        "ayo": 21
+      },
+      "timestamp": "2026-03-01T19:24:56.227716"
+    },
+    {
+      "story_id": "bible__gen-30",
+      "counts": {
+        "es": 43,
+        "en": 43,
+        "ayo": 42
+      },
+      "timestamp": "2026-03-01T19:25:01.591646"
+    },
+    {
+      "story_id": "bible__gen-31",
+      "counts": {
+        "es": 55,
+        "en": 55,
+        "ayo": 53
+      },
+      "timestamp": "2026-03-01T19:25:04.152054"
+    },
+    {
+      "story_id": "bible__gen-33",
+      "counts": {
+        "es": 20,
+        "en": 20,
+        "ayo": 19
+      },
+      "timestamp": "2026-03-01T19:25:09.007003"
+    },
+    {
+      "story_id": "bible__gen-34",
+      "counts": {
+        "es": 31,
+        "en": 31,
+        "ayo": 29
+      },
+      "timestamp": "2026-03-01T19:25:11.049153"
+    },
+    {
+      "story_id": "bible__gen-35",
+      "counts": {
+        "es": 29,
+        "en": 29,
+        "ayo": 28
+      },
+      "timestamp": "2026-03-01T19:25:13.207999"
+    },
+    {
+      "story_id": "bible__gen-36",
+      "counts": {
+        "es": 43,
+        "en": 43,
+        "ayo": 38
+      },
+      "timestamp": "2026-03-01T19:25:15.357448"
+    },
+    {
+      "story_id": "bible__gen-37",
+      "counts": {
+        "es": 36,
+        "en": 36,
+        "ayo": 35
+      },
+      "timestamp": "2026-03-01T19:25:17.404220"
+    },
+    {
+      "story_id": "bible__gen-38",
+      "counts": {
+        "es": 30,
+        "en": 30,
+        "ayo": 29
+      },
+      "timestamp": "2026-03-01T19:25:19.388389"
+    },
+    {
+      "story_id": "bible__gen-39",
+      "counts": {
+        "es": 23,
+        "en": 23,
+        "ayo": 22
+      },
+      "timestamp": "2026-03-01T19:25:21.622605"
+    },
+    {
+      "story_id": "bible__gen-40",
+      "counts": {
+        "es": 23,
+        "en": 23,
+        "ayo": 19
+      },
+      "timestamp": "2026-03-01T19:25:24.743160"
+    },
+    {
+      "story_id": "bible__gen-41",
+      "counts": {
+        "es": 57,
+        "en": 57,
+        "ayo": 52
+      },
+      "timestamp": "2026-03-01T19:25:28.742592"
+    },
+    {
+      "story_id": "bible__gen-42",
+      "counts": {
+        "es": 38,
+        "en": 38,
+        "ayo": 36
+      },
+      "timestamp": "2026-03-01T19:25:31.566570"
+    },
+    {
+      "story_id": "bible__gen-43",
+      "counts": {
+        "es": 34,
+        "en": 34,
+        "ayo": 29
+      },
+      "timestamp": "2026-03-01T19:25:34.569325"
+    },
+    {
+      "story_id": "bible__gen-44",
+      "counts": {
+        "es": 34,
+        "en": 34,
+        "ayo": 33
+      },
+      "timestamp": "2026-03-01T19:25:37.516869"
+    },
+    {
+      "story_id": "bible__gen-45",
+      "counts": {
+        "es": 28,
+        "en": 28,
+        "ayo": 27
+      },
+      "timestamp": "2026-03-01T19:25:41.030444"
+    },
+    {
+      "story_id": "bible__gen-48",
+      "counts": {
+        "es": 22,
+        "en": 22,
+        "ayo": 21
+      },
+      "timestamp": "2026-03-01T19:25:48.256826"
+    },
+    {
+      "story_id": "bible__gen-49",
+      "counts": {
+        "es": 33,
+        "en": 33,
+        "ayo": 28
+      },
+      "timestamp": "2026-03-01T19:25:50.409563"
+    },
+    {
+      "story_id": "bible__gen-50",
+      "counts": {
+        "es": 26,
+        "en": 26,
+        "ayo": 24
+      },
+      "timestamp": "2026-03-01T19:25:53.650471"
+    },
+    {
+      "story_id": "bible__exo-1",
+      "counts": {
+        "es": 22,
+        "en": 22,
+        "ayo": 21
+      },
+      "timestamp": "2026-03-01T19:25:57.007147"
+    },
+    {
+      "story_id": "bible__exo-5",
+      "counts": {
+        "es": 23,
+        "en": 23,
+        "ayo": 20
+      },
+      "timestamp": "2026-03-01T19:26:11.823028"
+    },
+    {
+      "story_id": "bible__exo-6",
+      "counts": {
+        "es": 30,
+        "en": 30,
+        "ayo": 29
+      },
+      "timestamp": "2026-03-01T19:26:15.409545"
+    },
+    {
+      "story_id": "bible__exo-7",
+      "counts": {
+        "es": 25,
+        "en": 25,
+        "ayo": 23
+      },
+      "timestamp": "2026-03-01T19:26:18.434666"
+    },
+    {
+      "story_id": "bible__exo-8",
+      "counts": {
+        "es": 32,
+        "en": 32,
+        "ayo": 31
+      },
+      "timestamp": "2026-03-01T19:26:22.486588"
+    },
+    {
+      "story_id": "bible__exo-9",
+      "counts": {
+        "es": 35,
+        "en": 35,
+        "ayo": 33
+      },
+      "timestamp": "2026-03-01T19:26:26.946817"
+    },
+    {
+      "story_id": "bible__exo-13",
+      "counts": {
+        "es": 22,
+        "en": 22,
+        "ayo": 21
+      },
+      "timestamp": "2026-03-01T20:07:07.476641"
+    },
+    {
+      "story_id": "bible__exo-14",
+      "counts": {
+        "es": 31,
+        "en": 31,
+        "ayo": 29
+      },
+      "timestamp": "2026-03-01T20:07:10.733502"
+    },
+    {
+      "story_id": "bible__exo-15",
+      "counts": {
+        "es": 27,
+        "en": 27,
+        "ayo": 26
+      },
+      "timestamp": "2026-03-01T20:07:14.585584"
+    },
+    {
+      "story_id": "bible__exo-16",
+      "counts": {
+        "es": 36,
+        "en": 36,
+        "ayo": 34
+      },
+      "timestamp": "2026-03-01T20:07:18.244165"
+    },
+    {
+      "story_id": "bible__exo-18",
+      "counts": {
+        "es": 27,
+        "en": 27,
+        "ayo": 25
+      },
+      "timestamp": "2026-03-01T20:07:25.381220"
+    },
+    {
+      "story_id": "bible__exo-19",
+      "counts": {
+        "es": 25,
+        "en": 25,
+        "ayo": 24
+      },
+      "timestamp": "2026-03-01T20:07:28.797383"
+    },
+    {
+      "story_id": "bible__exo-20",
+      "counts": {
+        "es": 26,
+        "en": 26,
+        "ayo": 25
+      },
+      "timestamp": "2026-03-01T20:07:32.194567"
+    },
+    {
+      "story_id": "bible__exo-21",
+      "counts": {
+        "es": 36,
+        "en": 36,
+        "ayo": 33
+      },
+      "timestamp": "2026-03-01T20:07:36.192912"
+    },
+    {
+      "story_id": "bible__exo-22",
+      "counts": {
+        "es": 31,
+        "en": 31,
+        "ayo": 28
+      },
+      "timestamp": "2026-03-01T20:07:39.769478"
+    },
+    {
+      "story_id": "bible__exo-23",
+      "counts": {
+        "es": 33,
+        "en": 33,
+        "ayo": 31
+      },
+      "timestamp": "2026-03-01T20:07:43.257173"
+    },
+    {
+      "story_id": "bible__exo-25",
+      "counts": {
+        "es": 40,
+        "en": 40,
+        "ayo": 38
+      },
+      "timestamp": "2026-03-01T20:07:50.242484"
+    },
+    {
+      "story_id": "bible__exo-26",
+      "counts": {
+        "es": 37,
+        "en": 37,
+        "ayo": 31
+      },
+      "timestamp": "2026-03-01T20:07:53.551465"
+    },
+    {
+      "story_id": "bible__exo-28",
+      "counts": {
+        "es": 43,
+        "en": 43,
+        "ayo": 39
+      },
+      "timestamp": "2026-03-01T20:08:01.279858"
+    },
+    {
+      "story_id": "bible__exo-29",
+      "counts": {
+        "es": 46,
+        "en": 46,
+        "ayo": 44
+      },
+      "timestamp": "2026-03-01T20:08:04.971704"
+    },
+    {
+      "story_id": "bible__exo-30",
+      "counts": {
+        "es": 38,
+        "en": 38,
+        "ayo": 37
+      },
+      "timestamp": "2026-03-01T20:08:08.248079"
+    },
+    {
+      "story_id": "bible__exo-33",
+      "counts": {
+        "es": 23,
+        "en": 23,
+        "ayo": 22
+      },
+      "timestamp": "2026-03-01T20:08:18.865520"
+    },
+    {
+      "story_id": "bible__exo-36",
+      "counts": {
+        "es": 38,
+        "en": 38,
+        "ayo": 36
+      },
+      "timestamp": "2026-03-01T20:08:30.257525"
+    },
+    {
+      "story_id": "bible__exo-37",
+      "counts": {
+        "es": 29,
+        "en": 29,
+        "ayo": 27
+      },
+      "timestamp": "2026-03-01T20:08:33.831164"
+    },
+    {
+      "story_id": "bible__exo-38",
+      "counts": {
+        "es": 31,
+        "en": 31,
+        "ayo": 29
+      },
+      "timestamp": "2026-03-01T20:08:37.168821"
+    },
+    {
+      "story_id": "bible__exo-39",
+      "counts": {
+        "es": 43,
+        "en": 43,
+        "ayo": 37
+      },
+      "timestamp": "2026-03-01T20:08:40.504373"
+    },
+    {
+      "story_id": "bible__exo-40",
+      "counts": {
+        "es": 38,
+        "en": 38,
+        "ayo": 37
+      },
+      "timestamp": "2026-03-01T20:08:44.083349"
+    },
+    {
+      "story_id": "bible__num-10",
+      "counts": {
+        "es": 36,
+        "en": 36,
+        "ayo": 32
+      },
+      "timestamp": "2026-03-01T20:08:47.674338"
+    },
+    {
+      "story_id": "bible__num-11",
+      "counts": {
+        "es": 35,
+        "en": 35,
+        "ayo": 33
+      },
+      "timestamp": "2026-03-01T20:08:51.156671"
+    },
+    {
+      "story_id": "bible__num-12",
+      "counts": {
+        "es": 16,
+        "en": 16,
+        "ayo": 14
+      },
+      "timestamp": "2026-03-01T20:08:54.845777"
+    },
+    {
+      "story_id": "bible__num-13",
+      "counts": {
+        "es": 33,
+        "en": 33,
+        "ayo": 31
+      },
+      "timestamp": "2026-03-01T20:08:58.123056"
+    },
+    {
+      "story_id": "bible__num-14",
+      "counts": {
+        "es": 45,
+        "en": 45,
+        "ayo": 43
+      },
+      "timestamp": "2026-03-01T20:09:01.750260"
+    },
+    {
+      "story_id": "bible__num-16",
+      "counts": {
+        "es": 50,
+        "en": 50,
+        "ayo": 43
+      },
+      "timestamp": "2026-03-01T20:09:06.205560"
+    },
+    {
+      "story_id": "bible__num-17",
+      "counts": {
+        "es": 13,
+        "en": 13,
+        "ayo": 11
+      },
+      "timestamp": "2026-03-01T20:09:09.356176"
+    },
+    {
+      "story_id": "bible__num-20",
+      "counts": {
+        "es": 29,
+        "en": 29,
+        "ayo": 28
+      },
+      "timestamp": "2026-03-01T20:09:12.775173"
+    },
+    {
+      "story_id": "bible__num-21",
+      "counts": {
+        "es": 35,
+        "en": 35,
+        "ayo": 33
+      },
+      "timestamp": "2026-03-01T20:09:16.126443"
+    },
+    {
+      "story_id": "bible__num-24",
+      "counts": {
+        "es": 25,
+        "en": 25,
+        "ayo": 23
+      },
+      "timestamp": "2026-03-01T20:09:26.404305"
+    },
+    {
+      "story_id": "bible__num-27",
+      "counts": {
+        "es": 23,
+        "en": 23,
+        "ayo": 10
+      },
+      "timestamp": "2026-03-01T20:09:29.723112"
+    },
+    {
+      "story_id": "bible__deu-31",
+      "counts": {
+        "es": 30,
+        "en": 30,
+        "ayo": 28
+      },
+      "timestamp": "2026-03-01T20:09:33.043481"
+    },
+    {
+      "story_id": "bible__deu-32",
+      "counts": {
+        "es": 52,
+        "en": 52,
+        "ayo": 50
+      },
+      "timestamp": "2026-03-01T20:09:36.938633"
+    },
+    {
+      "story_id": "bible__deu-34",
+      "counts": {
+        "es": 12,
+        "en": 12,
+        "ayo": 11
+      },
+      "timestamp": "2026-03-01T20:09:40.226265"
+    },
+    {
+      "story_id": "bible__jos-3",
+      "counts": {
+        "es": 17,
+        "en": 17,
+        "ayo": 14
+      },
+      "timestamp": "2026-03-01T20:09:50.861346"
+    },
+    {
+      "story_id": "bible__jos-6",
+      "counts": {
+        "es": 27,
+        "en": 27,
+        "ayo": 26
+      },
+      "timestamp": "2026-03-01T20:10:02.131345"
+    },
+    {
+      "story_id": "bible__jos-7",
+      "counts": {
+        "es": 26,
+        "en": 26,
+        "ayo": 25
+      },
+      "timestamp": "2026-03-01T20:10:06.039825"
+    },
+    {
+      "story_id": "bible__jos-10",
+      "counts": {
+        "es": 43,
+        "en": 43,
+        "ayo": 42
+      },
+      "timestamp": "2026-03-01T20:10:18.745958"
+    },
+    {
+      "story_id": "bible__jos-11",
+      "counts": {
+        "es": 23,
+        "en": 23,
+        "ayo": 22
+      },
+      "timestamp": "2026-03-01T20:10:22.999496"
+    },
+    {
+      "story_id": "bible__jos-13",
+      "counts": {
+        "es": 33,
+        "en": 33,
+        "ayo": 32
+      },
+      "timestamp": "2026-03-01T20:10:31.290431"
+    },
+    {
+      "story_id": "bible__jos-16",
+      "counts": {
+        "es": 10,
+        "en": 10,
+        "ayo": 8
+      },
+      "timestamp": "2026-03-01T20:10:42.800749"
+    },
+    {
+      "story_id": "bible__jos-17",
+      "counts": {
+        "es": 18,
+        "en": 18,
+        "ayo": 17
+      },
+      "timestamp": "2026-03-01T20:10:47.794641"
+    },
+    {
+      "story_id": "bible__jos-21",
+      "counts": {
+        "es": 45,
+        "en": 45,
+        "ayo": 36
+      },
+      "timestamp": "2026-03-01T20:11:05.449332"
+    },
+    {
+      "story_id": "bible__jos-23",
+      "counts": {
+        "es": 16,
+        "en": 16,
+        "ayo": 15
+      },
+      "timestamp": "2026-03-01T20:11:14.061281"
+    },
+    {
+      "story_id": "bible__jos-24",
+      "counts": {
+        "es": 33,
+        "en": 33,
+        "ayo": 32
+      },
+      "timestamp": "2026-03-01T20:11:18.750259"
+    },
+    {
+      "story_id": "bible__jdg-1",
+      "counts": {
+        "es": 36,
+        "en": 36,
+        "ayo": 33
+      },
+      "timestamp": "2026-03-01T20:11:23.196580"
+    },
+    {
+      "story_id": "bible__jdg-2",
+      "counts": {
+        "es": 23,
+        "en": 23,
+        "ayo": 22
+      },
+      "timestamp": "2026-03-01T20:11:27.010524"
+    },
+    {
+      "story_id": "bible__jdg-3",
+      "counts": {
+        "es": 31,
+        "en": 31,
+        "ayo": 30
+      },
+      "timestamp": "2026-03-01T20:11:30.973273"
+    },
+    {
+      "story_id": "bible__jdg-4",
+      "counts": {
+        "es": 24,
+        "en": 24,
+        "ayo": 23
+      },
+      "timestamp": "2026-03-01T20:11:35.560713"
+    },
+    {
+      "story_id": "bible__jdg-5",
+      "counts": {
+        "es": 31,
+        "en": 31,
+        "ayo": 30
+      },
+      "timestamp": "2026-03-01T20:11:40.101295"
+    },
+    {
+      "story_id": "bible__jdg-6",
+      "counts": {
+        "es": 40,
+        "en": 40,
+        "ayo": 38
+      },
+      "timestamp": "2026-03-01T20:11:45.276976"
+    },
+    {
+      "story_id": "bible__jdg-7",
+      "counts": {
+        "es": 25,
+        "en": 25,
+        "ayo": 23
+      },
+      "timestamp": "2026-03-01T20:11:50.362690"
+    },
+    {
+      "story_id": "bible__jdg-8",
+      "counts": {
+        "es": 35,
+        "en": 35,
+        "ayo": 33
+      },
+      "timestamp": "2026-03-01T20:11:55.234749"
+    },
+    {
+      "story_id": "bible__jdg-9",
+      "counts": {
+        "es": 57,
+        "en": 57,
+        "ayo": 54
+      },
+      "timestamp": "2026-03-01T20:11:59.221520"
+    },
+    {
+      "story_id": "bible__jdg-10",
+      "counts": {
+        "es": 18,
+        "en": 18,
+        "ayo": 17
+      },
+      "timestamp": "2026-03-01T20:12:03.660390"
+    },
+    {
+      "story_id": "bible__jdg-11",
+      "counts": {
+        "es": 40,
+        "en": 40,
+        "ayo": 38
+      },
+      "timestamp": "2026-03-01T20:12:08.665212"
+    },
+    {
+      "story_id": "bible__jdg-13",
+      "counts": {
+        "es": 25,
+        "en": 25,
+        "ayo": 24
+      },
+      "timestamp": "2026-03-01T20:12:19.203272"
+    },
+    {
+      "story_id": "bible__jdg-17",
+      "counts": {
+        "es": 13,
+        "en": 13,
+        "ayo": 12
+      },
+      "timestamp": "2026-03-01T20:12:37.249352"
+    },
+    {
+      "story_id": "bible__jdg-19",
+      "counts": {
+        "es": 30,
+        "en": 30,
+        "ayo": 27
+      },
+      "timestamp": "2026-03-01T20:12:47.323120"
+    },
+    {
+      "story_id": "bible__jdg-20",
+      "counts": {
+        "es": 48,
+        "en": 48,
+        "ayo": 43
+      },
+      "timestamp": "2026-03-01T20:12:51.889471"
+    },
+    {
+      "story_id": "bible__jdg-21",
+      "counts": {
+        "es": 25,
+        "en": 25,
+        "ayo": 24
+      },
+      "timestamp": "2026-03-01T20:12:58.021697"
+    },
+    {
+      "story_id": "bible__rut-1",
+      "counts": {
+        "es": 22,
+        "en": 22,
+        "ayo": 18
+      },
+      "timestamp": "2026-03-01T20:13:03.033155"
+    },
+    {
+      "story_id": "bible__rut-2",
+      "counts": {
+        "es": 23,
+        "en": 23,
+        "ayo": 22
+      },
+      "timestamp": "2026-03-01T20:13:11.548613"
+    },
+    {
+      "story_id": "bible__1sa-1",
+      "counts": {
+        "es": 28,
+        "en": 28,
+        "ayo": 27
+      },
+      "timestamp": "2026-03-01T20:13:29.379728"
+    },
+    {
+      "story_id": "bible__1sa-2",
+      "counts": {
+        "es": 36,
+        "en": 36,
+        "ayo": 35
+      },
+      "timestamp": "2026-03-01T20:13:34.249950"
+    },
+    {
+      "story_id": "bible__1sa-4",
+      "counts": {
+        "es": 22,
+        "en": 22,
+        "ayo": 20
+      },
+      "timestamp": "2026-03-01T20:13:45.278979"
+    },
+    {
+      "story_id": "bible__1sa-8",
+      "counts": {
+        "es": 22,
+        "en": 22,
+        "ayo": 21
+      },
+      "timestamp": "2026-03-01T20:14:04.823396"
+    },
+    {
+      "story_id": "bible__1sa-9",
+      "counts": {
+        "es": 27,
+        "en": 27,
+        "ayo": 26
+      },
+      "timestamp": "2026-03-01T20:14:10.242659"
+    },
+    {
+      "story_id": "bible__1sa-13",
+      "counts": {
+        "es": 23,
+        "en": 23,
+        "ayo": 21
+      },
+      "timestamp": "2026-03-01T20:14:38.105025"
+    },
+    {
+      "story_id": "bible__1sa-14",
+      "counts": {
+        "es": 52,
+        "en": 52,
+        "ayo": 50
+      },
+      "timestamp": "2026-03-01T20:14:45.780191"
+    },
+    {
+      "story_id": "bible__1sa-15",
+      "counts": {
+        "es": 35,
+        "en": 35,
+        "ayo": 33
+      },
+      "timestamp": "2026-03-01T20:14:51.989818"
+    },
+    {
+      "story_id": "bible__1sa-17",
+      "counts": {
+        "es": 58,
+        "en": 58,
+        "ayo": 55
+      },
+      "timestamp": "2026-03-01T20:15:04.560510"
+    },
+    {
+      "story_id": "bible__1sa-18",
+      "counts": {
+        "es": 30,
+        "en": 30,
+        "ayo": 28
+      },
+      "timestamp": "2026-03-01T20:15:09.923207"
+    },
+    {
+      "story_id": "bible__1sa-19",
+      "counts": {
+        "es": 24,
+        "en": 24,
+        "ayo": 23
+      },
+      "timestamp": "2026-03-01T20:15:15.204528"
+    },
+    {
+      "story_id": "bible__1sa-20",
+      "counts": {
+        "es": 41,
+        "en": 42,
+        "ayo": 40
+      },
+      "timestamp": "2026-03-01T20:15:21.573335"
+    },
+    {
+      "story_id": "bible__1sa-23",
+      "counts": {
+        "es": 29,
+        "en": 29,
+        "ayo": 28
+      },
+      "timestamp": "2026-03-01T20:15:36.850444"
+    },
+    {
+      "story_id": "bible__1sa-25",
+      "counts": {
+        "es": 44,
+        "en": 44,
+        "ayo": 42
+      },
+      "timestamp": "2026-03-01T20:15:53.028600"
+    },
+    {
+      "story_id": "bible__1sa-30",
+      "counts": {
+        "es": 31,
+        "en": 31,
+        "ayo": 26
+      },
+      "timestamp": "2026-03-01T20:16:18.371763"
+    },
+    {
+      "story_id": "bible__1sa-31",
+      "counts": {
+        "es": 13,
+        "en": 13,
+        "ayo": 12
+      },
+      "timestamp": "2026-03-01T20:16:23.281712"
+    },
+    {
+      "story_id": "bible__2sa-3",
+      "counts": {
+        "es": 39,
+        "en": 39,
+        "ayo": 38
+      },
+      "timestamp": "2026-03-01T20:16:44.410604"
+    },
+    {
+      "story_id": "bible__2sa-4",
+      "counts": {
+        "es": 12,
+        "en": 12,
+        "ayo": 8
+      },
+      "timestamp": "2026-03-01T20:16:49.550638"
+    },
+    {
+      "story_id": "bible__2sa-5",
+      "counts": {
+        "es": 25,
+        "en": 25,
+        "ayo": 24
+      },
+      "timestamp": "2026-03-01T20:16:57.600508"
+    },
+    {
+      "story_id": "bible__2sa-6",
+      "counts": {
+        "es": 23,
+        "en": 23,
+        "ayo": 20
+      },
+      "timestamp": "2026-03-01T20:17:03.936320"
+    },
+    {
+      "story_id": "bible__2sa-7",
+      "counts": {
+        "es": 29,
+        "en": 29,
+        "ayo": 28
+      },
+      "timestamp": "2026-03-01T20:17:08.895730"
+    },
+    {
+      "story_id": "bible__2sa-8",
+      "counts": {
+        "es": 18,
+        "en": 18,
+        "ayo": 17
+      },
+      "timestamp": "2026-03-01T20:17:13.985878"
     }
   ],
   "history": [
     "bible__gen-1",
-    "bible__gen-2"
+    "bible__gen-2",
+    "bible__gen-3",
+    "bible__gen-4",
+    "bible__gen-5",
+    "bible__gen-6",
+    "bible__gen-7",
+    "bible__gen-8",
+    "bible__gen-9",
+    "bible__gen-10",
+    "bible__gen-11",
+    "bible__gen-12",
+    "bible__gen-13",
+    "bible__gen-14",
+    "bible__gen-15",
+    "bible__gen-16",
+    "bible__gen-17",
+    "bible__gen-18",
+    "bible__gen-19",
+    "bible__gen-20",
+    "bible__gen-21",
+    "bible__gen-22",
+    "bible__gen-23",
+    "bible__gen-24",
+    "bible__gen-25",
+    "bible__gen-26",
+    "bible__gen-27",
+    "bible__gen-28",
+    "bible__gen-29",
+    "bible__gen-30",
+    "bible__gen-31",
+    "bible__gen-32",
+    "bible__gen-33",
+    "bible__gen-34",
+    "bible__gen-35",
+    "bible__gen-36",
+    "bible__gen-37",
+    "bible__gen-38",
+    "bible__gen-39",
+    "bible__gen-40",
+    "bible__gen-41",
+    "bible__gen-42",
+    "bible__gen-43",
+    "bible__gen-44",
+    "bible__gen-45",
+    "bible__gen-46",
+    "bible__gen-47",
+    "bible__gen-48",
+    "bible__gen-49",
+    "bible__gen-50",
+    "bible__exo-1",
+    "bible__exo-2",
+    "bible__exo-3",
+    "bible__exo-4",
+    "bible__exo-5",
+    "bible__exo-6",
+    "bible__exo-7",
+    "bible__exo-8",
+    "bible__exo-9",
+    "bible__exo-10",
+    "bible__exo-11",
+    "bible__exo-12",
+    "bible__exo-13",
+    "bible__exo-14",
+    "bible__exo-15",
+    "bible__exo-16",
+    "bible__exo-17",
+    "bible__exo-18",
+    "bible__exo-19",
+    "bible__exo-20",
+    "bible__exo-21",
+    "bible__exo-22",
+    "bible__exo-23",
+    "bible__exo-24",
+    "bible__exo-25",
+    "bible__exo-26",
+    "bible__exo-27",
+    "bible__exo-28",
+    "bible__exo-29",
+    "bible__exo-30",
+    "bible__exo-31",
+    "bible__exo-32",
+    "bible__exo-33",
+    "bible__exo-34",
+    "bible__exo-35",
+    "bible__exo-36",
+    "bible__exo-37",
+    "bible__exo-38",
+    "bible__exo-39",
+    "bible__exo-40",
+    "bible__num-10",
+    "bible__num-11",
+    "bible__num-12",
+    "bible__num-13",
+    "bible__num-14",
+    "bible__num-16",
+    "bible__num-17",
+    "bible__num-20",
+    "bible__num-21",
+    "bible__num-22",
+    "bible__num-23",
+    "bible__num-24",
+    "bible__num-27",
+    "bible__deu-31",
+    "bible__deu-32",
+    "bible__deu-34",
+    "bible__jos-1",
+    "bible__jos-2",
+    "bible__jos-3",
+    "bible__jos-4",
+    "bible__jos-5",
+    "bible__jos-6",
+    "bible__jos-7",
+    "bible__jos-8",
+    "bible__jos-9",
+    "bible__jos-10",
+    "bible__jos-11",
+    "bible__jos-12",
+    "bible__jos-13",
+    "bible__jos-14",
+    "bible__jos-15",
+    "bible__jos-16",
+    "bible__jos-17",
+    "bible__jos-18",
+    "bible__jos-19",
+    "bible__jos-20",
+    "bible__jos-21",
+    "bible__jos-22",
+    "bible__jos-23",
+    "bible__jos-24",
+    "bible__jdg-1",
+    "bible__jdg-2",
+    "bible__jdg-3",
+    "bible__jdg-4",
+    "bible__jdg-5",
+    "bible__jdg-6",
+    "bible__jdg-7",
+    "bible__jdg-8",
+    "bible__jdg-9",
+    "bible__jdg-10",
+    "bible__jdg-11",
+    "bible__jdg-12",
+    "bible__jdg-13",
+    "bible__jdg-14",
+    "bible__jdg-15",
+    "bible__jdg-16",
+    "bible__jdg-17",
+    "bible__jdg-18",
+    "bible__jdg-19",
+    "bible__jdg-20",
+    "bible__jdg-21",
+    "bible__rut-1",
+    "bible__rut-2",
+    "bible__rut-3",
+    "bible__rut-4",
+    "bible__1sa-1",
+    "bible__1sa-2",
+    "bible__1sa-3",
+    "bible__1sa-4",
+    "bible__1sa-5",
+    "bible__1sa-6",
+    "bible__1sa-7",
+    "bible__1sa-8",
+    "bible__1sa-9",
+    "bible__1sa-10",
+    "bible__1sa-11",
+    "bible__1sa-12",
+    "bible__1sa-13",
+    "bible__1sa-14",
+    "bible__1sa-15",
+    "bible__1sa-16",
+    "bible__1sa-17",
+    "bible__1sa-18",
+    "bible__1sa-19",
+    "bible__1sa-20",
+    "bible__1sa-21",
+    "bible__1sa-22",
+    "bible__1sa-23",
+    "bible__1sa-24",
+    "bible__1sa-25",
+    "bible__1sa-26",
+    "bible__1sa-27",
+    "bible__1sa-28",
+    "bible__1sa-29",
+    "bible__1sa-30",
+    "bible__1sa-31",
+    "bible__2sa-1",
+    "bible__2sa-2",
+    "bible__2sa-3",
+    "bible__2sa-4",
+    "bible__2sa-5",
+    "bible__2sa-6",
+    "bible__2sa-7",
+    "bible__2sa-8"
   ]
 }
