@@ -16,12 +16,13 @@ def extract_sections(text: str) -> list[dict]:
     current_text = []
     
     for p in paragraphs:
-        # Check if the paragraph starts with bold text. We use non-greedy matching.
-        m = re.match(r'^\*\*([^\*]+)\*\*(.*)', p, flags=re.DOTALL)
+        # Check if the paragraph starts with bold (**...) or bold-italic (***...) text.
+        # We also consume trailing asterisks, spaces, or colons after the closing tag without eating subsequent text logic.
+        m = re.match(r'^(\*{2,3})([^\*]+)\1[\s:]*(?:\*\*[:\s]*\*\*[\s:]*)?(.*)', p, flags=re.DOTALL)
         
         if m:
-            header = m.group(1).strip()
-            rest = m.group(2).strip()
+            header = m.group(2).strip()
+            rest = m.group(3).strip()
             
             # If we already have accumulated text (or a header with text), flush it
             if current_header is not None or current_text:
