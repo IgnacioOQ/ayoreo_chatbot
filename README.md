@@ -39,15 +39,15 @@ Cada sección tiene un índice que lista los relatos disponibles. El scraper ite
 
 | Sección (ES) | Sección (EN/AYO) | Tipo |
 | :----------- | :--------------- | :--- |
-| `cultura/relatos-personales` | `culture/first-person-narratives` | narrative |
-| `cultura/ensenanzas` | `culture/teachings` | narrative |
-| `cultura/historia-oral` | `culture/oral-history` | narrative |
-| `cultura/tradiciones-orales` | `culture/oral-traditions` | narrative |
-| `cultura/creencias` | `culture/beliefs` | narrative |
+| `cultura/creencias` | `culture/beliefs` | belief |
+| `cultura/relatos-personales` | `culture/first-person-narratives` | personal_narrative |
+| `cultura/comidas` | `culture/foods` | food |
+| `cultura/juegos` | `culture/games` | game |
+| `cultura/medicina` | `culture/medicine` | medicine |
 | `cultura/canciones-nativas` | `culture/native-songs` | song |
-| `cultura/juegos` | `culture/games` | narrative |
-| `cultura/comidas` | `culture/foods` | narrative |
-| `cultura/medicina` | `culture/medicine` | narrative |
+| `cultura/historia-oral` | `culture/oral-history` | oral_history |
+| `cultura/tradiciones-orales` | `culture/oral-traditions` | oral_tradition |
+| `cultura/ensenanzas` | `culture/teachings` | teaching |
 
 ### Estrategia de scraping: indicadores HTML
 
