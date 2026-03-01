@@ -160,9 +160,9 @@ st.markdown("If you are running this app on the web (Streamlit Cloud), your save
 
 json_string = json.dumps(st.session_state.dataset, indent=2, ensure_ascii=False)
 st.download_button(
-    label="Download Updated ayoreoorg.json",
+    label="Download commented_ayoreo.json",
     data=json_string,
-    file_name="ayoreoorg.json",
+    file_name="commented_ayoreo.json",
     mime="application/json",
     use_container_width=True
 )
