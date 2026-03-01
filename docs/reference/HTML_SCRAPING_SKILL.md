@@ -332,10 +332,10 @@ if lang is not None and url_lang != lang:
 - type: context
 <!-- content -->
 
-All stories from all sections are stored in **one JSON file** (`data/raw/stories.json`), keyed by `story_id`. Running the scraper section by section builds up the file incrementally without overwriting previously scraped sections.
+All stories from all sections are stored in **one JSON file** (`data/raw/ayoreoorg.json`), keyed by `story_id`. Running the scraper section by section builds up the file incrementally without overwriting previously scraped sections.
 
 ```python
-STORIES_PATH = PROJECT_ROOT / "data" / "raw" / "stories.json"
+STORIES_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg.json"
 
 # Load existing stories
 stories = json.loads(STORIES_PATH.read_text()) if STORIES_PATH.exists() else {}
@@ -365,7 +365,7 @@ STORIES_PATH.write_text(json.dumps(stories, ensure_ascii=False, indent=2))
 - [ ] Metadata (narrator, location, year) extracted where present
 - [ ] No duplicate URLs within a section
 - [ ] Empty/boilerplate pages flagged with a warning log
-- [ ] All stories saved to a single `stories.json` (not individual files)
+- [ ] All stories saved to a single `ayoreoorg.json` (not individual files)
 - [ ] Incremental merge: re-running a section updates only that section's entries
 
 ## Production Run Log

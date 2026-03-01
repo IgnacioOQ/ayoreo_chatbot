@@ -137,8 +137,11 @@ cp .env.example .env
 ## Uso
 
 ```bash
-# Correr la app
+# Correr la app principal
 streamlit run app.py
+
+# Correr la app de sanity check (verificador y anotador del dataset raw)
+streamlit run sanity_app.py
 
 # Scraping completo (todas las secciones)
 python scripts/run_scraper.py
@@ -167,7 +170,8 @@ python scripts/run_finetune.py --base-model meta-llama/Llama-3.1-8B
 
 ```
 ayoreo_chatbot/
-├── app.py                        # Streamlit entry point
+├── app.py                        # Streamlit entry point principal
+├── sanity_app.py                 # Streamlit app para verificar y corregir el dataset crudo
 ├── src/
 │   ├── scraping/                 # Scraping de ayore.org
 │   │   ├── crawler.py            # Descubrimiento de URLs por sección
