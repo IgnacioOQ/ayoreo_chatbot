@@ -1,6 +1,6 @@
 {
-  "execution_date": "2026-03-01T19:03:43.168895",
-  "total_chapters_scraped": 50,
+  "execution_date": "2026-03-01T19:21:28.217191",
+  "total_chapters_scraped": 52,
   "sources": {
     "ayo": "https://www.bible.com/es-ES/bible/2825/GEN.{chapter}.AYORE",
     "es": "https://www.bible.com/es-ES/bible/3291/GEN.{chapter}.VBL",
@@ -57,5 +57,29 @@
     48,
     49,
     50
+  ],
+  "mismatches": [
+    {
+      "story_id": "bible__gen-1",
+      "counts": {
+        "es": 31,
+        "en": 31,
+        "ayo": 30
+      },
+      "timestamp": "2026-03-01T19:21:24.131557"
+    },
+    {
+      "story_id": "bible__gen-2",
+      "counts": {
+        "es": 25,
+        "en": 25,
+        "ayo": 24
+      },
+      "timestamp": "2026-03-01T19:21:28.217177"
+    }
+  ],
+  "history": [
+    "bible__gen-1",
+    "bible__gen-2"
   ]
 }

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import time
 from datetime import datetime
+import re
 
 # Setup paths
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -13,40 +14,42 @@ SUMMARY_JSON = BIBLE_DIR / "bible_scraping_summary.json"
 
 BIBLE_DIR.mkdir(parents=True, exist_ok=True)
 
-# URL Templates
-URLS = {
-    "ayo": "https://www.bible.com/es-ES/bible/2825/GEN.{chapter}.AYORE",
-    "es": "https://www.bible.com/es-ES/bible/3291/GEN.{chapter}.VBL",
-    "en": "https://www.bible.com/es-ES/bible/1932/GEN.{chapter}.FBV"
-}
-
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
 }
 
-def extract_chapter(url: str, chapter: int) -> list:
+def extract_chapter_data(url: str, expected_usfm_prefix: str) -> dict:
     print(f"  Fetching {url}...")
-    response = requests.get(url, headers=HEADERS)
-    if response.status_code != 200:
-        print(f"  [Error] Failed to fetch {url}")
-        return []
+    try:
+        response = requests.get(url, headers=HEADERS, timeout=15)
+        if response.status_code != 200:
+            print(f"  [Error] Failed to fetch {url} - Status: {response.status_code}")
+            return None
+    except Exception as e:
+        print(f"  [Error] Exception fetching {url}: {e}")
+        return None
 
     soup = BeautifulSoup(response.text, 'html.parser')
-    verse_elements = soup.find_all(attrs={"data-usfm": True})
     
+    # Extract Title (e.g. "Éxodo 1")
+    h1 = soup.find('h1')
+    title = h1.text.strip() if h1 else "Unknown Title"
+    
+    # Extract Section (e.g. "Éxodo") by stripping numbers
+    section = re.sub(r'\\d+', '', title).strip()
+    
+    verse_elements = soup.find_all(attrs={"data-usfm": True})
     verses_map = {}
     
     for el in verse_elements:
         usfm = el.get("data-usfm")
-        # Ensure it belongs to the current chapter (e.g., GEN.1.X)
-        if not usfm.startswith(f"GEN.{chapter}."):
+        # Ensure it belongs directly to this chapter (e.g. GEN.1.X)
+        if not usfm.startswith(expected_usfm_prefix + "."):
             continue
             
         verse_num_str = usfm.split(".")[-1]
         
-        # Following user request: target the specific ChapterContent label spans to organically 
-        # separate verse numbers from the body content. We remove those label tags so the raw 
-        # extracted text doesn't contain leading verse numbers (e.g. '1 In the beginning' -> 'In the beginning')
+        # Scrub verse index artifacts from HTML spans
         for label in el.find_all("span", class_=lambda c: c and 'label' in c.lower() and 'chaptercontent' in c.lower()):
             label.decompose()
             
@@ -54,88 +57,167 @@ def extract_chapter(url: str, chapter: int) -> list:
         if not text:
             continue
             
-        header = f"Genesis {chapter},{verse_num_str}"
+        header = f"{section} {title.split()[-1]},{verse_num_str}"
         
         if header not in verses_map:
             verses_map[header] = []
         verses_map[header].append(text)
         
     decomposition = []
-    # Merge disjoint spans of the same verse perfectly
+    # Merge disjoint spans mapping to the exact same verse together
     for header, text_list in verses_map.items():
         decomposition.append({
             "header": header,
             "text": " ".join(text_list).strip()
         })
         
-    return decomposition
+    next_url = None
+    # Locate the definitive 'Next Chapter' hyperlink
+    for a in soup.find_all('a', href=True):
+        if 'Siguiente capítulo' in a.text:
+            next_url = "https://www.bible.com" + a['href']
+            break
+
+    return {
+        "title": title,
+        "section": section,
+        "decomposition": decomposition,
+        "next_url": next_url,
+        "verse_count": len(decomposition)
+    }
+
 
 def main(test_run=False):
-    max_chapters = 1 if test_run else 50
-    
-    output_data = {}
-    summary = {
-        "execution_date": datetime.now().isoformat(),
-        "total_chapters_scraped": 0,
-        "sources": URLS,
-        "chapters": []
-    }
-    
-    print(f"Starting Genesis extraction (1 to {max_chapters})...")
-    
-    for chapter in range(1, max_chapters + 1):
-        print(f"\\nProcessing Chapter {chapter}...")
+    # Stateful payload loading
+    if BIBLE_JSON.exists():
+        with open(BIBLE_JSON, "r", encoding="utf-8") as f:
+            output_data = json.load(f)
+    else:
+        output_data = {}
         
-        entry_id = f"genesis-{chapter}"
-        
-        decomp_es = extract_chapter(URLS["es"].format(chapter=chapter), chapter)
-        decomp_en = extract_chapter(URLS["en"].format(chapter=chapter), chapter)
-        decomp_ayo = extract_chapter(URLS["ayo"].format(chapter=chapter), chapter)
-        
-        body_es = "\\n\\n".join([d["text"] for d in decomp_es])
-        body_en = "\\n\\n".join([d["text"] for d in decomp_en])
-        body_ayo = "\\n\\n".join([d["text"] for d in decomp_ayo])
-        
-        output_data[entry_id] = {
-            "story_id": entry_id,
-            "url_es": URLS["es"].format(chapter=chapter),
-            "url_en": URLS["en"].format(chapter=chapter),
-            "url_ayo": URLS["ayo"].format(chapter=chapter),
-            "type": "faith",
-            "section": "Genesis",
-            "chapter": chapter,
-            "title_es": f"Génesis {chapter}",
-            "title_en": f"Genesis {chapter}",
-            "title_ayo": f"Génesis {chapter}",
-            "body_es": body_es,
-            "body_en": body_en,
-            "body_ayo": body_ayo,
-            "body_decomposition": {
-                "es": decomp_es,
-                "en": decomp_en,
-                "ayo": decomp_ayo
-            }
+    if SUMMARY_JSON.exists():
+        with open(SUMMARY_JSON, "r", encoding="utf-8") as f:
+            summary = json.load(f)
+            if "mismatches" not in summary:
+                summary["mismatches"] = []
+            if "history" not in summary:
+                summary["history"] = []
+    else:
+        summary = {
+            "execution_date": datetime.now().isoformat(),
+            "total_chapters_scraped": 0,
+            "mismatches": [],
+            "history": []
         }
+    
+    current_ayo_url = "https://www.bible.com/es-ES/bible/2825/GEN.1.AYORE"
+    chapters_processed_this_run = 0
+    
+    print("Starting Bible extraction...")
+    print("Press Ctrl+C to stop. Progress saves safely every chapter.")
+    
+    try:
+        while current_ayo_url:
+            if test_run and chapters_processed_this_run >= 2:
+                print("Test run complete (2 iterations).")
+                break
+                
+            print(f"\\nProcessing {current_ayo_url.split('/')[-1]}...")
+            
+            # Extract standard slug (e.g. 'GEN.1')
+            usfm_slug = current_ayo_url.split("/")[-1].replace(".AYORE", "")
+            story_id = f"bible__{usfm_slug.lower().replace('.', '-')}"
+            
+            # Phase 1: Always ping Ayoré specifically to dynamically resolve `next_url` for the traversal loop
+            ayo_data = extract_chapter_data(current_ayo_url, usfm_slug)
+            if not ayo_data:
+                print("Failed to fetch Ayoreo traversal data. Stopping sequence.")
+                break
+                
+            next_ayo_url = ayo_data["next_url"]
+            
+            # Skip if we already completely scraped this chapter (graceful resume)
+            if story_id in output_data and not test_run:
+                print(f"  {story_id} fully assembled in DB! Skipping ES/EN redundancy fetches.")
+                current_ayo_url = next_ayo_url
+                continue
+                
+            # Phase 2: Predict and fetch ES and EN counterparts
+            es_url = current_ayo_url.replace("/2825/", "/3291/").replace(".AYORE", ".VBL")
+            en_url = current_ayo_url.replace("/2825/", "/1932/").replace(".AYORE", ".FBV")
+            
+            es_data = extract_chapter_data(es_url, usfm_slug)
+            en_data = extract_chapter_data(en_url, usfm_slug)
+            
+            if not es_data or not en_data:
+                print("  Failed to fetch ES or EN components. Skipping chapter recording to ensure integrity.")
+                current_ayo_url = next_ayo_url
+                continue
+                
+            body_es = "\\n\\n".join([d["text"] for d in es_data["decomposition"]])
+            body_en = "\\n\\n".join([d["text"] for d in en_data["decomposition"]])
+            body_ayo = "\\n\\n".join([d["text"] for d in ayo_data["decomposition"]])
+            
+            output_data[story_id] = {
+                "story_id": story_id,
+                "url_es": es_url,
+                "url_en": en_url,
+                "url_ayo": current_ayo_url,
+                "type": "faith",
+                "section": es_data["section"],
+                "chapter_usfm": usfm_slug,
+                "title_es": es_data["title"],
+                "title_en": en_data["title"],
+                "title_ayo": ayo_data["title"],
+                "body_es": body_es,
+                "body_en": body_en,
+                "body_ayo": body_ayo,
+                "body_decomposition": {
+                    "es": es_data["decomposition"],
+                    "en": en_data["decomposition"],
+                    "ayo": ayo_data["decomposition"]
+                }
+            }
+            
+            # Phase 3: Intrinsic Validation (Mismatch Monitoring)
+            counts = {
+                "es": es_data["verse_count"],
+                "en": en_data["verse_count"],
+                "ayo": ayo_data["verse_count"]
+            }
+            if len(set(counts.values())) > 1:
+                print(f"  [Warning] Translation Verse Mismatch detected: {counts}")
+                # Save discrepancy record for subsequent auditing
+                summary["mismatches"].append({
+                    "story_id": story_id,
+                    "counts": counts,
+                    "timestamp": datetime.now().isoformat()
+                })
+                
+            if story_id not in summary["history"]:
+                summary["history"].append(story_id)
+                
+            summary["total_chapters_scraped"] = len(output_data)
+            summary["execution_date"] = datetime.now().isoformat()
+            
+            # Synchronous incremental writes preventing data loss
+            with open(BIBLE_JSON, "w", encoding="utf-8") as f:
+                json.dump(output_data, f, indent=2, ensure_ascii=False)
+            with open(SUMMARY_JSON, "w", encoding="utf-8") as f:
+                json.dump(summary, f, indent=2, ensure_ascii=False)
+                
+            chapters_processed_this_run += 1
+            current_ayo_url = next_ayo_url
+            time.sleep(1.5)
+            
+    except KeyboardInterrupt:
+        print("\\nManual interrupt detected.")
         
-        summary["chapters"].append(chapter)
-        summary["total_chapters_scraped"] += 1
-        
-        # Be nice to the servers
-        time.sleep(1.5)
-        
-    with open(BIBLE_JSON, "w", encoding="utf-8") as f:
-        json.dump(output_data, f, indent=2, ensure_ascii=False)
-        
-    with open(SUMMARY_JSON, "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2, ensure_ascii=False)
-        
-    print(f"\\n✅ Successfully saved {len(output_data)} chapters to {BIBLE_JSON}")
-    print(f"✅ Saved scraping execution log to {SUMMARY_JSON}")
+    print(f"\\n✅ Scraping suspended. Total chapters safely written to DB: {len(output_data)}")
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--test-run", action="store_true", help="Only scrape Chapter 1")
+    parser.add_argument("--test-run", action="store_true", help="Only scrape 2 iterations from the cursor")
     args = parser.parse_args()
-    
     main(test_run=args.test_run)

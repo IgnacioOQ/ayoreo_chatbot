@@ -119,6 +119,17 @@ Todos los relatos se guardan en un único archivo `data/raw/ayoreoorg/ayoreoorg.
 
 ---
 
+## Fuente de datos: Bible.com (Génesis)
+
+Además del contenido de [ayore.org](https://ayore.org), se extrajo la versión de los 50 capítulos del libro del **Génesis** directamente desde [Bible.com](https://www.bible.com) en sus tres idiomas equivalentes:
+- Español: Texto bíblico `VBL`
+- Inglés: Texto bíblico `FBV`
+- Ayoré: Texto bíblico `AYORE`
+
+El script de extracción `scripts/scrape_bible.py` solicita los archivos HTML de cada capítulo iterativamente y usa atributos domóticos (tales como las clases `ChapterContent...__label` incrustadas en los bloques de visualización de los versículos) para estructurar una matriz paralela de oraciones limpiadas directamente en el subesquema `body_decomposition`. Esta variante se almacena de forma independiente bajo `data/raw/bible/bible.json`.
+
+---
+
 ## Setup
 
 ```bash
@@ -143,10 +154,13 @@ streamlit run app.py
 # Correr la app de sanity check (verificador y anotador del dataset raw)
 streamlit run sanity_app.py
 
-# Scraping completo (todas las secciones)
+# Scraping completo (todas las secciones en ayore.org)
 python scripts/run_scraper.py
 
-# Scraping de una sección específica
+# Extracción de los 50 capítulos del Génesis en Bible.com
+python scripts/scrape_bible.py
+
+# Scraping de una sección específica de ayore.org
 python scripts/run_scraper.py --section relatos-personales
 
 # Dry run: descubrir páginas sin scrapear
@@ -185,7 +199,8 @@ ayoreo_chatbot/
 │   └── utils/                    # Logging, config
 ├── data/
 │   ├── raw/
-│   │   ├── stories.json          # Todos los relatos (3 idiomas, indexados por story_id)
+│   │   ├── ayoreoorg/            # Datos extraídos dinámicamente de ayore.org
+│   │   ├── bible/                # Capítulos del Génesis procedentes de Bible.com
 │   │   └── pdfs/                 # Diccionario y gramática en PDF
 │   ├── processed/                # Corpus procesado
 │   └── splits/                   # Train/val/test
@@ -194,7 +209,8 @@ ayoreo_chatbot/
 ├── notebooks/                    # Experimentación
 ├── prompts/                      # System prompts y templates
 ├── scripts/
-│   └── run_scraper.py            # Entry point del pipeline de scraping
+│   ├── run_scraper.py            # Entry point del pipeline de scraping de ayore.org
+│   └── scrape_bible.py           # Scraping local de Génesis en Bible.com
 ├── tests/                        # Tests
 └── docs/reference/               # Guías para agentes (HTML_SCRAPING_SKILL.md, etc.)
 ```
