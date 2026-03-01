@@ -332,10 +332,10 @@ if lang is not None and url_lang != lang:
 - type: context
 <!-- content -->
 
-All stories from all sections are stored in **one JSON file** (`data/raw/ayoreoorg.json`), keyed by `story_id`. Running the scraper section by section builds up the file incrementally without overwriting previously scraped sections.
+All stories from all sections are stored in **one JSON file** (`data/raw/ayoreoorg/ayoreoorg.json`), keyed by `story_id`. Running the scraper section by section builds up the file incrementally without overwriting previously scraped sections.
 
 ```python
-STORIES_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg.json"
+STORIES_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "ayoreoorg.json"
 
 # Load existing stories
 stories = json.loads(STORIES_PATH.read_text()) if STORIES_PATH.exists() else {}

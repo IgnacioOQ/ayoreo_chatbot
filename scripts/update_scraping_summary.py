@@ -5,8 +5,8 @@ from pathlib import Path
 
 def update_summary():
     project_root = Path(__file__).resolve().parent.parent
-    ayoreoorg_path = project_root / "data" / "raw" / "ayoreoorg.json"
-    summary_path = project_root / "data" / "raw" / "scraping_summary.json"
+    ayoreoorg_path = project_root / "data" / "raw" / "ayoreoorg" / "ayoreoorg.json"
+    summary_path = project_root / "data" / "raw" / "ayoreoorg" / "scraping_summary.json"
     
     if not ayoreoorg_path.exists():
         print("ayoreoorg.json not found")

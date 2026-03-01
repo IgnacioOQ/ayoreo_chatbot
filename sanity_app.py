@@ -10,7 +10,7 @@ st.set_page_config(
 
 # Constants
 PROJECT_ROOT = Path(__file__).resolve().parent
-JSON_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg.json"
+JSON_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "ayoreoorg.json"
 
 # --- 1. State Management & Loading ---
 @st.cache_data

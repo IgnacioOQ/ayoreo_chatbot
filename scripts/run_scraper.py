@@ -32,7 +32,7 @@ from src.utils.logger import get_logger
 
 log = get_logger(__name__)
 
-STORIES_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg.json"
+STORIES_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "ayoreoorg.json"
 
 
 def scrape_pages(section_filter: str | None = None, dry_run: bool = False):

@@ -49,7 +49,7 @@ def extract_sections(text: str) -> list[dict]:
 
 def main():
     root_dir = Path(__file__).resolve().parent.parent
-    ayoreo_json_path = root_dir / "data" / "raw" / "ayoreoorg.json"
+    ayoreo_json_path = root_dir / "data" / "raw" / "ayoreoorg" / "ayoreoorg.json"
     
     if not ayoreo_json_path.exists():
         print(f"File not found: {ayoreo_json_path}")
