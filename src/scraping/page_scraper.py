@@ -5,6 +5,9 @@ ayore.org is a WordPress site. Content pages typically have:
     - Bold section headers within the text
     - A glossary section at the bottom (Ayoreo terms with Spanish definitions)
     - Metadata: narrator name, location, date, transcriber/translator
+
+Each story is scraped in all three languages (ES, EN, AYO) and stored
+together under a shared story_id for aligned corpus construction.
 """
 
 import json
@@ -126,6 +129,35 @@ def _extract_glossary(content_div: Tag) -> list[dict]:
     return unique
 
 
+def extract_language_urls(soup) -> dict[str, str]:
+    """Extract URLs for all language versions from the WPML language switcher.
+
+    ayore.org uses WPML, which inserts a widget listing links to every other
+    language version of the current page. This gives exact URL mappings that
+    are far more reliable than positional pairing from index pages.
+
+    The switcher shows only the OTHER languages — not the current page's lang.
+    So if called on an ES page, the result will contain 'en' and 'ayo' keys.
+
+    Returns:
+        Dict mapping language code → URL, e.g. {'en': '...', 'ayo': '...'}.
+        Empty dict if no WPML switcher is found.
+    """
+    urls = {}
+    switcher = soup.find("div", class_="wpml-ls")
+    if not switcher:
+        return urls
+    for li in switcher.find_all("li", class_="wpml-ls-item"):
+        span = li.find("span", class_="wpml-ls-native")
+        a = li.find("a", class_="wpml-ls-link")
+        if span and a:
+            lang = span.get("lang")   # e.g. "en", "ayo", "es"
+            href = a.get("href")
+            if lang and href:
+                urls[lang] = href
+    return urls
+
+
 def extract_page_content(soup) -> dict:
     """Extract structured content from a parsed ayore.org page.
 
@@ -170,55 +202,93 @@ def extract_page_content(soup) -> dict:
 
 
 def scrape_page(page_info: dict) -> dict:
-    """Scrape a page pair (ES and/or AYO) based on discovery info.
+    """Scrape all three language versions (ES, EN, AYO) of a story.
 
     Args:
-        page_info: Dict from crawler with url_es, url_ayo, section, type, etc.
+        page_info: Dict from crawler with url_es, url_en, url_ayo, story_id, etc.
 
     Returns:
-        Dict with all scraped content, or empty dict on failure.
+        Dict with all scraped content keyed by language, sharing a story_id.
     """
     result = {
-        "url_es": page_info.get("url_es"),
-        "url_ayo": page_info.get("url_ayo"),
-        "section": page_info.get("section", "unknown"),
-        "type": page_info.get("type", "narrative"),
+        "story_id":  page_info.get("story_id"),
+        "url_es":    page_info.get("url_es"),
+        "url_en":    page_info.get("url_en"),
+        "url_ayo":   page_info.get("url_ayo"),
+        "section":   page_info.get("section", "unknown"),
+        "type":      page_info.get("type", "narrative"),
         "scraped_at": datetime.now(timezone.utc).isoformat(),
     }
 
-    # Scrape Spanish version
+    # --- Spanish (primary) ---
+    # Scrape ES first; use its WPML switcher to confirm/fill EN and AYO URLs.
+    es_soup = None
     if page_info.get("url_es"):
         log.info(f"Scraping ES: {page_info['url_es']}")
         es_soup = fetch_page(page_info["url_es"])
         if es_soup:
             es_content = extract_page_content(es_soup)
             result["title_es"] = es_content["title"]
-            result["body_es"] = es_content["body"]
+            result["body_es"]  = es_content["body"]
             result["glossary"] = es_content["glossary"]
             result["metadata"] = es_content["metadata"]
+
+            # Resolve sibling language URLs from the WPML switcher.
+            # These override/supplement whatever the crawler found by position.
+            wpml_urls = extract_language_urls(es_soup)
+            if wpml_urls:
+                log.debug(f"WPML URLs from ES page: {wpml_urls}")
+            for lang_code, wpml_url in wpml_urls.items():
+                key = f"url_{lang_code}"
+                if not result.get(key):
+                    log.info(f"WPML filled missing {key}: {wpml_url}")
+                    result[key] = wpml_url
+                elif result[key] != wpml_url:
+                    log.warning(
+                        f"WPML URL mismatch for {key}: "
+                        f"crawler={result[key]} wpml={wpml_url} — using WPML"
+                    )
+                    result[key] = wpml_url
         else:
             log.warning(f"Failed to fetch ES: {page_info['url_es']}")
             result["title_es"] = ""
-            result["body_es"] = ""
+            result["body_es"]  = ""
 
-    # Scrape Ayoreo version
-    if page_info.get("url_ayo"):
-        log.info(f"Scraping AYO: {page_info['url_ayo']}")
-        ayo_soup = fetch_page(page_info["url_ayo"])
+    # --- English ---
+    if result.get("url_en"):
+        log.info(f"Scraping EN: {result['url_en']}")
+        en_soup = fetch_page(result["url_en"])
+        if en_soup:
+            en_content = extract_page_content(en_soup)
+            result["title_en"] = en_content["title"]
+            result["body_en"]  = en_content["body"]
+            if len(result.get("body_en", "")) < 50:
+                log.warning(
+                    f"EN page may be empty/boilerplate: {result['url_en']} "
+                    f"(body length: {len(result.get('body_en', ''))})"
+                )
+        else:
+            log.warning(f"Failed to fetch EN: {result['url_en']}")
+            result["title_en"] = ""
+            result["body_en"]  = ""
+
+    # --- Ayoreo ---
+    if result.get("url_ayo"):
+        log.info(f"Scraping AYO: {result['url_ayo']}")
+        ayo_soup = fetch_page(result["url_ayo"])
         if ayo_soup:
             ayo_content = extract_page_content(ayo_soup)
             result["title_ayo"] = ayo_content["title"]
-            result["body_ayo"] = ayo_content["body"]
-            # Check if AYO page has real content or just homepage boilerplate
+            result["body_ayo"]  = ayo_content["body"]
             if len(result.get("body_ayo", "")) < 50:
                 log.warning(
-                    f"AYO page may be empty/boilerplate: {page_info['url_ayo']} "
+                    f"AYO page may be empty/boilerplate: {result['url_ayo']} "
                     f"(body length: {len(result.get('body_ayo', ''))})"
                 )
         else:
-            log.warning(f"Failed to fetch AYO: {page_info['url_ayo']}")
+            log.warning(f"Failed to fetch AYO: {result['url_ayo']}")
             result["title_ayo"] = ""
-            result["body_ayo"] = ""
+            result["body_ayo"]  = ""
 
     return result
 

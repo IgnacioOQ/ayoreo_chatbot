@@ -1,11 +1,14 @@
 """Run the full scraping pipeline: discover pages, scrape, save, and download PDFs.
 
+All scraped stories are stored in a single file:
+    data/raw/stories.json  — dict keyed by story_id, incrementally merged across runs.
+
 Usage:
     # Full scrape (all sections + PDFs)
     python scripts/run_scraper.py
 
     # Scrape only a specific section (for testing)
-    python scripts/run_scraper.py --section ensenanzas
+    python scripts/run_scraper.py --section relatos-personales
 
     # Only download PDFs
     python scripts/run_scraper.py --pdfs-only
@@ -22,16 +25,18 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.scraping.crawler import discover_all
-from src.scraping.page_scraper import scrape_page, save_page
+from src.scraping.page_scraper import scrape_page
 from src.scraping.pdf_scraper import download_all_pdfs
 from src.utils.config import PROJECT_ROOT
 from src.utils.logger import get_logger
 
 log = get_logger(__name__)
 
+STORIES_PATH = PROJECT_ROOT / "data" / "raw" / "stories.json"
+
 
 def scrape_pages(section_filter: str | None = None, dry_run: bool = False):
-    """Discover and scrape all content pages."""
+    """Discover and scrape all content pages, saving to a single stories.json."""
     # 1. Discover all pages
     all_pages = discover_all()
 
@@ -43,13 +48,19 @@ def scrape_pages(section_filter: str | None = None, dry_run: bool = False):
     if dry_run:
         log.info("Dry run — listing discovered pages:")
         for i, page in enumerate(all_pages):
-            es = page.get("url_es", "—")
-            ayo = page.get("url_ayo", "—")
-            log.info(f"  [{i+1}] ES: {es}")
-            log.info(f"       AYO: {ayo}")
+            log.info(f"  [{i+1}] {page.get('story_id')}  ES: {page.get('url_es', '—')}")
         return all_pages
 
-    # 2. Scrape each page
+    # 2. Load existing stories for incremental merge (keyed by story_id)
+    STORIES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    if STORIES_PATH.exists():
+        with open(STORIES_PATH, encoding="utf-8") as f:
+            stories = json.load(f)
+        log.info(f"Loaded {len(stories)} existing stories from {STORIES_PATH}")
+    else:
+        stories = {}
+
+    # 3. Scrape each page and merge into the dict
     scraped = 0
     failed = 0
     for i, page_info in enumerate(all_pages):
@@ -57,46 +68,25 @@ def scrape_pages(section_filter: str | None = None, dry_run: bool = False):
 
         page_data = scrape_page(page_info)
 
-        # Skip if no content was extracted
-        has_es = bool(page_data.get("body_es", "").strip())
+        # Skip if no content was extracted in any language
+        has_es  = bool(page_data.get("body_es",  "").strip())
+        has_en  = bool(page_data.get("body_en",  "").strip())
         has_ayo = bool(page_data.get("body_ayo", "").strip())
 
-        if not has_es and not has_ayo:
-            log.warning(f"No content extracted, skipping")
+        if not has_es and not has_en and not has_ayo:
+            log.warning("No content extracted, skipping")
             failed += 1
             continue
 
-        # Generate filename from section + slug
-        section = page_info.get("section", "unknown")
-        slug = page_info.get("slug_es") or page_info.get("slug_ayo") or f"page_{i}"
-        filename = f"{section}__{slug}"
-
-        save_page(page_data, filename)
+        story_id = page_data.get("story_id") or page_info.get("story_id")
+        stories[story_id] = page_data
         scraped += 1
 
-    log.info(f"Scraping complete: {scraped} saved, {failed} failed out of {len(all_pages)}")
-
-    # 3. Save summary
-    summary = {
-        "total_discovered": len(all_pages),
-        "scraped": scraped,
-        "failed": failed,
-        "pages": [
-            {
-                "section": p.get("section"),
-                "url_es": p.get("url_es"),
-                "url_ayo": p.get("url_ayo"),
-                "has_es": p.get("url_es") is not None,
-                "has_ayo": p.get("url_ayo") is not None,
-            }
-            for p in all_pages
-        ],
-    }
-    summary_path = PROJECT_ROOT / "data" / "raw" / "scraping_summary.json"
-    summary_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(summary_path, "w", encoding="utf-8") as f:
-        json.dump(summary, f, ensure_ascii=False, indent=2)
-    log.info(f"Summary saved to {summary_path}")
+    # 4. Save the merged dict
+    with open(STORIES_PATH, "w", encoding="utf-8") as f:
+        json.dump(stories, f, ensure_ascii=False, indent=2)
+    log.info(f"Saved {len(stories)} total stories to {STORIES_PATH}")
+    log.info(f"Scraping complete: {scraped} new/updated, {failed} failed out of {len(all_pages)}")
 
     return all_pages
 
@@ -105,7 +95,7 @@ def main():
     parser = argparse.ArgumentParser(description="Scrape ayore.org")
     parser.add_argument(
         "--section", type=str, default=None,
-        help="Scrape only this section (e.g. 'ensenanzas', 'creencias')",
+        help="Scrape only this section (e.g. 'ensenanzas', 'relatos-personales')",
     )
     parser.add_argument(
         "--pdfs-only", action="store_true",

@@ -1,45 +1,55 @@
 base_url: "https://ayore.org"
-languages: ["es", "ayo"]
+languages: ["es", "en", "ayo"]
 delay_seconds: 1.5
 max_retries: 3
 timeout_seconds: 30
 
-# Sections with their paths in both languages
-# The ES and AYO versions use DIFFERENT slug conventions
+# Sections with their paths in all three languages.
+# EN and AYO share the same path slugs, but EN has no language prefix in the URL
+# (e.g. https://ayore.org/culture/beliefs/ vs https://ayore.org/ayo/culture/beliefs/)
 sections:
   - path_es: "cultura/creencias"
+    path_en: "culture/beliefs"
     path_ayo: "culture/beliefs"
     type: "narrative"
     estimated_pages: 11
   - path_es: "cultura/relatos-personales"
+    path_en: "culture/first-person-narratives"
     path_ayo: "culture/first-person-narratives"
     type: "narrative"
     estimated_pages: 14
   - path_es: "cultura/comidas"
+    path_en: "culture/foods"
     path_ayo: "culture/foods"
     type: "narrative"
     estimated_pages: 1
   - path_es: "cultura/juegos"
+    path_en: "culture/games"
     path_ayo: "culture/games"
     type: "narrative"
     estimated_pages: 6
   - path_es: "cultura/medicina"
+    path_en: "culture/medicine"
     path_ayo: "culture/medicine"
     type: "narrative"
     estimated_pages: 1
   - path_es: "cultura/canciones-nativas"
+    path_en: "culture/native-songs"
     path_ayo: "culture/native-songs"
     type: "song"
     estimated_pages: 22
   - path_es: "cultura/historia-oral"
+    path_en: "culture/oral-history"
     path_ayo: "culture/oral-history"
     type: "narrative"
     estimated_pages: 12
   - path_es: "cultura/tradiciones-orales"
+    path_en: "culture/oral-traditions"
     path_ayo: "culture/oral-traditions"
     type: "narrative"
     estimated_pages: 15
   - path_es: "cultura/ensenanzas"
+    path_en: "culture/teachings"
     path_ayo: "culture/teachings"
     type: "narrative"
     estimated_pages: 50
