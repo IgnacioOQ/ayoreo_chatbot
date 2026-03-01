@@ -1,148 +1,8 @@
 {
-  "total_discovered": 25,
-  "scraped": 25,
+  "total_discovered": 132,
+  "scraped": 132,
   "failed": 0,
   "pages": [
-    {
-      "story_id": "relatos-personales__cotade-me-he-entregado-dupade",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/cotade-me-he-entregado-dupade/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/cotade-i-gave-myself-to-him/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/cotate-e-ye%cc%83ra-yu-to-ome-dupade/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__dapure-yo-odiaba-a-dupade",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/dapure-yo-odiaba-a-dupade/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/dapure-i-killed-my-babies/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/dapure-yetaque-dupade-nanique/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__enuedate-perdido-en-la-selva-se-encuenta-agua-en-los-arboles",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/enuedate-perdido-en-la-selva-se-encuenta-agua-en-los-arboles/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/enuedate-lost-in-jungle-finds-water-in-trees/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enuedate-ayore-do-yu/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__enuedate-yojide-intento-quitarme-a-mis-hijos",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/enuedate-yojide-intento-quitarme-a-mis-hijos/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/enueidate-yojide-tries-to-take-my-children-away/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enueidate-atata-uje-i%cc%83ri-iji-tobite-nanique/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__enueidate-se-burla-de-gutodate-y-termina-en-una-pelea",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/enueidate-se-burla-de-gutodate-y-termina-en-una-pelea/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/enueidate-belittling-gutodate-ends-up-in-fight/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enueidate-bajn%cc%83arone-jiei-cho-guto-ujn%cc%83arone/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__gayujna-pero-mas-tarde-me-entere-de-lo-que-era-realmente-bueno",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/gayujna-pero-mas-tarde-me-entere-de-lo-que-era-realmente-bueno/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/gayujna-i-found-out-what-was-truly-good/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/gayujna-ejode-ga-yiraja-uje-cucha-omi-cuse/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__guibejnane-fuimos-a-las-salinas",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/guibejnane-fuimos-a-las-salinas/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/guibejnane-going-to-the-salt-beds/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/guibejnane-yibagui-echoi-casicaite/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__jomone-quiero-que-sepas-las-cosas-que-he-hecho",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/jomone-quiero-que-sepas-las-cosas-que-he-hecho/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/jomone-sorry-for-how-ive-failed-in-my-life/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/jomone-yipota-jeta-araja-yipesudode/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__lidiade-los-que-tienen-oidos-abiertos-oyen-la-palabra-de-dupade",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/lidiade-los-que-tienen-oidos-abiertos-oyen-la-palabra-de-dupade/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/lidiade-i-want-to-share-gods-words/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/lidiade-angoninguite-guesatigo/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__me-encantan-los-testimonios",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/me-encantan-los-testimonios/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/dajunangue-i-like-to-hear-the-stories-they-tell/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/dajunangue-yirasique-yujodie-chequei-ojn%cc%83ane/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__me-tiraron-al-agua",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/me-tiraron-al-agua/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/betidate-they-threw-me-into-the-water/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/me-tiraron-al-agua/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__oidabiade-yo-era-un-guerrero-feroz",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/oidabiade-yo-era-un-guerrero-feroz/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/oidabiade-i-was-a-fierce-warrior/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/oidabiade-dacasute-yu-iji-monte-nanique/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__sama-rosade-me-puso-la-cara-bajo-el-agua",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/sama-rosade-me-puso-la-cara-bajo-el-agua/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/sama-rosade-put-my-face-under-water/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/sama-rosade-chaca-yedodie-iji-yodi/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
-    {
-      "story_id": "relatos-personales__ucuetodacode-a-la-medianoche-algo-se-me-aparecio",
-      "section": "relatos-personales",
-      "url_es": "https://ayore.org/es/cultura/relatos-personales/ucuetodacode-a-la-medianoche-algo-se-me-aparecio/",
-      "url_en": "https://ayore.org/culture/first-person-narratives/ucuetodacode-at-midnight-something-appeared-to-me-2/",
-      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/ucuetodacode-dejninga-ga-cucharique-a-chiqueta-raja-yu/",
-      "has_es": true,
-      "has_en": true,
-      "has_ayo": true
-    },
     {
       "story_id": "creencias__creencias-al-pie-del-totem",
       "section": "creencias",
@@ -249,6 +109,1216 @@
       "url_es": "https://ayore.org/es/cultura/creencias/iquide-el-pajaro-podria-matar-o-danar-a-los-ayoreos/",
       "url_en": "https://ayore.org/culture/beliefs/victims-of-the-bird-god/",
       "url_ayo": "https://ayore.org/ayo/culture/beliefs/iquide-chugupere-chuje-ayoreode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__me-tiraron-al-agua",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/me-tiraron-al-agua/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/betidate-they-threw-me-into-the-water/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/me-tiraron-al-agua/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__cotade-me-he-entregado-dupade",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/cotade-me-he-entregado-dupade/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/cotade-i-gave-myself-to-him/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/cotate-e-ye%cc%83ra-yu-to-ome-dupade/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__ucuetodacode-a-la-medianoche-algo-se-me-aparecio",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/ucuetodacode-a-la-medianoche-algo-se-me-aparecio/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/ucuetodacode-at-midnight-something-appeared-to-me-2/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/ucuetodacode-dejninga-ga-cucharique-a-chiqueta-raja-yu/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__enuedate-perdido-en-la-selva-se-encuenta-agua-en-los-arboles",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/enuedate-perdido-en-la-selva-se-encuenta-agua-en-los-arboles/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/enuedate-lost-in-jungle-finds-water-in-trees/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enuedate-ayore-do-yu/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__enueidate-se-burla-de-gutodate-y-termina-en-una-pelea",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/enueidate-se-burla-de-gutodate-y-termina-en-una-pelea/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/enueidate-belittling-gutodate-ends-up-in-fight/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enueidate-bajn%cc%83arone-jiei-cho-guto-ujn%cc%83arone/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__guibejnane-fuimos-a-las-salinas",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/guibejnane-fuimos-a-las-salinas/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/guibejnane-going-to-the-salt-beds/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/guibejnane-yibagui-echoi-casicaite/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__oidabiade-yo-era-un-guerrero-feroz",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/oidabiade-yo-era-un-guerrero-feroz/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/oidabiade-i-was-a-fierce-warrior/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/oidabiade-dacasute-yu-iji-monte-nanique/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__me-encantan-los-testimonios",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/me-encantan-los-testimonios/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/dajunangue-i-like-to-hear-the-stories-they-tell/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/dajunangue-yirasique-yujodie-chequei-ojn%cc%83ane/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__jomone-quiero-que-sepas-las-cosas-que-he-hecho",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/jomone-quiero-que-sepas-las-cosas-que-he-hecho/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/jomone-sorry-for-how-ive-failed-in-my-life/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/jomone-yipota-jeta-araja-yipesudode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__gayujna-pero-mas-tarde-me-entere-de-lo-que-era-realmente-bueno",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/gayujna-pero-mas-tarde-me-entere-de-lo-que-era-realmente-bueno/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/gayujna-i-found-out-what-was-truly-good/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/gayujna-ejode-ga-yiraja-uje-cucha-omi-cuse/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__lidiade-los-que-tienen-oidos-abiertos-oyen-la-palabra-de-dupade",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/lidiade-los-que-tienen-oidos-abiertos-oyen-la-palabra-de-dupade/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/lidiade-i-want-to-share-gods-words/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/lidiade-angoninguite-guesatigo/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__sama-rosade-me-puso-la-cara-bajo-el-agua",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/sama-rosade-me-puso-la-cara-bajo-el-agua/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/sama-rosade-put-my-face-under-water/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/sama-rosade-chaca-yedodie-iji-yodi/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__dapure-yo-odiaba-a-dupade",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/dapure-yo-odiaba-a-dupade/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/dapure-i-killed-my-babies/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/dapure-yetaque-dupade-nanique/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "relatos-personales__enuedate-yojide-intento-quitarme-a-mis-hijos",
+      "section": "relatos-personales",
+      "url_es": "https://ayore.org/es/cultura/relatos-personales/enuedate-yojide-intento-quitarme-a-mis-hijos/",
+      "url_en": "https://ayore.org/culture/first-person-narratives/enueidate-yojide-tries-to-take-my-children-away/",
+      "url_ayo": "https://ayore.org/ayo/culture/first-person-narratives/enueidate-atata-uje-i%cc%83ri-iji-tobite-nanique/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "comidas__pasedate-comida-por-tujurua-picanere",
+      "section": "comidas",
+      "url_es": "https://ayore.org/es/cultura/comidas/pasedate-comida-por-tujurua-picanere/",
+      "url_en": "https://ayore.org/culture/foods/tojurua-of-the-picanere-clan/",
+      "url_ayo": "https://ayore.org/ayo/culture/foods/pasedate-cucha-pibosode-ome-tujurua-picanere/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "juegos__cajoide-invitacion-a-luchar",
+      "section": "juegos",
+      "url_es": "https://ayore.org/es/cultura/juegos/cajoide-invitacion-a-luchar/",
+      "url_en": "https://ayore.org/culture/games/choosing-a-cross/",
+      "url_ayo": "https://ayore.org/ayo/culture/games/cajoide-ore-chingo-nane-cureseode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "juegos__cajoide-invitacion-a-luchar-2",
+      "section": "juegos",
+      "url_es": "https://ayore.org/es/cultura/juegos/cajoide-invitacion-a-luchar-2/",
+      "url_en": "https://ayore.org/culture/games/cajoide-invitation-to-play-forked-sticks/",
+      "url_ayo": "https://ayore.org/ayo/culture/games/cajoide-piquiedie/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "juegos__cajoide-invitacion-a-luchar-3",
+      "section": "juegos",
+      "url_es": "https://ayore.org/es/cultura/juegos/cajoide-invitacion-a-luchar-3/",
+      "url_en": "https://ayore.org/culture/games/invitation-to-wrestle/",
+      "url_ayo": "https://ayore.org/ayo/culture/games/cajoide-ore-cojnopite-nane/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "juegos__cajoide-invitacion-a-luchar-con-el-brazo",
+      "section": "juegos",
+      "url_es": "https://ayore.org/es/cultura/juegos/cajoide-invitacion-a-luchar-con-el-brazo/",
+      "url_en": "https://ayore.org/culture/games/cajoide-invitation-to-arm-wrestle/",
+      "url_ayo": "https://ayore.org/ayo/culture/games/cajoide-pajuyapidode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "juegos__cajoide-lista-de-una-variedad-de-juegos",
+      "section": "juegos",
+      "url_es": "https://ayore.org/es/cultura/juegos/cajoide-lista-de-una-variedad-de-juegos/",
+      "url_en": "https://ayore.org/culture/games/invitation-to-play-jobedaye/",
+      "url_ayo": "https://ayore.org/ayo/culture/games/cajoide-jobedaye/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "juegos__cajoide-juega-el-toque-en-equipos",
+      "section": "juegos",
+      "url_es": "https://ayore.org/es/cultura/juegos/cajoide-juega-el-toque-en-equipos/",
+      "url_en": "https://ayore.org/culture/games/touch-game-played-in-teams/",
+      "url_ayo": "https://ayore.org/ayo/culture/games/cajoide-pajnaminone-pachiapidode-ore-chache%cc%83re-n%cc%83ane/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "medicina__cajoide-el-zorros-es-el-antidoto-para-las-picaduras-de-la-serpiente-de-cascabel",
+      "section": "medicina",
+      "url_es": "https://ayore.org/es/cultura/medicina/cajoide-el-zorros-es-el-antidoto-para-las-picaduras-de-la-serpiente-de-cascabel/",
+      "url_en": "https://ayore.org/culture/medicine/cajoide-fox-is-the-antidote-for-rattlesnake-bite/",
+      "url_ayo": "https://ayore.org/ayo/culture/medicine/cajoide-achinguirai-chi-inoningayato-erapurujnanguenie/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__oidabiade-cantando-con-el-acompanamiento-de-un-sonajero-de-calabaza",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/oidabiade-cantando-con-el-acompanamiento-de-un-sonajero-de-calabaza/",
+      "url_en": "https://ayore.org/culture/native-songs/oidabiade-singing-with-gourd-rattles/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/oidabiade-ore-terachu/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__guebejnane-aliciade-menciona-a-las-mujeres-que-amaba",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/guebejnane-aliciade-menciona-a-las-mujeres-que-amaba/",
+      "url_en": "https://ayore.org/culture/native-songs/guibejnane-aliciade-mentions-the-women-he-loved/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/aliciade-chedo-dajesudie-diyeque-quedejna/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__igarubidate-un-canto-de-alabanza-por-matar-a-un-jaguar",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/igarubidate-un-canto-de-alabanza-por-matar-a-un-jaguar/",
+      "url_en": "https://ayore.org/culture/native-songs/igarubidate-praise-chant-for-killing-of-a-jaguar/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/igarubidate-achachagudode-ome-dajnami-uje-chuje-caratai/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__oidabiade-oh-tu-que-causaste-un-dano-tan-horrible",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/oidabiade-oh-tu-que-causaste-un-dano-tan-horrible/",
+      "url_en": "https://ayore.org/culture/native-songs/oidabiade-o-you-who-caused-such-awful-harm/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/oidabiade-cucha-urosodatei/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__ajote-el-miedo-de-carayoi-hacia-mi-madre",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/ajote-el-miedo-de-carayoi-hacia-mi-madre/",
+      "url_en": "https://ayore.org/culture/native-songs/ajote-carayois-fear-of-my-mother/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/ajote-carayoi-todotigai-iji-ite/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__dapure-dejabi-apurate-y-ven-a-mi",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/dapure-dejabi-apurate-y-ven-a-mi/",
+      "url_en": "https://ayore.org/culture/native-songs/dapure-dejabi-hurry-and-come-to-me/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/dapure-dejabi-aguineru-gadoi/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__ecabi-termine-con-amigas",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/ecabi-termine-con-amigas/",
+      "url_en": "https://ayore.org/culture/native-songs/ecabi-i-was-through-with-girl-friends/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/ecabi-ca-yijinapo-gapudie-to-jne-ri/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__cogere-una-cuerda-e-ire-a-matar-a-alguien",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/cogere-una-cuerda-e-ire-a-matar-a-alguien/",
+      "url_en": "https://ayore.org/culture/native-songs/gajnemiadai-ill-get-a-rope-and-go-and-kill-someone/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/gajnemiadai-yiabi-enuei-ga-yuje-uneque/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__guie-lamento-que-jonoine-me-haya-dejado",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/guie-lamento-que-jonoine-me-haya-dejado/",
+      "url_en": "https://ayore.org/culture/native-songs/guie-i-feel-sorry-that-jonoine-left-me/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/guie-yo-yayugu-yu-uje-jonoine-cha-yu/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__ijnamene-estoy-cansado-del-abuso-de-jupi",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/ijnamene-estoy-cansado-del-abuso-de-jupi/",
+      "url_en": "https://ayore.org/culture/native-songs/ijnamene-im-tired-of-jupis-abuses/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/ijnamene-yachopise-jupi-ujosipiedie/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__jadia-alguien-me-agarro-y-me-desperte",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/jadia-alguien-me-agarro-y-me-desperte/",
+      "url_en": "https://ayore.org/culture/native-songs/jadia-someone-grabbed-me-and-i-woke-up/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/jadia-yo-cuyuque-mu-ayore-chisa-yu/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__jnanine-cantare-sobre-la-mujer-que-rie",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/jnanine-cantare-sobre-la-mujer-que-rie/",
+      "url_en": "https://ayore.org/culture/native-songs/jnanine-ill-sing-about-cheque-dago/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/jnanine-yedobu-cheque-dago/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__josede-cantare-sobre-guidabia",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/josede-cantare-sobre-guidabia/",
+      "url_en": "https://ayore.org/culture/native-songs/josede-the-one-i-wanted-was-a-young-girl/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/josede-yedobu-guidabia/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__cantare-sobre-mi-dolor",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/cantare-sobre-mi-dolor/",
+      "url_en": "https://ayore.org/culture/native-songs/pejnocode-i-will-sing-about-my-sorrow/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/pejnocode-yedobu-yujnusietigade/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__jutira-escondiendo-mi-cancion-de-piajoi",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/jutira-escondiendo-mi-cancion-de-piajoi/",
+      "url_en": "https://ayore.org/culture/native-songs/jutira-hiding-my-song-from-piajoi/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/jutira-yipogu-yachachagutic-ome-piajoi/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__pujnucabi-me-faltan-mis-hermanos",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/pujnucabi-me-faltan-mis-hermanos/",
+      "url_en": "https://ayore.org/culture/native-songs/pujnucabi-lonesome-for-my-brothers/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/pujnucabi-yujnusipise-pejnocode-pedrode-ore/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__realmente-hecho-de-menos-a-ojo",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/realmente-hecho-de-menos-a-ojo/",
+      "url_en": "https://ayore.org/culture/native-songs/pujnuine-i-really-miss-ojo/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/pujnuine-yujnusipise-ojo/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__las-tortugas-que-casaba",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/las-tortugas-que-casaba/",
+      "url_en": "https://ayore.org/culture/native-songs/suarejnacaride-the-turtles-i-hunted/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/suarejnacaride-yijnecarosi-iji-yucuegode-yoca/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__vi-las-lagrimas-cayendo-de-tus-ojos",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/vi-las-lagrimas-cayendo-de-tus-ojos/",
+      "url_en": "https://ayore.org/culture/native-songs/tajerogue-i-saw-tears-falling-from-your-eyes/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/yajire-uje-educadode-tamuta-jnumone/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__vete-no-dormire-contigo",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/vete-no-dormire-contigo/",
+      "url_en": "https://ayore.org/culture/native-songs/ubuchua-go-away-i-wont-sleep-with-you/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/ajni-to-que-yimo-iji-bari/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__voy-a-encontrarlos-un-nuevo-papa",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/voy-a-encontrarlos-un-nuevo-papa/",
+      "url_en": "https://ayore.org/culture/native-songs/uneredate-im-going-to-curse-someone/",
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/uneredate-yipesapo-ore-dai-ejo-ri/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "canciones-nativas__canciones-voy-a-cantar-un-poco",
+      "section": "canciones-nativas",
+      "url_es": "https://ayore.org/es/cultura/canciones-nativas/canciones-voy-a-cantar-un-poco/",
+      "url_en": null,
+      "url_ayo": "https://ayore.org/ayo/culture/native-songs/piradedie-yijnecarosi-iji-de/",
+      "has_es": true,
+      "has_en": false,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__oidabiade-taparrabos-atados-alrededor-de-hombres-del-clan-picanerai",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/oidabiade-taparrabos-atados-alrededor-de-hombres-del-clan-picanerai/",
+      "url_en": "https://ayore.org/culture/oral-history/oidabiade-loincloths-were-tied-on-the-picanerai/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/borade-ore-chigaru-aruratadie-picanerai-gai/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__cornelio-isaac-hombre-menonita-asesinado-por-ayoreos",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/cornelio-isaac-hombre-menonita-asesinado-por-ayoreos/",
+      "url_en": "https://ayore.org/culture/oral-history/mennonite-man-killed-contacting-ayore/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/jonoine-chuje-menonita-nanique/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__oidabiade-grupos-que-se-originaron-en-el-tribu-ayore",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/oidabiade-grupos-que-se-originaron-en-el-tribu-ayore/",
+      "url_en": "https://ayore.org/culture/oral-history/oidabiade-groups-that-originated-from-ayore/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/oidabiade-ayoreode-chisite-ragaja-erami/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__oidabiade-gente-de-las-tumbas",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/oidabiade-gente-de-las-tumbas/",
+      "url_en": "https://ayore.org/culture/oral-history/oidabiade-people-of-the-graves/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/oidabiade-ayoreode-uaguedie-iode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__oidabiade-el-tapir-despega-con-un-hombre-ayore",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/oidabiade-el-tapir-despega-con-un-hombre-ayore/",
+      "url_en": "https://ayore.org/culture/oral-history/oidabiade-tapir-took-off-with-ayore-man/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/oidabiade-cabayui-adode-jno-ayore-udi/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__oidabiade-su-furia-los-vencio",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/oidabiade-su-furia-los-vencio/",
+      "url_en": "https://ayore.org/culture/oral-history/oidabiade-fury-overcame-them/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/oidabiade-chi-sujmajningai-jnue-gayode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__oidabiade-trae-a-tinaine-para-encontrar-cosas-perdidas",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/oidabiade-trae-a-tinaine-para-encontrar-cosas-perdidas/",
+      "url_en": "https://ayore.org/culture/oral-history/oidabiade-bring-tinaine-to-find-lost-things/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/oidabiade-cucha-bijnangone-guiyasore-tinaine/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__oidabiadeorobojnai-poderoso-en-la-batalla",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/oidabiadeorobojnai-poderoso-en-la-batalla/",
+      "url_en": "https://ayore.org/culture/oral-history/orobojnai-powerful-in-battle/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/oidabiade-jocarataquechoquiode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__oidabiadesoy-del-clan-chiquenoi",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/oidabiadesoy-del-clan-chiquenoi/",
+      "url_en": "https://ayore.org/culture/oral-history/oidabiade-i-am-a-chiquenoi/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/oidabiade-uringane-cucherade-u/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__oidabiade-todos-los-ayoreos-fueron-una-sola-nacion-en-el-comienzo",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/oidabiade-todos-los-ayoreos-fueron-una-sola-nacion-en-el-comienzo/",
+      "url_en": "https://ayore.org/culture/oral-history/oidabiade-ayore-were-one-nation-in-the-beginning/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/oidabiade-ayoreode-jora-nane-jnese-iji-taningai/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__ijmai-caratabide-estaba-en-su-granja-limpiando-entre-las-plantas",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/ijmai-caratabide-estaba-en-su-granja-limpiando-entre-las-plantas/",
+      "url_en": "https://ayore.org/culture/oral-history/caratabide-was-hoeing-his-garden/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/ijmai-caratabide-chajo-dejnai-uje-chudute-minco-misionerone/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__pablo-dye-ayoreode-chuje-yai-nanique",
+      "section": "historia-oral",
+      "url_es": "https://ayore.org/es/cultura/historia-oral/pablo-dye-ayoreode-chuje-yai-nanique/",
+      "url_en": "https://ayore.org/culture/oral-history/the-ayore-killed-my-father/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/ayoreode-chuje-yai-nanique/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "historia-oral__ayoreode-chuje-yai-nanique",
+      "section": "historia-oral",
+      "url_es": null,
+      "url_en": null,
+      "url_ayo": "https://ayore.org/ayo/culture/oral-history/ayoreode-chuje-yai-nanique/",
+      "has_es": false,
+      "has_en": false,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__oidabiade-pajaro-grande-descubrio-la-temporada-de-lluvias",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/oidabiade-pajaro-grande-descubrio-la-temporada-de-lluvias/",
+      "url_en": "https://ayore.org/culture/oral-traditions/oidabiade-big-bird-found-the-rainy-season/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/oidabiade-chuguperedatei-chise-siquere-diringai/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__manuelne-dachagaide-era-un-hombre-muy-malo",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/manuelne-dachagaide-era-un-hombre-muy-malo/",
+      "url_en": "https://ayore.org/culture/oral-traditions/manuelne-dachagaide-was-really-bad/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/manuelne-dachagaide/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__manuelne-el-zorro-deja-que-los-peces-salgan-libres",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/manuelne-el-zorro-deja-que-los-peces-salgan-libres/",
+      "url_en": "https://ayore.org/culture/oral-traditions/manuelne-the-fox-let-the-fish-go-free/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/ayoreode-bisdode-cucha-dibe-chuchere-oyidode-gai/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__oidabiade-el-asesinato-de-dachapiborate",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/oidabiade-el-asesinato-de-dachapiborate/",
+      "url_en": "https://ayore.org/culture/oral-traditions/oidabiade-the-rain-wont-bite-us/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/oidabiade-dachapiborate-yusori/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__oidabiade-jugando-con-la-suciedad-del-hormiguero",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/oidabiade-jugando-con-la-suciedad-del-hormiguero/",
+      "url_en": "https://ayore.org/culture/oral-traditions/oidabiade-playing-with-the-dirt-of-ant-hill/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/oidabiade-disiode-ore-chipocasu-gajnoque/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__oidabiade-nuestros-antepasados-temian-la-lluvia-caida",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/oidabiade-nuestros-antepasados-temian-la-lluvia-caida/",
+      "url_en": "https://ayore.org/culture/oral-traditions/oidabiade-our-forefather-feared-falling-rain/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/oidabiade-jnani-bajatique-todo-guei-basui/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__oidabiade-libelula-pateo-su-pie",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/oidabiade-libelula-pateo-su-pie/",
+      "url_en": "https://ayore.org/culture/oral-traditions/oidabiade-the-dragonfly-stamped-its-foot/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/oidabiade-jnagoto-ta%cc%83re-ome-enga-chijaro-jnui/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__oidabiade-los-caminos-de-la-lluvia-la-bendicion-proviene-de-contar-la-historia",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/oidabiade-los-caminos-de-la-lluvia-la-bendicion-proviene-de-contar-la-historia/",
+      "url_en": "https://ayore.org/culture/oral-traditions/oidabiade-blessing-comes-from-telling-the-story/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/oidabiade-siquere-adode-acaca%cc%83ratigade-u-datatagode-ome-siqueredie-adode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__oidabiade-la-gente-mato-a-togabi",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/oidabiade-la-gente-mato-a-togabi/",
+      "url_en": "https://ayore.org/culture/oral-traditions/oidabiade-togabi-cursed-people/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/oidabiade-ore-chuje-togabi/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__oidabiade-los-cerdos-salvajes-se-fueron-con-un-nino-huerfano",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/oidabiade-los-cerdos-salvajes-se-fueron-con-un-nino-huerfano/",
+      "url_en": "https://ayore.org/culture/oral-traditions/oidabiade-the-orphan-wild-pigs-took-away/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/oidabiade-yacorenie-oidi-ayore-disijate/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__oidabiade-la-hormiga-gigante-mato-a-pajaro-grande",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/oidabiade-la-hormiga-gigante-mato-a-pajaro-grande/",
+      "url_en": "https://ayore.org/culture/oral-traditions/oidabiade-giant-ant-killed-big-bird/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/oidabiade-diti-chuje-chugupe%cc%83redatei/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__samane-melero-planto-el-arbol-nujna",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/samane-melero-planto-el-arbol-nujna/",
+      "url_en": "https://ayore.org/culture/oral-traditions/samane-honey-badger-planted-the-nujna-tree/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/adudui-chirote-nujna/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__samane-mariposa-blanca-coqueteo-con-los-jovenes",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/samane-mariposa-blanca-coqueteo-con-los-jovenes/",
+      "url_en": "https://ayore.org/culture/oral-traditions/samane-white-butterfly-flirted-with-young-men/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/samane-corabe-canare-dajmainone-jnacare/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "tradiciones-orales__samane-los-modos-de-guei-basui-un-cazador-lo-encuentra-y-lo-tema",
+      "section": "tradiciones-orales",
+      "url_es": "https://ayore.org/es/cultura/tradiciones-orales/samane-los-modos-de-guei-basui-un-cazador-lo-encuentra-y-lo-tema/",
+      "url_en": "https://ayore.org/culture/oral-traditions/samane-the-ways-of-guei-basui-a-honey-hunter-finds-him-and-fears-him/",
+      "url_ayo": "https://ayore.org/ayo/culture/oral-traditions/samane-guei-basui-adode-jnani-bajatique-chise-mu-todo/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-lo-que-dice-dupade-es-verdad",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-lo-que-dice-dupade-es-verdad/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-what-dupade-says-is-true/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-je-u%cc%83re-dupade-ome-daruode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__comai-duermen-un-poco-en-el-cielo",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/comai-duermen-un-poco-en-el-cielo/",
+      "url_en": "https://ayore.org/culture/teachings/comai-sleep-a-bit-in-the-sky/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/comai-amonoji-gate/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__chagaide-que-ninguno-de-ustedes-se-averguence-de-dupade",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/chagaide-que-ninguno-de-ustedes-se-averguence-de-dupade/",
+      "url_en": "https://ayore.org/culture/teachings/chagaide-dont-be-ashamed-of-dupade/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/chagaide-ca-uacunengo-chajengome-dupade-to/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__comai-deberian-cuidar-mi-jardin",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/comai-deberian-cuidar-mi-jardin/",
+      "url_en": "https://ayore.org/culture/teachings/you-may-eat-everything-in-my-garden/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/comai-arocho-cuchade-jnese-iji-yejnai/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__comai-un-lugar-para-aprender-de-la-palabra-de-dupade",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/comai-un-lugar-para-aprender-de-la-palabra-de-dupade/",
+      "url_en": "https://ayore.org/culture/teachings/comai-a-place-to-learn-about-dupades-words/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/comai-dupade-uruode-jogadode-cuse-to-ome-ore/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__dijaide-josuede-nos-llamaran-locos",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/dijaide-josuede-nos-llamaran-locos/",
+      "url_en": "https://ayore.org/culture/teachings/dijaide-joshed-they-will-call-us-crazy/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/dijaide-josuede-a-ore-cho-u%cc%83rusode-iji-yoque/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__dijaide-josuede-nos-ves-a-todos-aqui-en-esta-tierra",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/dijaide-josuede-nos-ves-a-todos-aqui-en-esta-tierra/",
+      "url_en": "https://ayore.org/culture/teachings/dijaide-josuede-you-see-all-of-us-on-this-earth/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/dijaide-josuede-bamo-yoque-jnese-iji-jnumi-tude/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__jomone-no-habiamos-visto-la-piel-de-los-blancos",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/jomone-no-habiamos-visto-la-piel-de-los-blancos/",
+      "url_en": "https://ayore.org/culture/teachings/jomone-we-had-never-seen-the-skin-of-a-white-person/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/jomone-que-yimongo-cojn%cc%83otique-aorique/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__dijaide-josuede-no-tengan-miedo-de-presentarse-a-dupade",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/dijaide-josuede-no-tengan-miedo-de-presentarse-a-dupade/",
+      "url_en": "https://ayore.org/culture/teachings/dijaide-dont-fear-to-come-before-dupade/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/dijaide-josuede-ca-oyo-cocho-cochogome-dupade-yui/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__dijaide-josuede-me-siento-atraido-a-la-palabra-de-dupade",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/dijaide-josuede-me-siento-atraido-a-la-palabra-de-dupade/",
+      "url_en": "https://ayore.org/culture/teachings/dijaide%ef%bb%bf-gods-word-is-appealing-to-me/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/dijaide-josuede-uneripise-dupade-uruode-yui-ome-yu/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__dijaide-josuede-no-he-olvidado-a-dupade",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/dijaide-josuede-no-he-olvidado-a-dupade/",
+      "url_en": "https://ayore.org/culture/teachings/dijaide-you-see-all-of-us-on-this-earth/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/dijaide-josuede-que-yicadiguipisi-dupade/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__dijaide-josuede-solo-un-poco-de-las-palabras-de-dupade-leere",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/dijaide-josuede-solo-un-poco-de-las-palabras-de-dupade-leere/",
+      "url_en": "https://ayore.org/culture/teachings/dijaide-ill-read-just-a-little-of-dupades-words/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/dijaide-josuede-garosi-uje-yajire-dupade-uruode-to/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-que-tu-palabra-sea-caliente-dentro-de-mi",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-que-tu-palabra-sea-caliente-dentro-de-mi/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-i-want-your-word-to-be-hot-inside-me/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-yigaidi-tu-jeta-baruode-jurua-iji-yajei/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-estoy-agradecido-por-tu-palabra",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-estoy-agradecido-por-tu-palabra/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-im-thankful-for-your-words/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-yacaranguipis-ome-baruode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-jesus-se-aparecio-a-dos-de-sus-discipulos",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-jesus-se-aparecio-a-dos-de-sus-discipulos/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-jesus-appears-to-two-of-his-disciples/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-jesus-chiqueta-raja-dacadique-garerigo/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-jesus-ilustraba-sus-lecciones",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-jesus-ilustraba-sus-lecciones/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-jesus-illustrated-his-teachings/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-jesus-chacara-dacajnaqueode-aja-cuchade/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-jesus-oro-a-su-padre-por-sus-discipulos",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-jesus-oro-a-su-padre-por-sus-discipulos/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-jesus-prayed-to-his-father-for-his-disciples/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-jesus-cateca%cc%83ri-daye-ome-dacadigode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-de-la-palabra-de-dupade-no-nos-falta-nada",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-de-la-palabra-de-dupade-no-nos-falta-nada/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-nothing-is-missing-from-gods-word/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-que-cucharique-chona-dupade-uruode-ome-yoque/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-nuestros-antepasados-temian-a-dupade",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-nuestros-antepasados-temian-a-dupade/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-our-ayore-forefathers-feared-dupade/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-yocai-ayore-jnani-bajade-ore-todo-dupade/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-saulo-persiguio-a-los-que-creyeron-en-jesus",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-saulo-persiguio-a-los-que-creyeron-en-jesus/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-saul-persecuted-those-who-believed-in-jesus/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-saulo-umajo-jesus-anguresorone-ore/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-ellos-querian-ayudarles",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-ellos-querian-ayudarles/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-they-wanted-to-help-you/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-ore-pota-jeta-ore-chata-cuchadaja-uaque/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-nos-amamos-profundamente",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-nos-amamos-profundamente/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-we-love-each-other-deeply/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-yijnorango-n%cc%83ane-iji-jnumi/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-eramos-como-esclavos-hace-mucho-tiempo",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-eramos-como-esclavos-hace-mucho-tiempo/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-we-were-like-slaves-long-ago/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-yocajnui-tu-piroque-bisidei-nanique/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-iremos-al-cielo-cuando-regreses",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-iremos-al-cielo-cuando-regreses/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-we-will-go-with-you-to-heaven/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-yijinango-ua-aja-gate-ujetiga-ari/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-un-joven-queria-encontrar-la-vida-eterna",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-un-joven-queria-encontrar-la-vida-eterna/",
+      "url_en": "https://ayore.org/culture/teachings/a-young-man-wanted-to-find-eternal-life/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-jnacari-pota-chise-dacuecaringue-eyugojmai/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-el-rey-david-se-quedo-en-jerusalen",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-el-rey-david-se-quedo-en-jerusalen/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-david-stayed-in-jerusalem/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-david-chacare-iji-jerusalen/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-dupade-contesta-nuestras-oraciones",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-dupade-contesta-nuestras-oraciones/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-dupade-answers-our-prayers/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-dupade-doi-yoquicatecaraitigade/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-miro-la-tierra-que-habia-hecho-y-era-hermosa",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-miro-la-tierra-que-habia-hecho-y-era-hermosa/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-dupade-looked-at-the-earth-he-made-and-it-was-beautiful-2/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-dupade-chajire-dapesudi-erape-ga-ueradejna/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-dupade-envio-a-otro-para-ayudarnos",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-dupade-envio-a-otro-para-ayudarnos/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-dupade-sent-another-to-help-us/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-dupade-chiroque-un%cc%83engaja-yoque-jeta-chata-raja-yoque/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-la-palabra-de-dupade-se-hizo-hombre",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-la-palabra-de-dupade-se-hizo-hombre/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-dupades-word-made-himself-into-a-man/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-dupade-uruode-pesu-re-nanique-ga-jnani/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-el-uso-aves-como-un-ejemplo",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-el-uso-aves-como-un-ejemplo/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-he-used-birds-as-an-example/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-chacara-dacajnaqueode-aja-chuguperone/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-lugar-donde-desciende-la-palabra-de-dupade",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-lugar-donde-desciende-la-palabra-de-dupade/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-landing-place-for-dupades-words/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-dupade-uruode-batigade/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-pon-tu-mano-sobre-nosotros",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-pon-tu-mano-sobre-nosotros/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-lay-your-hand-upon-us-2/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-aje-bajmanai-tiji-yoquibai/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-no-odiemos-a-los-que-llevan-las-palabras-de-dupade",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-no-odiemos-a-los-que-llevan-las-palabras-de-dupade/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-lets-not-dislike-those-that-carry-dupades-word/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-je-ca-yetajo-dupade-ujnomei-jnungorone-ore/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-las-noticias-sobre-dupade-llegaran-a-todo-el-mundo",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-las-noticias-sobre-dupade-llegaran-a-todo-el-mundo/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-news-about-dupade-will-reach-the-whole-world/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-dupade-ujnomei-a-chise-erami-jnese/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-dijaide-la-gente-llega-trayendo-noticias",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-dijaide-la-gente-llega-trayendo-noticias/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-people-bring-all-kinds-of-news/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-ayore-diode-ojn%cc%83ane/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-hay-mas-que-necesitamos-saber",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-hay-mas-que-necesitamos-saber/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-theres-always-more-we-need-to-learn/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-cucha-amirone-jeta-pacadique-yogome/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-cuidate-y-preparate",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-cuidate-y-preparate/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-watch-and-be-ready/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-arijinano-uaquejode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-unidos-en-nuestra-fe-en-cristo-2",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-unidos-en-nuestra-fe-en-cristo-2/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-we-are-united-in-our-faith/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-yitojmarango-iji-yocanguretigai-2/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-tu-poder-esta-dentro-de-nosotros",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-tu-poder-esta-dentro-de-nosotros/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-your-power-is-inside-us/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-bajopie-tu-uje-deji-yocajei/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ecarai-davide-tu-palabra-nos-dice-lo-que-apruebas",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ecarai-davide-tu-palabra-nos-dice-lo-que-apruebas/",
+      "url_en": "https://ayore.org/culture/teachings/ecarai-your-word-tells-us-what-you-approve-of-2/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ecarai-davide-baruode-chingo-bameserane-cucha-aja-yoc/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ipeyai-rezo-por-los-ayoreos-en-todo-el-mundo",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ipeyai-rezo-por-los-ayoreos-en-todo-el-mundo/",
+      "url_en": "https://ayore.org/culture/teachings/ipeyai-i-pray-for-ayore-people-all-over-the-world/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ipeyai-yicateca%cc%83ri-ome-ayoreode-iji-erami-jnese/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__ipeyai-se-alegran-por-la-palabra-de-dupade",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/ipeyai-se-alegran-por-la-palabra-de-dupade/",
+      "url_en": "https://ayore.org/culture/teachings/ipeyai-thrilled-with-dupades-words/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/ipeyai-uacatijayome-dupade-uruode-iji-de/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__jorgede-la-palabra-de-dupade-es-verdadera",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/jorgede-la-palabra-de-dupade-es-verdadera/",
+      "url_en": "https://ayore.org/culture/teachings/jorgede-dupades-word-is-true/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/jorgede-jec-u%cc%83re-dupade-uruode/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__orone-la-ensenanza-de-pablo-es-dificil-de-entender",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/orone-la-ensenanza-de-pablo-es-dificil-de-entender/",
+      "url_en": "https://ayore.org/culture/teachings/pauls-teaching-is-hard-to-understand/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/orone-yique-u-yoquijorai-pablo-acajnaquei/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__orone-rapidamente-crei-en-dupade",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/orone-rapidamente-crei-en-dupade/",
+      "url_en": "https://ayore.org/culture/teachings/orone-quickly-i-believed-in-dupade/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/orone-ji%cc%83raque-yipota-yuringai-dupade-angureso%cc%83re-to/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__pedrode-pablo-fue-una-persona-muy-mala",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/pedrode-pablo-fue-una-persona-muy-mala/",
+      "url_en": "https://ayore.org/culture/teachings/pedrode-paul-was-once-a-wicked-person/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/pedrode-san-pablo-uringai-sijnaque/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__rincongotique-dupade-es-muy-fuerte",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/rincongotique-dupade-es-muy-fuerte/",
+      "url_en": "https://ayore.org/culture/teachings/rincongosi-dupade-is-very-strong/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/rincongotique-etoguipise-dupade/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__uroi-danielne-escucharas-tu-palabra-de-nuestros-labios",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/uroi-danielne-escucharas-tu-palabra-de-nuestros-labios/",
+      "url_en": "https://ayore.org/culture/teachings/uroi-you-will-hear-your-word-from-our-lips/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/uroi-danielne-a-badute-baruode-iji-yoquibijnani/",
+      "has_es": true,
+      "has_en": true,
+      "has_ayo": true
+    },
+    {
+      "story_id": "ensenanzas__urusa%cc%83raquede-ruega-a-dupade-por-mi",
+      "section": "ensenanzas",
+      "url_es": "https://ayore.org/es/cultura/ensenanzas/urusa%cc%83raquede-ruega-a-dupade-por-mi/",
+      "url_en": "https://ayore.org/culture/teachings/urusaraquede-pray-to-dupade-for-me/",
+      "url_ayo": "https://ayore.org/ayo/culture/teachings/urusa%cc%83raquede-atecachoi-dupade-ome-uyu/",
       "has_es": true,
       "has_en": true,
       "has_ayo": true

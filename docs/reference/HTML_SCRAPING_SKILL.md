@@ -196,7 +196,7 @@ This is more reliable than crawling three index pages and pairing by position.
 | Page title | `h1` | First `<h1>` on page |
 | Body text | `p`, `blockquote` within content div | Skip fragments < 10 chars. Always invoke a helper to convert `<b>` and `<i>` to `**` and `*` Markdown natively before extracting text. |
 | Glossary terms | `strong`/`b` + sibling text with `–` or `-` | Ayoreo term → Spanish definition |
-| Body Decomposition | `scripts/add_body_decomposition.py` | Executed post-scrape. Iterates through the raw bodies and splits non-greedy `**headers**` and `\n\n` paragraphs into objects. |
+| Body Decomposition | `scripts/add_body_decomposition.py` | Executed post-scrape. Iterates through the raw bodies and splits structures by checking for `**...` and `***...` (bold and bold-italic) headers at the start of `\n\n` paragraphs, while safely consuming trailing punctuation. |
 
 ### Metadata Patterns (regex)
 - id: html_scraping_skill.metadata_patterns_regex
