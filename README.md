@@ -95,7 +95,7 @@ Dentro de cada página de relato, el contenido principal se encuentra en:
 
 ### Output
 
-Todos los relatos se guardan en un único archivo `data/raw/ayoreoorg/ayoreoorg.json`, indexado por `story_id` (ej. `relatos-personales__cotade-me-he-entregado-dupade`). Cada entrada contiene el texto en los tres idiomas, junto con el contenido particionado estructuralmente:
+Todos los relatos se guardan en un único archivo `data/raw/ayoreoorg/ayoreoorg.json`, indexado por `story_id` (ej. `relatos-personales__cotade-me-he-entregado-dupade`). Cada entrada contiene el texto en los tres idiomas, junto con el contenido particionado estructuralmente y su mapa de alineación semántica:
 
 ```json
 {
@@ -112,10 +112,13 @@ Todos los relatos se guardan en un único archivo `data/raw/ayoreoorg/ayoreoorg.
       "en": [{"header": null, "text": "..."}],
       "ayo": [{"header": null, "text": "..."}]
     },
+    "alignment_map": "[{\"es\": [0, 1], \"en\": [0], \"ayo\": [0]}]",
     ...
   }
 }
 ```
+
+> **Alineación Semántica LLM:** Debido a que la segmentación de párrafos o secciones puede diferir entre idiomas en algunos relatos, el script `scripts/align_mismatches_llm.py` aplica el protocolo definido en `docs/reference/SEMANTIC_MATCHING.md`. Utiliza la API de Gemini para anclar semánticamente los idiomas de altos recursos (ES/EN) y alinear heurísticamente los fragmentos opacos en Ayoré, guardando el resultado en `alignment_map`. Esto se visualiza interactivamente en `sanity_app.py`.
 ---
 
 ## Fuente de datos: Bible.com
@@ -274,9 +277,10 @@ ayoreo_chatbot/
 ├── prompts/                      # System prompts y templates
 ├── scripts/
 │   ├── run_scraper.py            # Entry point del pipeline de scraping de ayore.org
-│   └── scrape_bible.py           # Scraping local de Génesis en Bible.com
+│   ├── scrape_bible.py           # Scraping local de Génesis en Bible.com
+│   └── align_mismatches_llm.py   # Alineación semántica con LLM de los body_decomposition
 ├── tests/                        # Tests
-└── docs/reference/               # Guías para agentes (HTML_SCRAPING_SKILL.md, etc.)
+└── docs/reference/               # Guías para agentes (HTML_SCRAPING_SKILL.md, SEMANTIC_MATCHING.md, etc.)
 ```
 
 ## Fuentes de datos
