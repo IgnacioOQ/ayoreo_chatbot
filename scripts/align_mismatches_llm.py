@@ -23,20 +23,16 @@ You MUST follow this exact Anchor Heuristic Protocol step by step in your reason
 2. Narrative Sequencing: Establish the exact narrative progression.
 3. Low-Resource Anchoring: Scan the opaque Ayoreo chunks for shared entities (e.g., proper nouns, numbers, punctuation patterns like quotation marks) and structural heuristics (e.g., overall text length, matching short components to short components, and long components to long components) that transcend translation to anchor to the ES/EN maps.
 4. Monotonic Structural Constraints: The chunks ALWAYS appear chronologically.
-5. Missing Languages: If a translation is entirely missing (e.g. the Ayoreo array is empty/null), you still MUST output its key in every grouping, but its value MUST be an empty array `[]`.
+5. Missing Languages: If a translation is entirely missing (e.g. the Ayoreo array is empty/null), you still MUST output its key in every grouping, but its value MUST be an empty array `[]`. 
+   **CRITICAL HEURISTIC:** In most cases where Ayoreo components are missing, it happens at the VERY BEGINNING of the story rather than the end. This is because Spanish/English descriptions often start with meta-comments or context that is completely omitted in the Ayoreo translations.
 
 We will provide you the body_decomposition arrays for 'es', 'en', and 'ayo', where the structure is a list of {"header": str|null, "text": str}.
 You must output a JSON list where each item represents a unified semantic block, mapping which indices from the ES, EN, and AYO arrays belong to it.
 """
 
-def get_mismatched_entries(dataset):
-    mismatches = {}
-    for story_id, entry in dataset.items():
-        deco = entry.get("body_decomposition", {})
-        counts = [len(deco.get(lang, [])) for lang in ["es", "en", "ayo"]]
-        if len(set(counts)) > 1:
-            mismatches[story_id] = entry
-    return mismatches
+# No longer filtering by mismatched entries; processing all entries as requested.
+def get_entries_to_process(dataset):
+    return dataset
 
 def align_story(client, story_id, entry):
     deco = entry.get("body_decomposition", {})
@@ -105,11 +101,11 @@ def main():
     with open(load_path, "r", encoding="utf-8") as f:
         dataset = json.load(f)
         
-    mismatches = get_mismatched_entries(dataset)
-    print(f"Found {len(mismatches)} mismatched stories.")
+    entries_to_process = get_entries_to_process(dataset)
+    print(f"Found {len(entries_to_process)} total stories to process.")
     
     import time
-    for story_id, entry in mismatches.items():
+    for story_id, entry in entries_to_process.items():
         if "alignment_map" in entry:
             print(f"Skipping {story_id}, already aligned.")
             continue

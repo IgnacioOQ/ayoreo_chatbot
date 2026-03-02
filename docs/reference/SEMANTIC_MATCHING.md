@@ -16,6 +16,10 @@ This document defines the strict, iterative protocol that any agent or alignment
 <!-- content -->
 Because Ayoreo text parsing often yields a different number of paragraphs/chunks compared to its Spanish/English counterparts, we must map them.
 
+The scraper scripts currently pull from two distinct sources, both producing similar schema problems:
+1. `ayore.org` (Relatos, cultural stories) -> `ayoreoorg.json`
+2. `bible.com` (YouVersion Bible translation) -> `bible.json`
+
 An `alignment_map` shows which indices in each language correspond to the exact same semantic chunk. For example:
 ```json
 {
@@ -56,17 +60,18 @@ Agents MUST follow these exact steps when attempting alignment:
 5. **Step 5: Emit the Map**
    - Build a flat JSON array of mapped groupings. Each grouping represents a single logical narrative unit.
    - *Requirement 1:* Every valid index from the original decomposition arrays must appear exactly once across the final groupings.
-   - *Requirement 2:* If a language translation is entirely missing from the input (e.g., there is no Ayoreo text at all), you still must emit the `"ayo"` key for every grouping, but its value must be an empty array `[]`.
+   - *Requirement 2:* If a language translation is entirely missing from the input (e.g., there is no Ayoreo text at all), you still must emit the `"ayo"` key for every grouping, but its value must be an empty array `[]`. 
+   - *Heuristic 1 (Missing Ayoreo Context):* When there is a mismatch where Spanish or English components outnumber Ayoreo components, the missing pieces are almost always at the **beginning** of the text. This is because raw materials typically include Spanish/English meta-comments or context framing the text, whereas the Ayoreo translation strictly contains only the narrative body.
 
 ## Output Format
 - status: active
 - type: format
 <!-- content -->
-The semantic matching process must produce an output file that is structurally identical to the source `ayoreoorg.json`, but saved as a new file named `aligned_ayoreoorg.json`. 
+The semantic matching process must produce an output file that is structurally identical to the source JSON dataset (`ayoreoorg.json` or `bible.json`), but saved as a new file (e.g. `aligned_ayoreoorg.json` or `aligned_bible.json`). 
 
-The script should serialize the complete dataset, where each original entry is preserved in its entirety, but any entry that underwent alignment now includes the new `"alignment_map"` key. 
+The scripts (`align_mismatches_llm.py` and `align_bible_llm.py`) should serialize the complete dataset, where each original entry is preserved in its entirety, but any entry that underwent alignment now includes the new `"alignment_map"` key. 
 
-Example output shape:
+Example output shape for `aligned_ayoreoorg.json`:
 ```json
 {
   "relatos-personales__cotade-me-he-entregado-dupade": {
