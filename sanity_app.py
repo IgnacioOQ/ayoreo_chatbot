@@ -35,8 +35,13 @@ dataset = st.session_state.dataset
 if not dataset:
     st.stop()
 
+# Helper to check for mismatched decomposition lengths
+def has_mismatch(entry) -> bool:
+    deco = entry.get("body_decomposition", {})
+    counts = [len(deco.get(lang, [])) for lang in ["es", "en", "ayo"]]
+    return len(set(counts)) > 1
+
 # Build filtering tuples dynamically
-unique_types = sorted(list(set(v.get("type", "unknown") for v in dataset.values())))
 unique_sections = sorted(list(set(v.get("section", "unknown") for v in dataset.values())))
 
 # --- 2. Sidebar Navigation ---
@@ -47,15 +52,13 @@ with st.sidebar:
     st.markdown("---")
     st.header("Filters")
     
-    selected_type = st.selectbox("Type", ["All"] + unique_types)
     selected_section = st.selectbox("Section", ["All"] + unique_sections)
     
     # Filter dataset
     filtered_keys = []
     for k, v in dataset.items():
-        match_type = (selected_type == "All" or v.get("type") == selected_type)
         match_sec = (selected_section == "All" or v.get("section") == selected_section)
-        if match_type and match_sec:
+        if match_sec:
             filtered_keys.append(k)
             
     st.markdown("---")
@@ -65,7 +68,10 @@ with st.sidebar:
         st.warning("No stories match the current filters.")
         st.stop()
         
-    selected_key = st.selectbox("Select a Story to View", filtered_keys)
+    def format_story_label(key):
+        return f"⚠️ {key}" if has_mismatch(dataset[key]) else key
+        
+    selected_key = st.selectbox("Select a Story to View", filtered_keys, format_func=format_story_label)
 
 # --- 3. Main Data Visualization Area ---
 story = dataset[selected_key]
@@ -99,16 +105,21 @@ with tcol3:
     st.text_area("Body", story.get("body_ayo", ""), height=300, disabled=True, key="raw_body_ayo")
 
 # Visualizing Decompositions
+def format_decomp(decomp_list):
+    """Add explicit index [i] to the header for easier reference in alignment."""
+    if not isinstance(decomp_list, list): return []
+    return [{"index": i, **item} for i, item in enumerate(decomp_list)]
+
 st.markdown("### 🧩 Body Decomposition")
 decomp = story.get("body_decomposition", {})
 
 tab_es, tab_en, tab_ayo = st.tabs(["Español", "English", "Ayoré"])
 with tab_es:
-    st.json(decomp.get("es", []))
+    st.json(format_decomp(decomp.get("es", [])))
 with tab_en:
-    st.json(decomp.get("en", []))
+    st.json(format_decomp(decomp.get("en", [])))
 with tab_ayo:
-    st.json(decomp.get("ayo", []))
+    st.json(format_decomp(decomp.get("ayo", [])))
 
 st.markdown("---")
 
@@ -139,6 +150,12 @@ with st.form("correction_form"):
             height=250
         )
         
+    alignment_str = st.text_area(
+        "Alignment Map (JSON/Text)", 
+        value=story.get("alignment_map", ""),
+        height=100,
+        help="e.g. {\"es\": [0,1], \"en\": [0], \"ayo\": [0]}"
+    )
     comment_text = st.text_area("Editor Comments / Notes", value=story.get("correction_notes", ""), height=100)
     
     submitted = st.form_submit_button("Save Corrections to Disk", type="primary")
@@ -148,6 +165,7 @@ with st.form("correction_form"):
         st.session_state.dataset[selected_key]["corrected_body_es"] = corr_es
         st.session_state.dataset[selected_key]["corrected_body_en"] = corr_en
         st.session_state.dataset[selected_key]["corrected_body_ayo"] = corr_ayo
+        st.session_state.dataset[selected_key]["alignment_map"] = alignment_str
         st.session_state.dataset[selected_key]["correction_notes"] = comment_text
         
         # Hydrate disk map
