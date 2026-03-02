@@ -115,15 +115,15 @@ tcol1, tcol2, tcol3 = st.columns(3)
 with tcol1:
     st.subheader("🇪🇸 Español")
     st.markdown(f"**URL:** [link]({story.get('url_es', '')})")
-    st.text_area("Body", story.get("body_es", ""), height=300, disabled=True, key="raw_body_es")
+    st.text_area("Body", story.get("body_es", ""), height=300, disabled=True, key=f"raw_body_es_{selected_key}")
 with tcol2:
     st.subheader("🇬🇧 English")
     st.markdown(f"**URL:** [link]({story.get('url_en', '')})")
-    st.text_area("Body", story.get("body_en", ""), height=300, disabled=True, key="raw_body_en")
+    st.text_area("Body", story.get("body_en", ""), height=300, disabled=True, key=f"raw_body_en_{selected_key}")
 with tcol3:
     st.subheader("🏹 Ayoré")
     st.markdown(f"**URL:** [link]({story.get('url_ayo', '')})")
-    st.text_area("Body", story.get("body_ayo", ""), height=300, disabled=True, key="raw_body_ayo")
+    st.text_area("Body", story.get("body_ayo", ""), height=300, disabled=True, key=f"raw_body_ayo_{selected_key}")
 
 # Visualizing Decompositions
 def format_decomp(decomp_list):
@@ -169,7 +169,8 @@ with st.form("correction_form"):
         "Alignment Map (JSON/Text)", 
         value=story.get("alignment_map", ""),
         height=100,
-        help="e.g. {\"es\": [0,1], \"en\": [0], \"ayo\": [0]}"
+        help="e.g. {\"es\": [0,1], \"en\": [0], \"ayo\": [0]}",
+        key=f"align_{selected_key}"
     )
     st.markdown("---")
 
@@ -180,22 +181,25 @@ with st.form("correction_form"):
         corr_es = st.text_area(
             "Corrected Español", 
             value=story.get("corrected_body_es", story.get("body_es", "")), 
-            height=250
+            height=250,
+            key=f"corr_es_{selected_key}"
         )
     with ccol2:
         corr_en = st.text_area(
             "Corrected English", 
             value=story.get("corrected_body_en", story.get("body_en", "")), 
-            height=250
+            height=250,
+            key=f"corr_en_{selected_key}"
         )
     with ccol3:
         corr_ayo = st.text_area(
             "Corrected Ayoré", 
             value=story.get("corrected_body_ayo", story.get("body_ayo", "")), 
-            height=250
+            height=250,
+            key=f"corr_ayo_{selected_key}"
         )
         
-    comment_text = st.text_area("Editor Comments / Notes", value=story.get("correction_notes", ""), height=100)
+    comment_text = st.text_area("Editor Comments / Notes", value=story.get("correction_notes", ""), height=100, key=f"notes_{selected_key}")
     
     submitted = st.form_submit_button("Save Corrections to Disk", type="primary")
     
