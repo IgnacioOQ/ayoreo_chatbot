@@ -142,21 +142,43 @@ with tab_en:
 with tab_ayo:
     st.json(format_decomp(decomp.get("ayo", [])), expanded=False)
 with tab_parallel:
-    # Build parallel array based on max length
     dec_es = decomp.get("es", [])
     dec_en = decomp.get("en", [])
     dec_ayo = decomp.get("ayo", [])
-    max_len = max(len(dec_es), len(dec_en), len(dec_ayo))
     
-    parallel_view = []
-    for i in range(max_len):
-        parallel_view.append({
-            "index": i,
-            "es": dec_es[i] if i < len(dec_es) else None,
-            "en": dec_en[i] if i < len(dec_en) else None,
-            "ayo": dec_ayo[i] if i < len(dec_ayo) else None
-        })
-    st.json(parallel_view, expanded=False)
+    alignment_str = story.get("alignment_map")
+    
+    if alignment_str:
+        try:
+            amap = json.loads(alignment_str) if isinstance(alignment_str, str) else alignment_str
+            parallel_view = []
+            for i, group in enumerate(amap):
+                g_es = [dec_es[idx] for idx in group.get("es", []) if idx < len(dec_es)]
+                g_en = [dec_en[idx] for idx in group.get("en", []) if idx < len(dec_en)]
+                g_ayo = [dec_ayo[idx] for idx in group.get("ayo", []) if idx < len(dec_ayo)]
+                
+                parallel_view.append({
+                    "group": i,
+                    "es": g_es if g_es else None,
+                    "en": g_en if g_en else None,
+                    "ayo": g_ayo if g_ayo else None
+                })
+            st.json(parallel_view, expanded=False)
+        except Exception as e:
+            st.error(f"Error parsing alignment map: {e}")
+            st.code(alignment_str)
+    else:
+        # Fallback naive parallel array based on max length
+        max_len = max(len(dec_es), len(dec_en), len(dec_ayo))
+        parallel_view = []
+        for i in range(max_len):
+            parallel_view.append({
+                "index": i,
+                "es": dec_es[i] if i < len(dec_es) else None,
+                "en": dec_en[i] if i < len(dec_en) else None,
+                "ayo": dec_ayo[i] if i < len(dec_ayo) else None
+            })
+        st.json(parallel_view, expanded=False)
 
 st.markdown("---")
 
