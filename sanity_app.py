@@ -10,32 +10,40 @@ st.set_page_config(
 
 # Constants
 PROJECT_ROOT = Path(__file__).resolve().parent
-JSON_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "ayoreoorg.json"
-ALIGNED_JSON_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "aligned_ayoreoorg.json"
+DATASETS = {
+    "Ayoreo.org (Scraped)": {
+        "json": PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "ayoreoorg.json",
+        "aligned": PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "aligned_ayoreoorg.json"
+    },
+    "Bibles (YouVersion)": {
+        "json": PROJECT_ROOT / "data" / "raw" / "bible" / "bible.json",
+        "aligned": PROJECT_ROOT / "data" / "raw" / "bible" / "aligned_bible.json"
+    }
+}
 
 # --- 1. State Management & Loading ---
 @st.cache_data
-def load_dataset() -> dict:
-    load_path = ALIGNED_JSON_PATH if ALIGNED_JSON_PATH.exists() else JSON_PATH
+def load_dataset(dataset_name: str) -> dict:
+    paths = DATASETS[dataset_name]
+    load_path = paths["aligned"] if paths["aligned"].exists() else paths["json"]
     if not load_path.exists():
         st.error(f"Dataset not found at {load_path}")
         return {}
     with open(load_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def save_dataset(data: dict):
-    with open(ALIGNED_JSON_PATH, "w", encoding="utf-8") as f:
+def save_dataset(dataset_name: str, data: dict):
+    paths = DATASETS[dataset_name]
+    with open(paths["aligned"], "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     # Clear cache so next potential reload pulls the updated file natively
     load_dataset.clear()
 
 if "dataset" not in st.session_state:
-    st.session_state.dataset = load_dataset()
+    st.session_state.dataset = load_dataset(list(DATASETS.keys())[0])
 
-dataset = st.session_state.dataset
-
-if not dataset:
-    st.stop()
+# Wait for sidebar selection to render the rest
+dataset = None
 
 # Helper to check for mismatched decomposition lengths
 def has_mismatch(entry) -> bool:
@@ -43,16 +51,27 @@ def has_mismatch(entry) -> bool:
     counts = [len(deco.get(lang, [])) for lang in ["es", "en", "ayo"]]
     return len(set(counts)) > 1
 
-# Build filtering tuples dynamically
-unique_sections = sorted(list(set(v.get("section", "unknown") for v in dataset.values())))
-
 # --- 2. Sidebar Navigation ---
 with st.sidebar:
     st.title("🔎 Dataset Explorer")
-    st.markdown("Filter and select stories from the scraped `ayoreoorg.json` dataset to sanity-check their contents and submit structural corrections.")
+    st.markdown("Filter and select stories from the scraped datasets to sanity-check their contents and submit structural corrections.")
     
     st.markdown("---")
-    st.header("Filters")
+    st.header("1. Select Dataset")
+    selected_dataset = st.selectbox("Dataset Source", list(DATASETS.keys()))
+    
+    # Load dynamically based on sidebar
+    st.session_state.dataset = load_dataset(selected_dataset)
+    dataset = st.session_state.dataset
+
+    if not dataset:
+        st.stop()
+        
+    # Build filtering tuples dynamically
+    unique_sections = sorted(list(set(v.get("section", "unknown") for v in dataset.values())))
+
+    st.markdown("---")
+    st.header("2. Filters")
     
     selected_section = st.selectbox("Section", ["All"] + unique_sections)
     
@@ -189,7 +208,7 @@ with st.form("correction_form"):
         st.session_state.dataset[selected_key]["correction_notes"] = comment_text
         
         # Hydrate disk map
-        save_dataset(st.session_state.dataset)
+        save_dataset(selected_dataset, st.session_state.dataset)
         st.success("✅ Corrections saved successfully!")
 
 st.markdown("---")
