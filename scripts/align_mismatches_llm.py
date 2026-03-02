@@ -23,6 +23,7 @@ You MUST follow this exact Anchor Heuristic Protocol step by step in your reason
 2. Narrative Sequencing: Establish the exact narrative progression.
 3. Low-Resource Anchoring: Scan the opaque Ayoreo chunks for shared entities (e.g., proper nouns, numbers, punctuation patterns like quotation marks) and structural heuristics (e.g., overall text length, matching short components to short components, and long components to long components) that transcend translation to anchor to the ES/EN maps.
 4. Monotonic Structural Constraints: The chunks ALWAYS appear chronologically.
+5. Missing Languages: If a translation is entirely missing (e.g. the Ayoreo array is empty/null), you still MUST output its key in every grouping, but its value MUST be an empty array `[]`.
 
 We will provide you the body_decomposition arrays for 'es', 'en', and 'ayo', where the structure is a list of {"header": str|null, "text": str}.
 You must output a JSON list where each item represents a unified semantic block, mapping which indices from the ES, EN, and AYO arrays belong to it.
@@ -94,12 +95,11 @@ AYO Decompositions:
         return None
 
 def main():
-    api_key = os.environ.get("GOOGLE_API_KEY")
-    if not api_key:
-        print("GOOGLE_API_KEY environment variable not set.")
+    try:
+        client = genai.Client()
+    except Exception as e:
+        print(f"Failed to initialize Gemini Client. Make sure you have authentication configured. Error: {e}")
         return
-
-    client = genai.Client()
     
     load_path = ALIGNED_JSON_PATH if ALIGNED_JSON_PATH.exists() else JSON_PATH
     with open(load_path, "r", encoding="utf-8") as f:

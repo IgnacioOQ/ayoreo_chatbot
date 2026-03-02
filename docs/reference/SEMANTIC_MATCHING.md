@@ -55,7 +55,8 @@ Agents MUST follow these exact steps when attempting alignment:
 
 5. **Step 5: Emit the Map**
    - Build a flat JSON array of mapped groupings. Each grouping represents a single logical narrative unit.
-   - *Requirement:* Every valid index from the original decomposition arrays must appear exactly once across the final groupings.
+   - *Requirement 1:* Every valid index from the original decomposition arrays must appear exactly once across the final groupings.
+   - *Requirement 2:* If a language translation is entirely missing from the input (e.g., there is no Ayoreo text at all), you still must emit the `"ayo"` key for every grouping, but its value must be an empty array `[]`.
 
 ## Output Format
 - status: active
