@@ -95,7 +95,7 @@ Dentro de cada página de relato, el contenido principal se encuentra en:
 
 ### Output
 
-Todos los relatos se guardan en un único archivo `data/raw/ayoreoorg/ayoreoorg.json`, indexado por `story_id` (ej. `relatos-personales__cotade-me-he-entregado-dupade`). Cada entrada contiene el texto en los tres idiomas, junto con el contenido particionado estructuralmente y su mapa de alineación semántica:
+Todos los relatos se guardan inicialmente en un archivo `data/raw/ayoreoorg/ayoreoorg.json`, indexado por `story_id` (ej. `relatos-personales__...`). Posteriormente, el proceso de alineación genera un archivo `aligned_ayoreoorg.json` con idéntica estructura que incluye el mapa de alineación semántica:
 
 ```json
 {
@@ -118,7 +118,7 @@ Todos los relatos se guardan en un único archivo `data/raw/ayoreoorg/ayoreoorg.
 }
 ```
 
-> **Alineación Semántica LLM:** Debido a que la segmentación de párrafos o secciones puede diferir entre idiomas en algunos relatos, el script `scripts/align_mismatches_llm.py` aplica el protocolo definido en `docs/reference/SEMANTIC_MATCHING.md`. Utiliza la API de Gemini para anclar semánticamente los idiomas de altos recursos (ES/EN) y alinear heurísticamente los fragmentos opacos en Ayoré, guardando el resultado en `alignment_map`. Esto se visualiza interactivamente en `sanity_app.py`.
+> **Alineación Semántica LLM:** Debido a que la segmentación de párrafos o secciones puede diferir entre idiomas en algunos relatos, el script `scripts/align_mismatches_llm.py` aplica el protocolo definido en `docs/reference/SEMANTIC_MATCHING.md`. Utiliza la API de Gemini para anclar semánticamente los idiomas de altos recursos (ES/EN) y alinear heurísticamente los fragmentos opacos en Ayoré. Guarda el resultado con la clave `"alignment_map"` en un nuevo archivo `aligned_ayoreoorg.json`. Esto se visualiza interactivamente en `sanity_app.py`.
 ---
 
 ## Fuente de datos: Bible.com

@@ -41,12 +41,12 @@ Agents MUST follow these exact steps when attempting alignment:
    - Example observation: *"The sequence is: (A) Introduction of narrator Cotade. (B) Journey to the forest. (C) Encounter with the jaguar."*
 
 3. **Step 3: Low-Resource Anchoring (Named Entities & Structural Markers)**
-   - Scan the opaque Ayoreo chunks for shared entities that transcend translation.
+   - Scan the opaque Ayoreo chunks for shared entities and structural traits that transcend translation.
    - Look for:
      - **Proper Nouns / Names:** *Cotade*, *Dupade*, *Campo Loro*.
      - **Numbers / Dates:** *1985*, *10*.
      - **Punctuation Patterns:** Quotation marks (`"..."`) usually map to dialogue in the exact same sequence in the other languages.
-     - **Formatting:** Paragraph length relative to the overall text.
+     - **Text Length:** Overall length of the text component. Short components typically translate to short components, and long components to long components. Use relative character blocks to establish a baseline.
 
 4. **Step 4: Monotonic Structural Constraints**
    - The chunks ALWAYS appear chronologically.
@@ -56,6 +56,38 @@ Agents MUST follow these exact steps when attempting alignment:
 5. **Step 5: Emit the Map**
    - Build a flat JSON array of mapped groupings. Each grouping represents a single logical narrative unit.
    - *Requirement:* Every valid index from the original decomposition arrays must appear exactly once across the final groupings.
+
+## Output Format
+- status: active
+- type: format
+<!-- content -->
+The semantic matching process must produce an output file that is structurally identical to the source `ayoreoorg.json`, but saved as a new file named `aligned_ayoreoorg.json`. 
+
+The script should serialize the complete dataset, where each original entry is preserved in its entirety, but any entry that underwent alignment now includes the new `"alignment_map"` key. 
+
+Example output shape:
+```json
+{
+  "relatos-personales__cotade-me-he-entregado-dupade": {
+    "story_id": "relatos-personales__cotade-me-he-entregado-dupade",
+    "url_es": "...",
+    "url_en": "...",
+    "url_ayo": "...",
+    "title_es": "...", "title_en": "...", "title_ayo": "...",
+    "body_es": "...", "body_en": "...", "body_ayo": "...",
+    "body_decomposition": {
+      "es": [...],
+      "en": [...],
+      "ayo": [...]
+    },
+    "alignment_map": "[{\"es\": [0, 1], \"en\": [0], \"ayo\": [0]}]",
+    "warnings": []
+  },
+  "creencias__origen-de-los-chamanes": {
+    "...": "..."
+  }
+}
+```
 
 ## LLM Prompts
 - status: active

@@ -11,18 +11,20 @@ st.set_page_config(
 # Constants
 PROJECT_ROOT = Path(__file__).resolve().parent
 JSON_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "ayoreoorg.json"
+ALIGNED_JSON_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "aligned_ayoreoorg.json"
 
 # --- 1. State Management & Loading ---
 @st.cache_data
 def load_dataset() -> dict:
-    if not JSON_PATH.exists():
-        st.error(f"Dataset not found at {JSON_PATH}")
+    load_path = ALIGNED_JSON_PATH if ALIGNED_JSON_PATH.exists() else JSON_PATH
+    if not load_path.exists():
+        st.error(f"Dataset not found at {load_path}")
         return {}
-    with open(JSON_PATH, "r", encoding="utf-8") as f:
+    with open(load_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 def save_dataset(data: dict):
-    with open(JSON_PATH, "w", encoding="utf-8") as f:
+    with open(ALIGNED_JSON_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     # Clear cache so next potential reload pulls the updated file natively
     load_dataset.clear()
