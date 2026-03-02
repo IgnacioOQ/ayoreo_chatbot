@@ -62,6 +62,7 @@ Agents MUST follow these exact steps when attempting alignment:
    - *Requirement 1:* Every valid index from the original decomposition arrays must appear exactly once across the final groupings.
    - *Requirement 2:* If a language translation is entirely missing from the input (e.g., there is no Ayoreo text at all), you still must emit the `"ayo"` key for every grouping, but its value must be an empty array `[]`. 
    - *Heuristic 1 (Missing Ayoreo Context):* When there is a mismatch where Spanish or English components outnumber Ayoreo components, the missing pieces are almost always at the **beginning** of the text. This is because raw materials typically include Spanish/English meta-comments or context framing the text, whereas the Ayoreo translation strictly contains only the narrative body.
+   - *Heuristic 2 (Size Matching):* The LLM must not associate components of significantly different physical sizes. If a Spanish/English component is a single sentence (e.g., a short meta-comment) and the Ayoreo component is an extremely long paragraph, they **DO NOT MATCH**. In this case, the short meta-comment is missing an Ayoreo translation and must be mapped to `[]`.
 
 ## Output Format
 - status: active

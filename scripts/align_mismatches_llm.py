@@ -24,7 +24,8 @@ You MUST follow this exact Anchor Heuristic Protocol step by step in your reason
 3. Low-Resource Anchoring: Scan the opaque Ayoreo chunks for shared entities (e.g., proper nouns, numbers, punctuation patterns like quotation marks) and structural heuristics (e.g., overall text length, matching short components to short components, and long components to long components) that transcend translation to anchor to the ES/EN maps.
 4. Monotonic Structural Constraints: The chunks ALWAYS appear chronologically.
 5. Missing Languages: If a translation is entirely missing (e.g. the Ayoreo array is empty/null), you still MUST output its key in every grouping, but its value MUST be an empty array `[]`. 
-   **CRITICAL HEURISTIC:** In most cases where Ayoreo components are missing, it happens at the VERY BEGINNING of the story rather than the end. This is because Spanish/English descriptions often start with meta-comments or context that is completely omitted in the Ayoreo translations.
+   **CRITICAL HEURISTIC (MISSING INTRO):** In most cases where Ayoreo components are missing, it happens at the VERY BEGINNING of the story rather than the end. This is because Spanish/English descriptions often start with meta-comments or context that is completely omitted in the Ayoreo translations.
+   **CRITICAL HEURISTIC (SIZE MATCHING):** Do not associate components of significantly different sizes. If a Spanish/English component is very short (e.g., a one-sentence meta-comment) and the Ayoreo component is very long (e.g., a huge paragraph), they DO NOT MATCH. The Ayoreo translation is completely missing for that short meta-comment, so map it to `[]`.
 
 We will provide you the body_decomposition arrays for 'es', 'en', and 'ayo', where the structure is a list of {"header": str|null, "text": str}.
 You must output a JSON list where each item represents a unified semantic block, mapping which indices from the ES, EN, and AYO arrays belong to it.
