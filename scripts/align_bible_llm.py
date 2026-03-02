@@ -52,19 +52,19 @@ def align_story(client, story_id, entry):
     prompt = f"""Story ID: {story_id}
 
 ES Decompositions:
-{json.dumps(deco.get('es', []), indent=2, ensure_ascii=False)}
+{json.dumps(deco.get('es', []), separators=(',', ':'), ensure_ascii=False)}
 
 EN Decompositions:
-{json.dumps(deco.get('en', []), indent=2, ensure_ascii=False)}
+{json.dumps(deco.get('en', []), separators=(',', ':'), ensure_ascii=False)}
 
 AYO Decompositions:
-{json.dumps(deco.get('ayo', []), indent=2, ensure_ascii=False)}
+{json.dumps(deco.get('ayo', []), separators=(',', ':'), ensure_ascii=False)}
 """
 
     print(f"Aligning {story_id}...")
     try:
         response = client.models.generate_content(
-            model='gemini-2.5-pro',
+            model='gemini-2.5-flash',
             contents=prompt,
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_PROMPT,

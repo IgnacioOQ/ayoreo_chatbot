@@ -95,7 +95,9 @@ Dentro de cada página de relato, el contenido principal se encuentra en:
 
 ### Output
 
-Todos los relatos se guardan inicialmente en un archivo `data/raw/ayoreoorg/ayoreoorg.json`, indexado por `story_id` (ej. `relatos-personales__...`). Posteriormente, el proceso de alineación genera un archivo `aligned_ayoreoorg.json` con idéntica estructura que incluye el mapa de alineación semántica:
+Todos los relatos se guardan inicialmente en un archivo `data/raw/ayoreoorg/ayoreoorg.json` (o `bible.json`), indexado por `story_id` (ej. `relatos-personales__...`). Posteriormente, el proceso de alineación genera archivos homólogos (`aligned_ayoreoorg.json` o `aligned_bible.json`) con idéntica estructura que incluye el mapa de alineación semántica. 
+
+**💰 Nota sobre Costos de API:** La generación de estos mapas utiliza Gemini. Para evitar sobrecostos por el volumen del texto (ej. la Biblia), los scripts transforman el payload mediante minificación JSON (`separators=(',', ':')`) y priorizan el uso de modelos rápidos como `gemini-2.5-flash` sobre iteraciones Pro, reduciendo los costos base un ~95%.
 
 ```json
 {

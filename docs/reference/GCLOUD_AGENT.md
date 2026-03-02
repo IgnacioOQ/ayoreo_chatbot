@@ -62,6 +62,11 @@ We use a "Split-Brain" configuration strategy to separate local development from
 - **Cause**: The Python process (Streamlit server) loads environment variables *only on startup*. Hot-reloading checks code changes but not environment variable changes.
 - **Fix**: Manually stop (Ctrl+C) and restart the Streamlit server (`streamlit run app.py`). On Cloud, use the "Reboot App" button.
 
+### Issue: High Token Costs during LLM Alignment (March 2026)
+- **Problem**: Running the semantic matching protocol for the 530 Bible dataset entries consumed 3.69M tokens (averaging ~6,960 tokens/request) and cost ~$4.60.
+- **Cause**: The prompt payload was formatted with `json.dumps(..., indent=2)`, creating thousands of useless whitespace tokens across the 3 translations. The scripts were also using `gemini-2.5-pro`, which is overpowered and 95% more expensive than needed for structural alignment.
+- **Fix**: Replaced `indent=2` with `separators=(',', ':')` to completely minify the JSON payload before sending. Switched the target model to `gemini-2.5-flash`, bringing the cost of the exact same 3.69M token workload down to ~$0.27.
+
 ### Issue: Secret Precedence
 - **Problem**: Confusion over whether `secrets.toml` overrides `.env`.
 - **Resolution**: Keeps things simple. Store *only* Service Account JSON in `secrets.toml` and *only* simple strings (API Keys) in `.env`. Do not duplicate keys.

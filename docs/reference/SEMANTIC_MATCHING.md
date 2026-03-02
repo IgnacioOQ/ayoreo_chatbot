@@ -96,8 +96,13 @@ Example output shape for `aligned_ayoreoorg.json`:
 }
 ```
 
-## LLM Prompts
+## LLM Prompts & Optimization
 - status: active
 - type: context
 <!-- content -->
 When invoking an LLM via API (e.g., Gemini Standard/Pro) to perform this matching, the System Instruction MUST include the rules described above in the **Anchor Heuristic Protocol**, accompanied by an explicit Structured Output schema.
+
+### Token Efficiency Guardrails
+Due to the sheer size of the raw translation text (e.g., 530 chapters of the Bible translate to ~3.69M tokens before output), agents or scripts running this protocol MUST abide by two cost-saving rules:
+1. **Model Selection:** Use a lightweight, high-speed model (e.g., `gemini-2.5-flash`). The structural heuristics defined above do not require heavy reasoning models like `pro`, allowing for a ~95% cost reduction.
+2. **Payload Minification:** Never send "pretty printed" data. When injecting the `body_decomposition` arrays into the prompt, you must serialize them without whitespaces (e.g. `json.dumps(data, separators=(',', ':'), ensure_ascii=False)`). Whitespace indenting across thousands of lines mathematically inflates token consumption by 20-30%.
