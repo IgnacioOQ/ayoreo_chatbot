@@ -113,13 +113,29 @@ def format_decomp(decomp_list):
 st.markdown("### 🧩 Body Decomposition")
 decomp = story.get("body_decomposition", {})
 
-tab_es, tab_en, tab_ayo = st.tabs(["Español", "English", "Ayoré"])
+tab_es, tab_en, tab_ayo, tab_parallel = st.tabs(["Español", "English", "Ayoré", "Parallel (Aligned)"])
 with tab_es:
-    st.json(format_decomp(decomp.get("es", [])))
+    st.json(format_decomp(decomp.get("es", [])), expanded=False)
 with tab_en:
-    st.json(format_decomp(decomp.get("en", [])))
+    st.json(format_decomp(decomp.get("en", [])), expanded=False)
 with tab_ayo:
-    st.json(format_decomp(decomp.get("ayo", [])))
+    st.json(format_decomp(decomp.get("ayo", [])), expanded=False)
+with tab_parallel:
+    # Build parallel array based on max length
+    dec_es = decomp.get("es", [])
+    dec_en = decomp.get("en", [])
+    dec_ayo = decomp.get("ayo", [])
+    max_len = max(len(dec_es), len(dec_en), len(dec_ayo))
+    
+    parallel_view = []
+    for i in range(max_len):
+        parallel_view.append({
+            "index": i,
+            "es": dec_es[i] if i < len(dec_es) else None,
+            "en": dec_en[i] if i < len(dec_en) else None,
+            "ayo": dec_ayo[i] if i < len(dec_ayo) else None
+        })
+    st.json(parallel_view, expanded=False)
 
 st.markdown("---")
 
@@ -128,6 +144,14 @@ st.header("📝 Editor Corrections")
 st.markdown("Use this form to add notes or correct the raw scraped bodies. Your inputs will be saved into the JSON under new `correction` keys so the raw text is never lost.")
 
 with st.form("correction_form"):
+    alignment_str = st.text_area(
+        "Alignment Map (JSON/Text)", 
+        value=story.get("alignment_map", ""),
+        height=100,
+        help="e.g. {\"es\": [0,1], \"en\": [0], \"ayo\": [0]}"
+    )
+    st.markdown("---")
+
     ccol1, ccol2, ccol3 = st.columns(3)
     
     # Pre-fill with existing corrections if they exist, otherwise default to the current raw body
@@ -150,12 +174,6 @@ with st.form("correction_form"):
             height=250
         )
         
-    alignment_str = st.text_area(
-        "Alignment Map (JSON/Text)", 
-        value=story.get("alignment_map", ""),
-        height=100,
-        help="e.g. {\"es\": [0,1], \"en\": [0], \"ayo\": [0]}"
-    )
     comment_text = st.text_area("Editor Comments / Notes", value=story.get("correction_notes", ""), height=100)
     
     submitted = st.form_submit_button("Save Corrections to Disk", type="primary")
