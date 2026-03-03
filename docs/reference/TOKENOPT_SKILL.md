@@ -435,6 +435,173 @@ def get_cached_or_call(prompt: str, model: str, call_fn) -> str:
 
 **When to Invalidate**: Clear the cache directory when the prompt template changes, the model version is updated, or the underlying data is modified.
 
+### 12. Semantic Caching (Vector-Based)
+- id: tokenopt_skill.infrastructure.semantic_caching
+- status: active
+- type: guideline
+- last_checked: 2026-03-02
+<!-- content -->
+**Rule**: For user-facing or RAG-based workflows where different users ask semantically equivalent questions in different words, implement a semantic cache that matches queries by meaning (vector similarity) rather than by exact string.
+
+**Why**: Local hash-based caching (Rule #11) only catches *identical* prompts. But in practice, queries like `"What does Genesis 1:1 say in Ayoreo?"` and `"Translate the first verse of Genesis to Ayoreo"` have the same intent and should return the same cached response. A semantic cache converts queries into vector embeddings and uses cosine similarity to find matches, eliminating redundant LLM calls even when the wording varies. Production systems report cache hit rates of 50% to 67% on real workloads, with latency dropping from seconds to milliseconds on hits.
+
+**Architecture**: A semantic cache consists of three components:
+1. **Embedding Model** — Converts text queries into dense vector representations. Use a lightweight local model (e.g., `sentence-transformers/all-MiniLM-L6-v2`) to avoid adding API cost on every cache lookup. Avoid using the LLM itself as the embedding model — the computational overhead defeats the purpose.
+2. **Vector Store** — Stores embeddings and performs approximate nearest-neighbor (ANN) search. Options range from in-process (FAISS) to hosted (Qdrant, pgvector, Milvus, ChromaDB).
+3. **Similarity Threshold** — A cosine similarity cutoff (typically 0.90 to 0.95) that determines whether a match is "close enough" to serve from cache.
+
+**When to Use**:
+- RAG pipelines where users ask overlapping questions against the same knowledge base.
+- Chatbot or API endpoints with repetitive query patterns.
+- Translation lookups where the same source verse may be requested in varied phrasing.
+
+**When NOT to Use**:
+- Batch processing scripts with unique, non-repeating prompts (use local hash caching instead).
+- Tasks where the response must reflect real-time or constantly changing data.
+- Contexts where even slight semantic drift could produce an incorrect answer (e.g., distinguishing "Genesis 1:1" from "Genesis 1:2").
+
+**Implementation (Lightweight — FAISS + sentence-transformers)**:
+```python
+import json
+import os
+import numpy as np
+from sentence_transformers import SentenceTransformer
+
+# --- Configuration ---
+SIMILARITY_THRESHOLD = 0.92  # Cosine similarity cutoff for cache hits
+CACHE_FILE = ".semantic_cache/cache_store.json"
+INDEX_FILE = ".semantic_cache/embeddings.npy"
+
+class SemanticCache:
+    """
+    A lightweight semantic cache using sentence-transformers for embeddings
+    and numpy for cosine similarity search. No external vector DB required.
+    Suitable for small-to-medium caches (< 100k entries).
+    """
+
+    def __init__(
+        self,
+        model_name: str = "all-MiniLM-L6-v2",
+        threshold: float = SIMILARITY_THRESHOLD
+    ):
+        # Load a small, fast embedding model (~80MB, runs on CPU)
+        self.model = SentenceTransformer(model_name)
+        self.threshold = threshold
+        self.entries = []       # List of {"query": str, "response": str}
+        self.embeddings = None  # numpy array of shape (n, dim)
+        self._load_cache()
+
+    def _load_cache(self):
+        """Load persisted cache from disk if available."""
+        os.makedirs(os.path.dirname(CACHE_FILE), exist_ok=True)
+        if os.path.exists(CACHE_FILE) and os.path.exists(INDEX_FILE):
+            with open(CACHE_FILE, "r") as f:
+                self.entries = json.load(f)
+            self.embeddings = np.load(INDEX_FILE)
+
+    def _save_cache(self):
+        """Persist cache to disk after updates."""
+        with open(CACHE_FILE, "w") as f:
+            json.dump(self.entries, f, separators=(',', ':'))
+        if self.embeddings is not None:
+            np.save(INDEX_FILE, self.embeddings)
+
+    def _cosine_similarity(self, query_emb: np.ndarray) -> np.ndarray:
+        """Compute cosine similarity between a query and all cached embeddings."""
+        if self.embeddings is None or len(self.embeddings) == 0:
+            return np.array([])
+        # Normalize for cosine similarity
+        query_norm = query_emb / np.linalg.norm(query_emb)
+        cache_norms = self.embeddings / np.linalg.norm(
+            self.embeddings, axis=1, keepdims=True
+        )
+        return cache_norms @ query_norm
+
+    def get(self, query: str) -> str | None:
+        """
+        Look up a semantically similar query in the cache.
+        Returns the cached response if similarity >= threshold, else None.
+        """
+        query_emb = self.model.encode(query, convert_to_numpy=True)
+        similarities = self._cosine_similarity(query_emb)
+
+        if len(similarities) == 0:
+            return None
+
+        best_idx = int(np.argmax(similarities))
+        best_score = similarities[best_idx]
+
+        if best_score >= self.threshold:
+            return self.entries[best_idx]["response"]
+
+        return None
+
+    def set(self, query: str, response: str):
+        """
+        Store a new query-response pair in the cache.
+        Call this after a successful LLM call on a cache miss.
+        """
+        query_emb = self.model.encode(query, convert_to_numpy=True)
+
+        self.entries.append({"query": query, "response": response})
+
+        if self.embeddings is None:
+            self.embeddings = query_emb.reshape(1, -1)
+        else:
+            self.embeddings = np.vstack([self.embeddings, query_emb])
+
+        self._save_cache()
+
+    def clear(self):
+        """Invalidate the entire cache."""
+        self.entries = []
+        self.embeddings = None
+        self._save_cache()
+```
+
+**Usage Pattern**:
+```python
+# Initialize the cache (loads from disk if previously saved)
+cache = SemanticCache(threshold=0.92)
+
+def query_with_semantic_cache(query: str, llm_call_fn) -> str:
+    """
+    Check semantic cache before calling the LLM.
+    On miss, call the LLM and store the result for future hits.
+    """
+    # Step 1: Check cache
+    cached = cache.get(query)
+    if cached is not None:
+        logger.info(f"SEMANTIC CACHE HIT for: {query[:80]}")
+        return cached
+
+    # Step 2: Cache miss — call the LLM
+    logger.info(f"SEMANTIC CACHE MISS for: {query[:80]}")
+    response = llm_call_fn(query)
+
+    # Step 3: Store for future hits
+    cache.set(query, response)
+    return response
+```
+
+**Threshold Tuning Guide**:
+- **0.95+** — Very strict. Low false-positive risk, but many near-duplicates will miss. Good for high-stakes tasks (translation, legal).
+- **0.90–0.95** — Balanced. Recommended starting range. Monitor for false positives.
+- **0.85–0.90** — Aggressive. Higher hit rate but increased risk of serving semantically "close but wrong" responses. Only suitable for FAQ-style tasks with broad answers.
+- **Below 0.85** — Not recommended. False-positive rate becomes unacceptable.
+
+Start at 0.92, log all cache hits with their similarity scores, and review hits below 0.95 manually during the first week. Adjust based on observed accuracy.
+
+**Scaling Considerations**:
+- For caches under ~50k entries, the numpy-based approach above is fast enough (sub-millisecond search).
+- For caches over 50k entries, switch to FAISS (`faiss.IndexFlatIP`) for efficient ANN search, or use a hosted vector database (Qdrant, pgvector, ChromaDB).
+- Embedding overhead is ~5-20ms per query using a local model on CPU. This is negligible compared to the 1-5 seconds saved by avoiding an LLM call.
+
+**Cache Invalidation Strategy**:
+- **TTL-based**: Expire entries after a configurable time window (e.g., 7 days for static reference data like biblical translations).
+- **Version-based**: Clear the cache when the underlying dataset or prompt template changes (same as Rule #11).
+- **Selective**: If a specific translation is corrected, remove only the affected entries rather than clearing the entire cache.
+
 ## Prompt Architecture Patterns
 - id: tokenopt_skill.prompt_architecture
 - status: active
@@ -443,7 +610,7 @@ def get_cached_or_call(prompt: str, model: str, call_fn) -> str:
 <!-- content -->
 How you structure multi-turn and multi-step workflows has a direct impact on cumulative token cost.
 
-### 12. Conversation History Compression
+### 13. Conversation History Compression
 - id: tokenopt_skill.prompt_architecture.conversation_compression
 - status: active
 - type: guideline
@@ -473,7 +640,7 @@ def compress_history(turns: list[dict], max_recent: int = 3) -> str:
     )
 ```
 
-### 13. Chunking Strategy for Large Datasets
+### 14. Chunking Strategy for Large Datasets
 - id: tokenopt_skill.prompt_architecture.chunking_strategy
 - status: active
 - type: guideline
@@ -505,7 +672,7 @@ def chunk_by_book(records: list[dict]) -> list[list[dict]]:
 
 **Token Budget Estimation**: Use the approximation of ~3.5 characters per token for English text and ~4 characters per token for Spanish. For Ayoreo text, benchmark a sample to establish the ratio since low-resource languages may tokenize differently.
 
-### 14. Tool and Instruction Pruning
+### 15. Tool and Instruction Pruning
 - id: tokenopt_skill.prompt_architecture.tool_pruning
 - status: active
 - type: guideline
@@ -547,7 +714,7 @@ Similarly, conditionally include system prompt sections. If a section like "When
 <!-- content -->
 What gets measured gets optimized. Every script that calls the API must track token usage.
 
-### 15. Response Metadata Logging
+### 16. Response Metadata Logging
 - id: tokenopt_skill.monitoring.response_metadata
 - status: active
 - type: guideline
@@ -585,7 +752,7 @@ def log_token_usage(response, task_name: str):
     }
 ```
 
-### 16. Pre-Flight Token Estimation
+### 17. Pre-Flight Token Estimation
 - id: tokenopt_skill.monitoring.preflight_estimation
 - status: active
 - type: guideline
@@ -645,7 +812,7 @@ def estimate_batch_cost(
 <!-- content -->
 Failed requests waste tokens. Retries multiply that waste. Defensive coding prevents both.
 
-### 17. Retry Strategies
+### 18. Retry Strategies
 - id: tokenopt_skill.error_handling.retry_strategies
 - status: active
 - type: guideline
@@ -692,7 +859,7 @@ def call_with_retry(
     return None
 ```
 
-### 18. Output Validation Before Re-Querying
+### 19. Output Validation Before Re-Querying
 - id: tokenopt_skill.error_handling.output_validation
 - status: active
 - type: guideline
@@ -746,6 +913,8 @@ Before submitting any script that calls `google.genai`, verify every item:
 - [ ] Explicit context caching used for repeated large contexts
 - [ ] Batch API used for non-latency-critical bulk processing
 - [ ] Local response cache prevents duplicate calls during development
+- [ ] Semantic cache evaluated for user-facing / RAG endpoints with repetitive queries
+- [ ] Similarity threshold tuned and cache hits monitored for false positives
 - [ ] `usage_metadata` logged after every API call
 - [ ] Pre-flight cost estimation runs before large batches
 - [ ] Retry logic distinguishes retryable vs. non-retryable errors
