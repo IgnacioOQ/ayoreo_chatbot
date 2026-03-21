@@ -68,3 +68,46 @@ The alignment was operating at section level (3-4 chunks per story) instead of v
 - Corpus: **1,795 segments** (was 366 — glossaries only). Now includes 1,143+ narrative pairs.
 - Splits: 1,435 train / 178 val / 182 test.
 - 23 stories failed alignment (mostly `ensenanzas`) — retry run initiated; these fall back to `align_sentences()` in corpus builder.
+
+---
+
+## [2026-03-21] Alignment Completion: Windowed Batching & Safety Filter Handling
+- id: ai_agent_logs.2026_03_21_alignment_completion
+- status: active
+- type: context
+- last_checked: 2026-03-21
+<!-- content -->
+**Agent**: Claude Sonnet 4.6 (Claude Code)
+**Task**: Fix the 23 remaining unaligned stories from the previous session.
+
+### Summary
+Three distinct failure categories were identified and addressed. The core issue was that large stories (27–142 EN chunks) caused Gemini's structured output to generate enormous pretty-printed JSON, consistently hitting the 32k output token limit and truncating mid-object. The fix was to remove `response_schema` (switching to plain JSON mode, ~10x more compact output), reduce `WINDOW_SIZE` to 20 EN chunks per API call, and add explicit index bounds to the prompt. Additionally, 2 stories with EN=0 were short-circuited in code (no API call), and 5 stories were permanently blocked by Gemini's `PROHIBITED_CONTENT` safety filter on their text content.
+
+### Root Causes & Fixes
+- **EN=0 stories (2)**: `canciones-voy-a-cantar-un-poco` and `ayoreode-chuje-yai-nanique` have no English content — alignment is structurally impossible. Fixed by short-circuiting in `align_story()`: returns `[]` immediately without an API call, saved as `"alignment_map": "[]"`.
+- **Output truncation (21 stories)**: Gemini's `response_schema` forces pretty-printed JSON (one element per line). Even with `max_output_tokens=32768`, the model was producing 64k+ char outputs due to hallucinated index arrays. Fixed by:
+  - Removing `response_schema` — plain JSON mode produces compact minified output (~10x smaller)
+  - Reducing `WINDOW_SIZE` from 40 → 20 EN chunks per call
+  - Setting `max_output_tokens=8192` (appropriate for compact 20-block output)
+  - Adding explicit index bounds to the prompt header: `EN indices 0-{N-1} ({N} items)`
+  - Implementing windowed batching: large stories split into 20-chunk EN windows with proportional AYO windows (ratio × 1.3 buffer); indices offset-adjusted and stitched
+- **`PROHIBITED_CONTENT` blocks (5 stories + 1 parse error)**: Gemini safety filter triggers on specific windows of `ensenanzas` content (Ayoreo religious teachings). Cannot be resolved by prompt engineering — the text itself is blocked. Accepted as permanent fallbacks to `align_sentences()` in corpus builder. These are ~4.5% of the dataset; `ensenanzas` texts are short and structured, making the naive aligner reasonably effective for them.
+- **Fixed `if alignment_map:` → `if alignment_map is not None:`** in main loop so EN=0 stories (returning `[]`) get saved and skipped on future runs.
+
+### Changes
+- **`scripts/align_mismatches_llm.py`**:
+  - Added `WINDOW_SIZE = 20` constant
+  - Removed Pydantic `AlignmentBlock`/`AlignmentResponse` schema classes
+  - Rewrote `align_story()` with EN=0 short-circuit and windowed dispatch
+  - Extracted `_call_align_window()` for single-window API calls with offset adjustment
+  - Implemented `_align_windowed()` for large stories
+  - Removed `response_schema` from config; switched to plain JSON mode
+  - Updated system prompt: added compact JSON format example, index bounds rule, coverage rule
+  - Fixed `if alignment_map is not None:` check in main loop
+
+### Verification
+- Final alignment: **126/132 stories** (109 → 126, +17 this session)
+- 2 EN=0 stories: saved as `[]`, permanently skipped
+- 5 PROHIBITED_CONTENT + 1 parse error: permanent fallbacks to `align_sentences()`
+- Token cost this session: **177,709 tokens** (~$0.04)
+- Output tokens per story: 164–1,069 (compact JSON working correctly)
