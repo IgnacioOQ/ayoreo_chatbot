@@ -174,48 +174,117 @@ st.markdown("---")
 
 # --- 4. Annotation & Corrections Area ---
 st.header("📝 Editor Corrections")
-st.markdown("Use this form to add notes or correct the raw scraped bodies. Your inputs will be saved into the JSON under new `correction` keys so the raw text is never lost.")
+st.markdown("Edit decomposition chunks directly, aligned in parallel. Changes are saved back to `body_decomposition` in the JSON.")
+
+dec_en  = decomp.get("en",  [])
+dec_ayo = decomp.get("ayo", [])
+
+# Parse the saved alignment map to drive the parallel chunk layout
+try:
+    amap = json.loads(story.get("alignment_map") or "[]")
+    if not isinstance(amap, list):
+        amap = []
+except Exception:
+    amap = []
 
 with st.form("correction_form"):
-    alignment_str = st.text_area(
-        "Alignment Map (JSON/Text)", 
+    alignment_input = st.text_area(
+        "Alignment Map (JSON)",
         value=story.get("alignment_map", ""),
         height=100,
-        help="e.g. {\"es\": [0,1], \"en\": [0], \"ayo\": [0]}",
+        help='e.g. [{"en":[0,1],"ayo":[0]},{"en":[2],"ayo":[1,2]}]',
         key=f"align_{selected_key}"
     )
+
     st.markdown("---")
+    st.markdown("#### Parallel Decomposition")
 
-    ccol1, ccol2 = st.columns(2)
+    en_inputs  = {}   # chunk index → widget value
+    ayo_inputs = {}
 
-    # Pre-fill with existing corrections if they exist, otherwise default to the current raw body
-    with ccol1:
-        corr_en = st.text_area(
-            "Corrected English",
-            value=story.get("corrected_body_en", story.get("body_en", "")),
-            height=250,
-            key=f"corr_en_{selected_key}"
-        )
-    with ccol2:
-        corr_ayo = st.text_area(
-            "Corrected Ayoré",
-            value=story.get("corrected_body_ayo", story.get("body_ayo", "")),
-            height=250,
-            key=f"corr_ayo_{selected_key}"
-        )
-        
-    comment_text = st.text_area("Editor Comments / Notes", value=story.get("correction_notes", ""), height=100, key=f"notes_{selected_key}")
-    
+    if amap:
+        for g_idx, group in enumerate(amap):
+            en_idxs  = [i for i in group.get("en",  []) if i < len(dec_en)]
+            ayo_idxs = [i for i in group.get("ayo", []) if i < len(dec_ayo)]
+            if not en_idxs and not ayo_idxs:
+                continue
+            label = f"Group {g_idx} — EN{en_idxs} ↔ AYO{ayo_idxs}"
+            with st.expander(label, expanded=False):
+                gcol1, gcol2 = st.columns(2)
+                with gcol1:
+                    for idx in en_idxs:
+                        chunk = dec_en[idx]
+                        if chunk.get("header"):
+                            st.caption(chunk["header"])
+                        en_inputs[idx] = st.text_area(
+                            f"EN [{idx}]",
+                            value=chunk.get("text", ""),
+                            height=120,
+                            key=f"en_{selected_key}_{g_idx}_{idx}"
+                        )
+                with gcol2:
+                    for idx in ayo_idxs:
+                        chunk = dec_ayo[idx]
+                        if chunk.get("header"):
+                            st.caption(chunk["header"])
+                        ayo_inputs[idx] = st.text_area(
+                            f"AYO [{idx}]",
+                            value=chunk.get("text", ""),
+                            height=120,
+                            key=f"ayo_{selected_key}_{g_idx}_{idx}"
+                        )
+    else:
+        # No alignment map: show chunks positionally
+        max_len = max(len(dec_en), len(dec_ayo)) if (dec_en or dec_ayo) else 0
+        for i in range(max_len):
+            with st.expander(f"Chunk {i}", expanded=False):
+                gcol1, gcol2 = st.columns(2)
+                with gcol1:
+                    if i < len(dec_en):
+                        chunk = dec_en[i]
+                        if chunk.get("header"):
+                            st.caption(chunk["header"])
+                        en_inputs[i] = st.text_area(
+                            f"EN [{i}]",
+                            value=chunk.get("text", ""),
+                            height=120,
+                            key=f"en_{selected_key}_{i}"
+                        )
+                with gcol2:
+                    if i < len(dec_ayo):
+                        chunk = dec_ayo[i]
+                        if chunk.get("header"):
+                            st.caption(chunk["header"])
+                        ayo_inputs[i] = st.text_area(
+                            f"AYO [{i}]",
+                            value=chunk.get("text", ""),
+                            height=120,
+                            key=f"ayo_{selected_key}_{i}"
+                        )
+
+    st.markdown("---")
+    comment_text = st.text_area(
+        "Editor Comments / Notes",
+        value=story.get("correction_notes", ""),
+        height=100,
+        key=f"notes_{selected_key}"
+    )
+
     submitted = st.form_submit_button("Save Corrections to Disk", type="primary")
-    
+
     if submitted:
-        # Update the active story in the session state
-        st.session_state.dataset[selected_key]["corrected_body_en"] = corr_en
-        st.session_state.dataset[selected_key]["corrected_body_ayo"] = corr_ayo
-        st.session_state.dataset[selected_key]["alignment_map"] = alignment_str
-        st.session_state.dataset[selected_key]["correction_notes"] = comment_text
-        
-        # Hydrate disk map
+        new_dec_en  = [dict(c) for c in dec_en]
+        new_dec_ayo = [dict(c) for c in dec_ayo]
+        for idx, text in en_inputs.items():
+            new_dec_en[idx]["text"] = text
+        for idx, text in ayo_inputs.items():
+            new_dec_ayo[idx]["text"] = text
+
+        entry = st.session_state.dataset[selected_key]
+        entry["body_decomposition"] = {"en": new_dec_en, "ayo": new_dec_ayo}
+        entry["alignment_map"]     = alignment_input
+        entry["correction_notes"]  = comment_text
+
         save_dataset(selected_dataset, st.session_state.dataset)
         st.success("✅ Corrections saved successfully!")
 
