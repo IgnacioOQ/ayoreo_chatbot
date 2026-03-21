@@ -10,7 +10,7 @@ log = get_logger(__name__)
 
 
 class DictionaryLookup:
-    """In-memory dictionary for fast Ayoreo-Spanish word lookup."""
+    """In-memory dictionary for fast Ayoreo-English word lookup."""
 
     def __init__(self):
         self.entries: dict[str, list[dict]] = {}  # lowercase key -> list of entries
@@ -36,7 +36,7 @@ class DictionaryLookup:
                     key = entry.get("ayoreo", "").lower()
                     self.entries.setdefault(key, []).append({
                         "headword": entry["ayoreo"],
-                        "definition_es": entry.get("spanish", ""),
+                        "definition_en": entry.get("english", entry.get("spanish", "")),
                         "source": "glossary",
                     })
 

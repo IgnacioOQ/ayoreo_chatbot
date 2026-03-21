@@ -59,12 +59,12 @@ class TranslationEngine:
             self._lora_translator = LoRATranslator()
         return self._lora_translator
 
-    def translate(self, text: str, direction: str = "ayo_to_es") -> str:
-        """Translate text between Ayoreo and Spanish.
+    def translate(self, text: str, direction: str = "ayo_to_en") -> str:
+        """Translate text between Ayoreo and English.
 
         Args:
             text: Input text.
-            direction: 'ayo_to_es' or 'es_to_ayo'.
+            direction: 'ayo_to_en' or 'en_to_ayo'.
 
         Returns:
             Translated text.
@@ -107,33 +107,33 @@ class TranslationEngine:
         for token in tokens:
             dict_entries.extend(self.dictionary.lookup(token))
 
-        if direction == "ayo_to_es":
-            src_lang, tgt_lang = "Ayoreo", "Español"
+        if direction == "ayo_to_en":
+            src_lang, tgt_lang = "Ayoreo", "English"
         else:
-            src_lang, tgt_lang = "Español", "Ayoreo"
+            src_lang, tgt_lang = "English", "Ayoreo"
 
         refinement_prompt = (
-            f"Un modelo de traducción generó esta traducción de {src_lang} a {tgt_lang}:\n\n"
+            f"A translation model produced this translation from {src_lang} to {tgt_lang}:\n\n"
             f"Original ({src_lang}): {text}\n"
-            f"Traducción automática ({tgt_lang}): {neural_output}\n\n"
-            f"Revisá y mejorá la traducción usando estos ejemplos de referencia:\n"
+            f"Automatic translation ({tgt_lang}): {neural_output}\n\n"
+            f"Review and improve the translation using these reference examples:\n"
         )
         for ex in examples:
-            src_key = "ayoreo" if direction == "ayo_to_es" else "spanish"
-            tgt_key = "spanish" if direction == "ayo_to_es" else "ayoreo"
+            src_key = "ayoreo" if direction == "ayo_to_en" else "english"
+            tgt_key = "english" if direction == "ayo_to_en" else "ayoreo"
             refinement_prompt += (
                 f"  {src_lang}: {ex[src_key]}\n  {tgt_lang}: {ex[tgt_key]}\n\n"
             )
 
         if dict_entries:
-            refinement_prompt += "Vocabulario:\n"
+            refinement_prompt += "Vocabulary:\n"
             for entry in dict_entries[:10]:
                 hw = entry.get("headword", entry.get("ayoreo", ""))
-                defn = entry.get("definition_es", entry.get("spanish", ""))
+                defn = entry.get("definition_en", entry.get("english", ""))
                 refinement_prompt += f"  {hw} = {defn}\n"
 
         refinement_prompt += (
-            f"\nDevolvé solo la traducción mejorada a {tgt_lang}, sin explicaciones:"
+            f"\nReturn only the improved translation in {tgt_lang}, without explanations:"
         )
 
         return translate_with_gemini(refinement_prompt)

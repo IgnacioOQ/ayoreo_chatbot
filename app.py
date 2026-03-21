@@ -1,4 +1,4 @@
-"""Ayoreo-Spanish Translation Chatbot — Streamlit application."""
+"""Ayoreo-English Translation Chatbot — Streamlit application."""
 
 import streamlit as st
 
@@ -10,28 +10,28 @@ st.set_page_config(
 
 
 def render_translation_ui():
-    """Translation mode: bidirectional Ayoreo ↔ Spanish."""
-    st.header("Traducción")
+    """Translation mode: bidirectional Ayoreo ↔ English."""
+    st.header("Translation")
 
     direction = st.radio(
-        "Dirección",
-        ["Ayoreo → Español", "Español → Ayoreo"],
+        "Direction",
+        ["Ayoreo → English", "English → Ayoreo"],
         horizontal=True,
     )
-    dir_code = "ayo_to_es" if "Ayoreo →" in direction else "es_to_ayo"
+    dir_code = "ayo_to_en" if "Ayoreo →" in direction else "en_to_ayo"
 
     input_text = st.text_area(
-        "Texto a traducir",
+        "Text to translate",
         height=150,
-        placeholder="Escribí el texto acá...",
+        placeholder="Enter text here...",
     )
 
-    if st.button("Traducir", type="primary") and input_text.strip():
-        with st.spinner("Traduciendo..."):
+    if st.button("Translate", type="primary") and input_text.strip():
+        with st.spinner("Translating..."):
             try:
                 engine = get_engine(st.session_state.get("backend", "rag"))
                 result = engine.translate(input_text, direction=dir_code)
-                st.success("Traducción:")
+                st.success("Translation:")
                 st.write(result)
             except Exception as e:
                 st.error(f"Error: {e}")
@@ -39,9 +39,9 @@ def render_translation_ui():
 
 def render_dictionary_ui():
     """Dictionary mode: search Ayoreo words."""
-    st.header("Diccionario")
+    st.header("Dictionary")
 
-    query = st.text_input("Buscar palabra", placeholder="Escribí una palabra en Ayoreo...")
+    query = st.text_input("Search word", placeholder="Enter an Ayoreo word...")
 
     if query.strip():
         try:
@@ -50,11 +50,11 @@ def render_dictionary_ui():
             if results:
                 for entry in results:
                     hw = entry.get("headword", entry.get("ayoreo", ""))
-                    defn = entry.get("definition_es", entry.get("spanish", ""))
+                    defn = entry.get("definition_en", entry.get("english", ""))
                     pos = entry.get("pos", "")
                     st.markdown(f"**{hw}** {f'({pos})' if pos else ''} — {defn}")
             else:
-                st.info("No se encontraron resultados.")
+                st.info("No results found.")
         except Exception as e:
             st.error(f"Error: {e}")
 
@@ -64,12 +64,12 @@ def render_pos_ui():
     st.header("POS Tagger")
 
     text = st.text_area(
-        "Texto en Ayoreo",
+        "Ayoreo text",
         height=100,
-        placeholder="Escribí texto en Ayoreo para analizar...",
+        placeholder="Enter Ayoreo text to analyze...",
     )
 
-    if st.button("Analizar") and text.strip():
+    if st.button("Analyze") and text.strip():
         try:
             engine = get_engine()
             tagged = engine.pos_tag(text)
@@ -103,15 +103,15 @@ def render_chat_ui():
         with st.chat_message(msg["role"]):
             st.write(msg["content"])
 
-    if prompt := st.chat_input("Preguntá sobre el idioma Ayoreo..."):
+    if prompt := st.chat_input("Ask about the Ayoreo language..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.write(prompt)
 
         with st.chat_message("assistant"):
-            with st.spinner("Pensando..."):
+            with st.spinner("Thinking..."):
                 # TODO: Implement chat with Gemini + tools
-                response = "Chat mode coming soon. Usá el modo Traducción por ahora."
+                response = "Chat mode coming soon. Use Translation mode for now."
                 st.write(response)
                 st.session_state.messages.append(
                     {"role": "assistant", "content": response}
@@ -126,26 +126,26 @@ def get_engine(backend: str = "rag"):
 
 
 def main():
-    st.title("Ayoreo ↔ Español")
-    st.caption("Chatbot de traducción para la lengua Ayoreo")
+    st.title("Ayoreo ↔ English")
+    st.caption("Translation chatbot for the Ayoreo language")
 
     with st.sidebar:
-        st.header("Modo")
+        st.header("Mode")
         mode = st.radio(
-            "Seleccionar modo",
-            ["Traducción", "Diccionario", "POS Tagger", "Chat"],
+            "Select mode",
+            ["Translation", "Dictionary", "POS Tagger", "Chat"],
             label_visibility="collapsed",
         )
 
         st.divider()
         st.header("Backend")
         backend = st.radio(
-            "Motor de traducción",
+            "Translation engine",
             ["RAG + Gemini", "Neural (LoRA)", "Hybrid (Neural + RAG)"],
             help=(
-                "**RAG**: Recupera ejemplos similares y usa Gemini API.\n\n"
-                "**Neural**: Usa el modelo LoRA entrenado localmente.\n\n"
-                "**Hybrid**: Neural traduce, Gemini refina con ejemplos RAG."
+                "**RAG**: Retrieves similar examples and uses Gemini API.\n\n"
+                "**Neural**: Uses the locally trained LoRA adapter.\n\n"
+                "**Hybrid**: Neural translates, Gemini refines with RAG examples."
             ),
             label_visibility="collapsed",
         )
@@ -156,9 +156,9 @@ def main():
         }
         st.session_state["backend"] = backend_map[backend]
 
-    if mode == "Traducción":
+    if mode == "Translation":
         render_translation_ui()
-    elif mode == "Diccionario":
+    elif mode == "Dictionary":
         render_dictionary_ui()
     elif mode == "POS Tagger":
         render_pos_ui()

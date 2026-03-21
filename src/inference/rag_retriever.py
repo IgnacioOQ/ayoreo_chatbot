@@ -57,8 +57,8 @@ class RAGRetriever:
         if not entries:
             return
 
-        # Embed both Spanish and Ayoreo text for bidirectional retrieval
-        texts = [f"{e['spanish']} {e['ayoreo']}" for e in entries]
+        # Embed both English and Ayoreo text for bidirectional retrieval
+        texts = [f"{e['english']} {e['ayoreo']}" for e in entries]
         embeddings = self._model.encode(texts, show_progress_bar=True).tolist()
 
         self._collection.add(
@@ -66,7 +66,7 @@ class RAGRetriever:
             embeddings=embeddings,
             documents=texts,
             metadatas=[
-                {"ayoreo": e["ayoreo"], "spanish": e["spanish"], "source": e["source"]}
+                {"ayoreo": e["ayoreo"], "english": e["english"], "source": e["source"]}
                 for e in entries
             ],
         )
@@ -80,7 +80,7 @@ class RAGRetriever:
             k: Number of examples to retrieve.
 
         Returns:
-            List of dicts with 'ayoreo', 'spanish', 'source' keys.
+            List of dicts with 'ayoreo', 'english', 'source' keys.
         """
         self._ensure_loaded()
 
@@ -95,7 +95,7 @@ class RAGRetriever:
             for meta in results["metadatas"][0]:
                 examples.append({
                     "ayoreo": meta["ayoreo"],
-                    "spanish": meta["spanish"],
+                    "english": meta["english"],
                     "source": meta["source"],
                 })
 

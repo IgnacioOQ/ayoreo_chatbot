@@ -11,7 +11,7 @@ def build_translation_prompt(
     text: str,
     examples: list[dict],
     dict_entries: list[dict],
-    direction: str = "ayo_to_es",
+    direction: str = "ayo_to_en",
 ) -> str:
     """Build a few-shot translation prompt.
 
@@ -19,22 +19,22 @@ def build_translation_prompt(
         text: Text to translate.
         examples: Similar parallel examples from RAG retrieval.
         dict_entries: Dictionary entries for words in the text.
-        direction: 'ayo_to_es' or 'es_to_ayo'.
+        direction: 'ayo_to_en' or 'en_to_ayo'.
 
     Returns:
         Formatted prompt string.
     """
-    if direction == "ayo_to_es":
-        src_lang, tgt_lang = "Ayoreo", "Español"
-        src_key, tgt_key = "ayoreo", "spanish"
+    if direction == "ayo_to_en":
+        src_lang, tgt_lang = "Ayoreo", "English"
+        src_key, tgt_key = "ayoreo", "english"
     else:
-        src_lang, tgt_lang = "Español", "Ayoreo"
-        src_key, tgt_key = "spanish", "ayoreo"
+        src_lang, tgt_lang = "English", "Ayoreo"
+        src_key, tgt_key = "english", "ayoreo"
 
     parts = [
-        f"Traducí el siguiente texto de {src_lang} a {tgt_lang}.",
+        f"Translate the following text from {src_lang} to {tgt_lang}.",
         "",
-        "Ejemplos de traducciones correctas:",
+        "Examples of correct translations:",
     ]
 
     for ex in examples:
@@ -43,17 +43,17 @@ def build_translation_prompt(
         parts.append("")
 
     if dict_entries:
-        parts.append("Vocabulario relevante:")
+        parts.append("Relevant vocabulary:")
         for entry in dict_entries[:10]:
             hw = entry.get("headword", entry.get("ayoreo", ""))
-            defn = entry.get("definition_es", entry.get("spanish", ""))
+            defn = entry.get("definition_en", entry.get("english", ""))
             parts.append(f"  {hw} = {defn}")
         parts.append("")
 
-    parts.append(f"Texto a traducir ({src_lang}):")
+    parts.append(f"Text to translate ({src_lang}):")
     parts.append(f"  {text}")
     parts.append("")
-    parts.append(f"Traducción ({tgt_lang}):")
+    parts.append(f"Translation ({tgt_lang}):")
 
     return "\n".join(parts)
 
