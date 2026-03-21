@@ -12,7 +12,8 @@
       "Bash(done)",
       "Bash(echo $GOOGLE_API_KEY)",
       "Bash(/Users/ignacio/anaconda3/bin/conda env:*)",
-      "Bash(/Users/ignacio/anaconda3/envs/ayoreo/bin/python scripts/align_mismatches_llm.py)"
+      "Bash(/Users/ignacio/anaconda3/envs/ayoreo/bin/python scripts/align_mismatches_llm.py)",
+      "Bash(/Users/ignacio/anaconda3/envs/ayoreo/bin/python -c \":*)"
     ]
   }
 }

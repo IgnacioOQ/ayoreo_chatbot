@@ -91,9 +91,6 @@ def align_story(client, cache_name, story_id, entry) -> Tuple[Optional[list], in
     ayo_flat = flatten_for_prompt(deco.get('ayo', []))
     es_flat  = flatten_for_prompt(deco.get('es',  []))  # optional
 
-    max_blocks = max(len(en_flat), len(ayo_flat))
-    est_out_tokens = max(128, int(max_blocks * 25))
-
     prompt = f"""Story ID: {story_id}
 
 EN: {json.dumps(en_flat, separators=(',', ':'), ensure_ascii=False)}
@@ -107,7 +104,6 @@ AYO: {json.dumps(ayo_flat, separators=(',', ':'), ensure_ascii=False)}"""
     config_kwargs = dict(
         response_mime_type="application/json",
         response_schema=AlignmentResponse.model_json_schema(),
-        max_output_tokens=est_out_tokens,
         temperature=0.1,
         thinking_config=types.ThinkingConfig(thinking_budget=0),
     )
@@ -131,6 +127,20 @@ AYO: {json.dumps(ayo_flat, separators=(',', ':'), ensure_ascii=False)}"""
     in_tok  = meta.prompt_token_count     or 0
     out_tok = meta.candidates_token_count or 0
     tot_tok = meta.total_token_count      or 0
+
+    if not response.text:
+        # Log finish reason, safety ratings, and prompt feedback to diagnose empty responses
+        for candidate in (response.candidates or []):
+            logger.error(
+                f"Empty response for [{story_id}] — "
+                f"finish_reason={candidate.finish_reason}, "
+                f"safety_ratings={candidate.safety_ratings}"
+            )
+        if not response.candidates:
+            logger.error(f"Empty response for [{story_id}] — no candidates returned.")
+        if hasattr(response, 'prompt_feedback') and response.prompt_feedback:
+            logger.error(f"Prompt feedback for [{story_id}]: {response.prompt_feedback}")
+        return None, in_tok, out_tok, tot_tok
 
     try:
         parsed = json.loads(response.text)
@@ -158,7 +168,7 @@ def main():
 
     # Back up existing aligned file before making any changes
     if ALIGNED_JSON_PATH.exists():
-        ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        ts = datetime.now(timezone.utc).strftime("%Y-%m-%d_%Hh%M")
         backup_path = ALIGNED_JSON_PATH.with_name(f"aligned_ayoreoorg_backup_{ts}.json")
         shutil.copy2(ALIGNED_JSON_PATH, backup_path)
         print(f"Backed up existing aligned data to: {backup_path.name}")
