@@ -3,11 +3,12 @@
 ayore.org is a WordPress site. Content pages typically have:
     - An <article> or <div class="entry-content"> with the main text
     - Bold section headers within the text
-    - A glossary section at the bottom (Ayoreo terms with Spanish definitions)
+    - A glossary section at the bottom (Ayoreo terms with English definitions)
     - Metadata: narrator name, location, date, transcriber/translator
 
-Each story is scraped in all three languages (ES, EN, AYO) and stored
-together under a shared story_id for aligned corpus construction.
+Each story is scraped in EN and AYO by default and stored together under a
+shared story_id for aligned corpus construction. Spanish (ES) scraping is
+optional (scrape_es=False by default).
 """
 
 import json
@@ -120,7 +121,7 @@ def _extract_glossary(content_div: Tag) -> list[dict]:
         definition = match.group(2).strip().rstrip(".")
         # Filter out common false positives (section headers, metadata lines)
         if len(term) < 50 and len(definition) < 200 and len(term.split()) <= 5:
-            glossary.append({"ayoreo": term, "spanish": definition})
+            glossary.append({"ayoreo": term, "english": definition})
 
     # Pattern 2: Look for bold tags followed by non-bold text
     for bold in content_div.find_all(["strong", "b"]):
@@ -132,7 +133,7 @@ def _extract_glossary(content_div: Tag) -> list[dict]:
             if definition and 3 < len(term) < 40 and len(definition) < 200:
                 # Avoid section headers (which are usually longer)
                 if not term[0].isdigit() and term not in ("Nota", "Fuente", "Source"):
-                    glossary.append({"ayoreo": term, "spanish": definition})
+                    glossary.append({"ayoreo": term, "english": definition})
 
     # Deduplicate
     seen = set()
@@ -218,44 +219,46 @@ def extract_page_content(soup) -> dict:
     }
 
 
-def scrape_page(page_info: dict) -> dict:
-    """Scrape all three language versions (ES, EN, AYO) of a story.
+def scrape_page(page_info: dict, scrape_es: bool = False) -> dict:
+    """Scrape EN and AYO versions of a story, and optionally ES.
 
     Args:
-        page_info: Dict from crawler with url_es, url_en, url_ayo, story_id, etc.
+        page_info: Dict from crawler with url_en, url_ayo, (url_es), story_id, etc.
+        scrape_es: Whether to also scrape the Spanish page. Defaults to False.
 
     Returns:
-        Dict with all scraped content keyed by language, sharing a story_id.
+        Dict with scraped content keyed by language, sharing a story_id.
     """
     result = {
         "story_id":  page_info.get("story_id"),
-        "url_es":    page_info.get("url_es"),
         "url_en":    page_info.get("url_en"),
         "url_ayo":   page_info.get("url_ayo"),
         "section":   page_info.get("section", "unknown"),
         "type":      page_info.get("type", "narrative"),
         "scraped_at": datetime.now(timezone.utc).isoformat(),
     }
+    if scrape_es:
+        result["url_es"] = page_info.get("url_es")
 
-    # --- Spanish (primary) ---
-    # Scrape ES first; use its WPML switcher to confirm/fill EN and AYO URLs.
-    es_soup = None
-    if page_info.get("url_es"):
-        log.info(f"Scraping ES: {page_info['url_es']}")
-        es_soup = fetch_page(page_info["url_es"])
-        if es_soup:
-            es_content = extract_page_content(es_soup)
-            result["title_es"] = es_content["title"]
-            result["body_es"]  = es_content["body"]
-            result["glossary"] = es_content["glossary"]
-            result["metadata"] = es_content["metadata"]
+    # --- English (primary) ---
+    # Scrape EN first; use its WPML switcher to confirm/fill the AYO URL.
+    if result.get("url_en"):
+        log.info(f"Scraping EN: {result['url_en']}")
+        en_soup = fetch_page(result["url_en"])
+        if en_soup:
+            en_content = extract_page_content(en_soup)
+            result["title_en"] = en_content["title"]
+            result["body_en"]  = en_content["body"]
+            result["glossary"] = en_content["glossary"]   # Ayoreo term → English definition
+            result["metadata"] = en_content["metadata"]
 
-            # Resolve sibling language URLs from the WPML switcher.
-            # These override/supplement whatever the crawler found by position.
-            wpml_urls = extract_language_urls(es_soup)
+            # Resolve the AYO URL (and ES if scraping) from the EN page's WPML switcher.
+            wpml_urls = extract_language_urls(en_soup)
             if wpml_urls:
-                log.debug(f"WPML URLs from ES page: {wpml_urls}")
+                log.debug(f"WPML URLs from EN page: {wpml_urls}")
             for lang_code, wpml_url in wpml_urls.items():
+                if lang_code == "es" and not scrape_es:
+                    continue  # Skip ES URL when not needed
                 key = f"url_{lang_code}"
                 if not result.get(key):
                     log.info(f"WPML filled missing {key}: {wpml_url}")
@@ -266,19 +269,7 @@ def scrape_page(page_info: dict) -> dict:
                         f"crawler={result[key]} wpml={wpml_url} — using WPML"
                     )
                     result[key] = wpml_url
-        else:
-            log.warning(f"Failed to fetch ES: {page_info['url_es']}")
-            result["title_es"] = ""
-            result["body_es"]  = ""
 
-    # --- English ---
-    if result.get("url_en"):
-        log.info(f"Scraping EN: {result['url_en']}")
-        en_soup = fetch_page(result["url_en"])
-        if en_soup:
-            en_content = extract_page_content(en_soup)
-            result["title_en"] = en_content["title"]
-            result["body_en"]  = en_content["body"]
             if len(result.get("body_en", "")) < 50:
                 log.warning(
                     f"EN page may be empty/boilerplate: {result['url_en']} "
@@ -288,6 +279,19 @@ def scrape_page(page_info: dict) -> dict:
             log.warning(f"Failed to fetch EN: {result['url_en']}")
             result["title_en"] = ""
             result["body_en"]  = ""
+
+    # --- Spanish (optional) ---
+    if scrape_es and result.get("url_es"):
+        log.info(f"Scraping ES: {result['url_es']}")
+        es_soup = fetch_page(result["url_es"])
+        if es_soup:
+            es_content = extract_page_content(es_soup)
+            result["title_es"] = es_content["title"]
+            result["body_es"]  = es_content["body"]
+        else:
+            log.warning(f"Failed to fetch ES: {result['url_es']}")
+            result["title_es"] = ""
+            result["body_es"]  = ""
 
     # --- Ayoreo ---
     if result.get("url_ayo"):

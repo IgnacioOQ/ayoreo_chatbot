@@ -1,5 +1,6 @@
 base_url: "https://ayore.org"
-languages: ["es", "en", "ayo"]
+languages: ["en", "ayo"]
+scrape_es: false  # Set true to also scrape Spanish pages (slower, not needed for EN↔AYO pipeline)
 delay_seconds: 1.5
 max_retries: 3
 timeout_seconds: 30

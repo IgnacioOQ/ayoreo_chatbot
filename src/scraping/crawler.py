@@ -1,12 +1,12 @@
 """Site crawler: discovers all content URLs on ayore.org.
 
 The site uses different URL slug conventions per language:
-    ES:  https://ayore.org/es/cultura/ensenanzas/...
+    ES:  https://ayore.org/es/cultura/ensenanzas/...   (optional, scrape_es=False by default)
     EN:  https://ayore.org/culture/teachings/...       (no lang prefix)
     AYO: https://ayore.org/ayo/culture/teachings/...
 
-We crawl each language independently and pair pages by position, since all
-three index pages list sub-pages in the same order.
+We crawl EN and AYO by default. Spanish can be enabled via scrape_es: true in
+configs/scraping.yaml or via --scrape-es on the CLI.
 """
 
 from src.scraping.utils import fetch_page, get_language_from_url, normalize_url
@@ -117,40 +117,46 @@ def pair_pages_trilingual(
     return pairs
 
 
-def discover_all() -> list[dict]:
-    """Discover all pages across all configured sections in all three languages.
+def discover_all(scrape_es: bool = False) -> list[dict]:
+    """Discover all pages across all configured sections.
+
+    Args:
+        scrape_es: Whether to also discover Spanish pages. Defaults to False.
+                   Can be overridden by the scrape_es key in configs/scraping.yaml.
 
     Returns:
         List of dicts, each with section info and paired URLs:
-        {story_id, section, type, url_es, url_en, url_ayo, title_es, title_en, title_ayo, ...}
+        {story_id, section, type, url_en, url_ayo, title_en, title_ayo, ...}
+        url_es/title_es are included only when scrape_es=True.
     """
     config = load_config("scraping")
+    scrape_es = config.get("scrape_es", scrape_es)
     all_pages = []
 
     for section in config.get("sections", []):
-        path_es  = section["path_es"]
+        path_es  = section.get("path_es", "")
         path_ayo = section["path_ayo"]
         path_en  = section.get("path_en", path_ayo)  # default to ayo path if omitted
         section_type = section.get("type", "narrative")
-        section_name = path_es.split("/")[-1]  # e.g. "relatos-personales"
+        section_name = path_en.split("/")[-1]  # e.g. "teachings" — stable regardless of ES
 
         log.info(f"--- Section: {section_name} ---")
 
-        es_pages  = discover_section_pages("es",  path_es)
+        es_pages  = discover_section_pages("es",  path_es) if scrape_es and path_es else []
         en_pages  = discover_section_pages(None,  path_en)
         ayo_pages = discover_section_pages("ayo", path_ayo)
 
         pairs = pair_pages_trilingual(es_pages, en_pages, ayo_pages)
 
         for pair in pairs:
-            # Canonical story_id: section + ES slug (stable, human-readable reference)
-            slug = pair["slug_es"] or pair["slug_en"] or pair["slug_ayo"] or str(len(all_pages))
+            # Canonical story_id: prefer EN slug (stable, human-readable reference)
+            slug = pair["slug_en"] or pair["slug_ayo"] or pair["slug_es"] or str(len(all_pages))
             pair["story_id"] = f"{section_name}__{slug}"
             pair["section"]  = section_name
             pair["type"]     = section_type
             all_pages.append(pair)
 
-    total    = len(all_pages)
-    with_all = sum(1 for p in all_pages if p["url_es"] and p["url_en"] and p["url_ayo"])
-    log.info(f"Total pages discovered: {total} ({with_all} with all three languages)")
+    total      = len(all_pages)
+    with_en_ayo = sum(1 for p in all_pages if p["url_en"] and p["url_ayo"])
+    log.info(f"Total pages discovered: {total} ({with_en_ayo} with EN+AYO)")
     return all_pages

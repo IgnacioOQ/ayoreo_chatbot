@@ -4,11 +4,14 @@ All scraped stories are stored in a single file:
     data/raw/stories.json  — dict keyed by story_id, incrementally merged across runs.
 
 Usage:
-    # Full scrape (all sections + PDFs)
+    # Full scrape (all sections + PDFs) — EN and AYO only by default
     python scripts/run_scraper.py
 
+    # Also scrape Spanish pages
+    python scripts/run_scraper.py --scrape-es
+
     # Scrape only a specific section (for testing)
-    python scripts/run_scraper.py --section relatos-personales
+    python scripts/run_scraper.py --section first-person-narratives
 
     # Only download PDFs
     python scripts/run_scraper.py --pdfs-only
@@ -35,10 +38,10 @@ log = get_logger(__name__)
 STORIES_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "ayoreoorg.json"
 
 
-def scrape_pages(section_filter: str | None = None, dry_run: bool = False):
+def scrape_pages(section_filter: str | None = None, dry_run: bool = False, scrape_es: bool = False):
     """Discover and scrape all content pages, saving to a single stories.json."""
     # 1. Discover all pages
-    all_pages = discover_all()
+    all_pages = discover_all(scrape_es=scrape_es)
 
     # Filter by section if requested
     if section_filter:
@@ -48,7 +51,10 @@ def scrape_pages(section_filter: str | None = None, dry_run: bool = False):
     if dry_run:
         log.info("Dry run — listing discovered pages:")
         for i, page in enumerate(all_pages):
-            log.info(f"  [{i+1}] {page.get('story_id')}  ES: {page.get('url_es', '—')}")
+            log.info(
+                f"  [{i+1}] {page.get('story_id')}  "
+                f"EN: {page.get('url_en', '—')}  AYO: {page.get('url_ayo', '—')}"
+            )
         return all_pages
 
     # 2. Load existing stories for incremental merge (keyed by story_id)
@@ -66,14 +72,13 @@ def scrape_pages(section_filter: str | None = None, dry_run: bool = False):
     for i, page_info in enumerate(all_pages):
         log.info(f"--- Page {i+1}/{len(all_pages)} ---")
 
-        page_data = scrape_page(page_info)
+        page_data = scrape_page(page_info, scrape_es=scrape_es)
 
         # Skip if no content was extracted in any language
-        has_es  = bool(page_data.get("body_es",  "").strip())
         has_en  = bool(page_data.get("body_en",  "").strip())
         has_ayo = bool(page_data.get("body_ayo", "").strip())
 
-        if not has_es and not has_en and not has_ayo:
+        if not has_en and not has_ayo:
             log.warning("No content extracted, skipping")
             failed += 1
             continue
@@ -105,11 +110,15 @@ def main():
         "--dry-run", action="store_true",
         help="Discover pages but don't scrape them",
     )
+    parser.add_argument(
+        "--scrape-es", action="store_true", default=False,
+        help="Also scrape Spanish pages (disabled by default)",
+    )
     args = parser.parse_args()
 
     if not args.pdfs_only:
         log.info("=== Starting page scraping ===")
-        scrape_pages(section_filter=args.section, dry_run=args.dry_run)
+        scrape_pages(section_filter=args.section, dry_run=args.dry_run, scrape_es=args.scrape_es)
 
     if not args.dry_run:
         log.info("=== Downloading PDFs ===")

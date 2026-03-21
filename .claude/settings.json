@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp -r \"/Users/ignacio/Documents/VS Code/GitHub Repositories/ayoreo_chatbot/data/processed\" \"/Users/ignacio/Documents/VS Code/GitHub Repositories/ayoreo_chatbot/data/processed_backup\")",
+      "Bash(cp -r \"/Users/ignacio/Documents/VS Code/GitHub Repositories/ayoreo_chatbot/data/splits\" \"/Users/ignacio/Documents/VS Code/GitHub Repositories/ayoreo_chatbot/data/splits_backup\")",
+      "Bash(conda run:*)",
+      "Bash(python3 -c \"import google.genai\")",
+      "Read(//Users/ignacio/anaconda3/envs/**)",
+      "Bash(for env:*)",
+      "Bash(do echo:*)",
+      "Bash($env -c \"import google.genai; print\\(''OK''\\)\")",
+      "Bash(done)",
+      "Bash(echo $GOOGLE_API_KEY)",
+      "Bash(/Users/ignacio/anaconda3/bin/conda env:*)"
+    ]
+  }
+}

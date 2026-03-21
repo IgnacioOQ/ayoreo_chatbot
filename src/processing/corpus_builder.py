@@ -18,7 +18,7 @@ def build_corpus() -> list[dict]:
     """Build parallel corpus from all scraped and processed sources.
 
     Returns:
-        List of parallel segments: {id, ayoreo, spanish, source, type}.
+        List of parallel segments: {id, ayoreo, english, source, type}.
     """
     corpus = []
 
@@ -27,21 +27,21 @@ def build_corpus() -> list[dict]:
         with open(json_file, encoding="utf-8") as f:
             page = json.load(f)
 
-        es_text = clean_text(page.get("body_es", ""))
+        en_text  = clean_text(page.get("body_en",  ""))
         ayo_text = clean_text(page.get("body_ayo", ""))
-        section = page.get("section", "unknown")
+        section  = page.get("section", "unknown")
 
-        if not es_text or not ayo_text:
+        if not en_text or not ayo_text:
             continue
 
-        pairs = align_sentences(es_text, ayo_text)
-        for i, (es_sent, ayo_sent) in enumerate(pairs):
+        pairs = align_sentences(en_text, ayo_text)
+        for i, (en_sent, ayo_sent) in enumerate(pairs):
             corpus.append({
-                "id": f"{json_file.stem}_s{i:03d}",
-                "ayoreo": ayo_sent,
-                "spanish": es_sent,
-                "source": section,
-                "type": "narrative",
+                "id":      f"{json_file.stem}_s{i:03d}",
+                "ayoreo":  ayo_sent,
+                "english": en_sent,
+                "source":  section,
+                "type":    "narrative",
             })
 
     # 2. Add glossary entries
@@ -51,11 +51,11 @@ def build_corpus() -> list[dict]:
             glossaries = json.load(f)
         for entry in glossaries:
             corpus.append({
-                "id": f"gloss_{entry['ayoreo'].lower().replace(' ', '_')}",
-                "ayoreo": entry["ayoreo"],
-                "spanish": entry["spanish"],
-                "source": "glossary",
-                "type": "lexical",
+                "id":      f"gloss_{entry['ayoreo'].lower().replace(' ', '_')}",
+                "ayoreo":  entry["ayoreo"],
+                "english": entry.get("english", ""),
+                "source":  "glossary",
+                "type":    "lexical",
             })
 
     # 3. Add dictionary entries
@@ -65,11 +65,11 @@ def build_corpus() -> list[dict]:
             dictionary = json.load(f)
         for entry in dictionary:
             corpus.append({
-                "id": f"dict_{entry['headword'].lower().replace(' ', '_')}",
-                "ayoreo": entry["headword"],
-                "spanish": entry.get("definition_es", ""),
-                "source": "dictionary",
-                "type": "lexical",
+                "id":      f"dict_{entry['headword'].lower().replace(' ', '_')}",
+                "ayoreo":  entry["headword"],
+                "english": entry.get("definition_en", ""),
+                "source":  "dictionary",
+                "type":    "lexical",
             })
 
     log.info(f"Built corpus with {len(corpus)} segments")

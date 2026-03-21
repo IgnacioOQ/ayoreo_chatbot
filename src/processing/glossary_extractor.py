@@ -1,4 +1,4 @@
-"""Extract and merge glossary entries from scraped pages."""
+"""Extract and merge glossary entries from scraped pages (Ayoreo → English)."""
 
 import json
 from pathlib import Path
@@ -16,7 +16,7 @@ def extract_glossaries_from_pages() -> list[dict]:
     """Load all scraped page JSONs and merge their glossary entries.
 
     Returns:
-        Deduplicated list of glossary entries: {ayoreo, spanish, source}.
+        Deduplicated list of glossary entries: {ayoreo, english, source}.
     """
     seen = set()
     glossaries = []
@@ -31,7 +31,7 @@ def extract_glossaries_from_pages() -> list[dict]:
                 seen.add(key)
                 glossaries.append({
                     "ayoreo": entry["ayoreo"],
-                    "spanish": entry.get("spanish", ""),
+                    "english": entry.get("english", ""),
                     "source": json_file.stem,
                 })
 
