@@ -31,7 +31,6 @@ ALIGNED_JSON_PATH = PROJECT_ROOT / "data" / "raw" / "ayoreoorg" / "aligned_ayore
 class AlignmentBlock(BaseModel):
     en: List[int]
     ayo: List[int]
-    es: Optional[List[int]] = None  # Spanish is optional; omit or leave null when not present
 
 class AlignmentResponse(BaseModel):
     alignment: List[AlignmentBlock]
@@ -89,15 +88,11 @@ def align_story(client, cache_name, story_id, entry) -> Tuple[Optional[list], in
 
     en_flat  = flatten_for_prompt(deco.get('en',  []))
     ayo_flat = flatten_for_prompt(deco.get('ayo', []))
-    es_flat  = flatten_for_prompt(deco.get('es',  []))  # optional
 
     prompt = f"""Story ID: {story_id}
 
 EN: {json.dumps(en_flat, separators=(',', ':'), ensure_ascii=False)}
 AYO: {json.dumps(ayo_flat, separators=(',', ':'), ensure_ascii=False)}"""
-
-    if es_flat:
-        prompt += f"\nES (optional): {json.dumps(es_flat, separators=(',', ':'), ensure_ascii=False)}"
 
     # Build config: use cache if available, otherwise pass system_instruction inline.
     # Disable thinking — this is a structural task; thinking tokens bypass max_output_tokens.

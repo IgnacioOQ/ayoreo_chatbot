@@ -5,46 +5,42 @@ from pathlib import Path
 def extract_sections(text: str) -> list[dict]:
     """
     Parses a string of text into a list of dictionaries with 'header' and 'text'.
-    Headers are recognized if a paragraph starts with **...**.
+    Each \n\n-separated paragraph becomes its own chunk (one semantic unit / versicle).
+    Headers (paragraphs starting with **...**) attach to the next content paragraph.
     """
     if not text:
         return []
-    
+
     paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
     sections = []
-    current_header = None
-    current_text = []
-    
+    pending_header = None
+
     for p in paragraphs:
         # Check if the paragraph starts with bold (**...) or bold-italic (***...) text.
-        # We also consume trailing asterisks, spaces, or colons after the closing tag without eating subsequent text logic.
         m = re.match(r'^(\*{2,3})([^\*]+)\1[\s:]*(?:\*\*[:\s]*\*\*[\s:]*)?(.*)', p, flags=re.DOTALL)
-        
+
         if m:
             header = m.group(2).strip()
             rest = m.group(3).strip()
-            
-            # If we already have accumulated text (or a header with text), flush it
-            if current_header is not None or current_text:
-                sections.append({
-                    'header': current_header,
-                    'text': '\n\n'.join(current_text).strip() if current_text else ""
-                })
-            
-            # Start a new section
-            current_header = header
-            current_text = [rest] if rest else []
+            if rest:
+                # Header with inline content: emit as one chunk immediately
+                sections.append({'header': header, 'text': rest})
+                pending_header = None
+            else:
+                # Standalone header line: attach to the next paragraph
+                if pending_header is not None:
+                    # Consecutive headers: flush the previous one as an empty chunk
+                    sections.append({'header': pending_header, 'text': ''})
+                pending_header = header
         else:
-            # Continue accumulating text for the current section
-            current_text.append(p)
-            
-    # Flush whatever remains at the end
-    if current_header is not None or current_text:
-        sections.append({
-            'header': current_header,
-            'text': '\n\n'.join(current_text).strip() if current_text else ""
-        })
-        
+            # Regular paragraph: one chunk, inheriting any pending header
+            sections.append({'header': pending_header, 'text': p})
+            pending_header = None
+
+    # Flush any trailing header that had no following paragraph
+    if pending_header is not None:
+        sections.append({'header': pending_header, 'text': ''})
+
     return sections
 
 def main():

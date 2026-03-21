@@ -13,7 +13,13 @@
       "Bash(echo $GOOGLE_API_KEY)",
       "Bash(/Users/ignacio/anaconda3/bin/conda env:*)",
       "Bash(/Users/ignacio/anaconda3/envs/ayoreo/bin/python scripts/align_mismatches_llm.py)",
-      "Bash(/Users/ignacio/anaconda3/envs/ayoreo/bin/python -c \":*)"
+      "Bash(/Users/ignacio/anaconda3/envs/ayoreo/bin/python -c \":*)",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c \"import json; f=open\\(''''/Users/ignacio/Documents/VS Code/GitHub Repositories/ayoreo_chatbot/data/raw/ayoreoorg/ayoreoorg.json''''\\); d=json.load\\(f\\); sample_id=list\\(d.keys\\(\\)\\)[0]; print\\(json.dumps\\({sample_id: d[sample_id]}, indent=2, ensure_ascii=False\\)\\)\")",
+      "Bash(python3 -c \":*)",
+      "Bash(python3 -c \"import dotenv\")",
+      "Read(//Users/ignacio/miniconda3/**)",
+      "Bash(/Users/ignacio/anaconda3/envs/ayoreo/bin/python3 -c \":*)"
     ]
   }
 }
