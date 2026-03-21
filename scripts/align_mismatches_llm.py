@@ -101,6 +101,7 @@ AYO: {json.dumps(ayo_flat, separators=(',', ':'), ensure_ascii=False)}"""
         response_schema=AlignmentResponse.model_json_schema(),
         temperature=0.1,
         thinking_config=types.ThinkingConfig(thinking_budget=0),
+        max_output_tokens=32768,
     )
     if cache_name:
         config_kwargs["cached_content"] = cache_name

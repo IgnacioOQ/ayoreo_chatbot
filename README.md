@@ -254,6 +254,10 @@ python scripts/align_mismatches_llm.py --max-tokens 1000000
 
 El script es **reanudable**: al iniciarse crea un backup con timestamp (`aligned_ayoreoorg_backup_2026-03-21_15h30.json`) y salta automáticamente los relatos ya alineados. Muestra dos barras de progreso en tiempo real: una por relatos procesados y otra por tokens consumidos respecto al presupuesto de la sesión.
 
+> **Nota sobre granularidad:** La alineación opera a nivel de **párrafo** (unidad semántica / versículo). Cada bloque `\n\n` del texto se convierte en un chunk independiente en `body_decomposition`, lo que permite al LLM mapear con precisión versículos individuales en lugar de secciones enteras. El español (`ES`) está excluido del prompt de alineación — solo se usan EN y AYO — para reducir tokens y evitar ruido de la traducción española.
+>
+> **Backups:** `data/raw/ayoreoorg/` contiene un backup manual (`aligned_ayoreoorg_backup_20260321_manual.json`) con los mapas anteriores en formato coarse-grained con español, para referencia histórica.
+
 ### Procesamiento
 
 ```bash
@@ -309,6 +313,7 @@ ayoreo_chatbot/
 │   ├── run_scraper.py            # Entry point del pipeline de scraping de ayore.org
 │   ├── scrape_bible.py           # Scraping de la Biblia desde Bible.com
 │   ├── align_mismatches_llm.py   # Alineación semántica EN↔AYO con Gemini (reanudable, con progreso)
+│   ├── add_body_decomposition.py # Genera body_decomposition a nivel de párrafo para ayoreoorg.json
 │   └── run_processing.py         # Construcción del corpus y splits
 ├── tests/                        # Tests
 └── docs/reference/               # Guías para agentes (HTML_SCRAPING_SKILL.md, SEMANTIC_MATCHING.md, etc.)

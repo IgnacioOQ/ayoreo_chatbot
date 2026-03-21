@@ -19,7 +19,12 @@
       "Bash(python3 -c \":*)",
       "Bash(python3 -c \"import dotenv\")",
       "Read(//Users/ignacio/miniconda3/**)",
-      "Bash(/Users/ignacio/anaconda3/envs/ayoreo/bin/python3 -c \":*)"
+      "Bash(/Users/ignacio/anaconda3/envs/ayoreo/bin/python3 -c \":*)",
+      "Bash(/Users/ignacio/anaconda3/envs/ayoreo/bin/python scripts/run_processing.py)",
+      "Bash(/opt/anaconda3/condabin/conda run:*)",
+      "Read(//opt/anaconda3/envs/**)",
+      "Read(//Users/ignacio/opt/anaconda3/**)",
+      "Read(//Users/ignacio/.conda/**)"
     ]
   }
 }
