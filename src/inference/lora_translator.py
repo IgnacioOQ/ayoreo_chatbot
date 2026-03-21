@@ -63,7 +63,7 @@ class LoRATranslator:
     def translate(
         self,
         text: str,
-        direction: str = "ayo_to_es",
+        direction: str = "ayo_to_en",
         max_new_tokens: int = 256,
         temperature: float = 0.3,
     ) -> str:
@@ -71,7 +71,7 @@ class LoRATranslator:
 
         Args:
             text: Input text to translate.
-            direction: 'ayo_to_es' or 'es_to_ayo'.
+            direction: 'ayo_to_en' or 'en_to_ayo'.
             max_new_tokens: Maximum tokens to generate.
             temperature: Sampling temperature (lower = more deterministic).
 
@@ -82,16 +82,16 @@ class LoRATranslator:
 
         self._ensure_loaded()
 
-        if direction == "ayo_to_es":
-            instruction = "Traducí del Ayoreo al Español."
+        if direction == "ayo_to_en":
+            instruction = "Translate from Ayoreo to English."
         else:
-            instruction = "Traducí del Español al Ayoreo."
+            instruction = "Translate from English to Ayoreo."
 
         # Same prompt format used during training
         prompt = (
-            f"### Instrucción:\n{instruction}\n\n"
-            f"### Entrada:\n{text}\n\n"
-            f"### Respuesta:\n"
+            f"### Instruction:\n{instruction}\n\n"
+            f"### Input:\n{text}\n\n"
+            f"### Response:\n"
         )
 
         inputs = self._tokenizer(prompt, return_tensors="pt")

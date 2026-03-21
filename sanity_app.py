@@ -48,7 +48,7 @@ dataset = None
 # Helper to check for mismatched decomposition lengths
 def has_mismatch(entry) -> bool:
     deco = entry.get("body_decomposition", {})
-    counts = [len(deco.get(lang, [])) for lang in ["es", "en", "ayo"]]
+    counts = [len(deco.get(lang, [])) for lang in ["en", "ayo"]]
     return len(set(counts)) > 1
 
 # --- 2. Sidebar Navigation ---
@@ -97,7 +97,7 @@ with st.sidebar:
 # --- 3. Main Data Visualization Area ---
 story = dataset[selected_key]
 
-st.title(story.get("title_es", "Untitled Story"))
+st.title(story.get("title_en", "Untitled Story"))
 
 # Metadata row
 mcol1, mcol2, mcol3, mcol4, mcol5 = st.columns(5)
@@ -111,16 +111,12 @@ with mcol5: st.metric("Year", meta.get("year", "Unknown"))
 st.markdown("---")
 
 # Visualizing Text Bodies natively
-tcol1, tcol2, tcol3 = st.columns(3)
+tcol1, tcol2 = st.columns(2)
 with tcol1:
-    st.subheader("🇪🇸 Español")
-    st.markdown(f"**URL:** [link]({story.get('url_es', '')})")
-    st.text_area("Body", story.get("body_es", ""), height=300, disabled=True, key=f"raw_body_es_{selected_key}")
-with tcol2:
     st.subheader("🇬🇧 English")
     st.markdown(f"**URL:** [link]({story.get('url_en', '')})")
     st.text_area("Body", story.get("body_en", ""), height=300, disabled=True, key=f"raw_body_en_{selected_key}")
-with tcol3:
+with tcol2:
     st.subheader("🏹 Ayoré")
     st.markdown(f"**URL:** [link]({story.get('url_ayo', '')})")
     st.text_area("Body", story.get("body_ayo", ""), height=300, disabled=True, key=f"raw_body_ayo_{selected_key}")
@@ -134,32 +130,27 @@ def format_decomp(decomp_list):
 st.markdown("### 🧩 Body Decomposition")
 decomp = story.get("body_decomposition", {})
 
-tab_es, tab_en, tab_ayo, tab_parallel = st.tabs(["Español", "English", "Ayoré", "Parallel (Aligned)"])
-with tab_es:
-    st.json(format_decomp(decomp.get("es", [])), expanded=False)
+tab_en, tab_ayo, tab_parallel = st.tabs(["English", "Ayoré", "Parallel (Aligned)"])
 with tab_en:
     st.json(format_decomp(decomp.get("en", [])), expanded=False)
 with tab_ayo:
     st.json(format_decomp(decomp.get("ayo", [])), expanded=False)
 with tab_parallel:
-    dec_es = decomp.get("es", [])
     dec_en = decomp.get("en", [])
     dec_ayo = decomp.get("ayo", [])
-    
+
     alignment_str = story.get("alignment_map")
-    
+
     if alignment_str:
         try:
             amap = json.loads(alignment_str) if isinstance(alignment_str, str) else alignment_str
             parallel_view = []
             for i, group in enumerate(amap):
-                g_es = [dec_es[idx] for idx in group.get("es", []) if idx < len(dec_es)]
                 g_en = [dec_en[idx] for idx in group.get("en", []) if idx < len(dec_en)]
                 g_ayo = [dec_ayo[idx] for idx in group.get("ayo", []) if idx < len(dec_ayo)]
-                
+
                 parallel_view.append({
                     "group": i,
-                    "es": g_es if g_es else None,
                     "en": g_en if g_en else None,
                     "ayo": g_ayo if g_ayo else None
                 })
@@ -169,12 +160,11 @@ with tab_parallel:
             st.code(alignment_str)
     else:
         # Fallback naive parallel array based on max length
-        max_len = max(len(dec_es), len(dec_en), len(dec_ayo))
+        max_len = max(len(dec_en), len(dec_ayo))
         parallel_view = []
         for i in range(max_len):
             parallel_view.append({
                 "index": i,
-                "es": dec_es[i] if i < len(dec_es) else None,
                 "en": dec_en[i] if i < len(dec_en) else None,
                 "ayo": dec_ayo[i] if i < len(dec_ayo) else None
             })
@@ -196,27 +186,20 @@ with st.form("correction_form"):
     )
     st.markdown("---")
 
-    ccol1, ccol2, ccol3 = st.columns(3)
-    
+    ccol1, ccol2 = st.columns(2)
+
     # Pre-fill with existing corrections if they exist, otherwise default to the current raw body
     with ccol1:
-        corr_es = st.text_area(
-            "Corrected Español", 
-            value=story.get("corrected_body_es", story.get("body_es", "")), 
-            height=250,
-            key=f"corr_es_{selected_key}"
-        )
-    with ccol2:
         corr_en = st.text_area(
-            "Corrected English", 
-            value=story.get("corrected_body_en", story.get("body_en", "")), 
+            "Corrected English",
+            value=story.get("corrected_body_en", story.get("body_en", "")),
             height=250,
             key=f"corr_en_{selected_key}"
         )
-    with ccol3:
+    with ccol2:
         corr_ayo = st.text_area(
-            "Corrected Ayoré", 
-            value=story.get("corrected_body_ayo", story.get("body_ayo", "")), 
+            "Corrected Ayoré",
+            value=story.get("corrected_body_ayo", story.get("body_ayo", "")),
             height=250,
             key=f"corr_ayo_{selected_key}"
         )
@@ -227,7 +210,6 @@ with st.form("correction_form"):
     
     if submitted:
         # Update the active story in the session state
-        st.session_state.dataset[selected_key]["corrected_body_es"] = corr_es
         st.session_state.dataset[selected_key]["corrected_body_en"] = corr_en
         st.session_state.dataset[selected_key]["corrected_body_ayo"] = corr_ayo
         st.session_state.dataset[selected_key]["alignment_map"] = alignment_str
