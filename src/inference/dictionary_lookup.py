@@ -36,7 +36,7 @@ class DictionaryLookup:
                     key = entry.get("ayoreo", "").lower()
                     self.entries.setdefault(key, []).append({
                         "headword": entry["ayoreo"],
-                        "definition_en": entry.get("english", entry.get("spanish", "")),
+                        "definition_en": entry.get("english", ""),
                         "source": "glossary",
                     })
 
