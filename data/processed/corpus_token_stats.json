@@ -1,0 +1,401 @@
+{
+  "ayoreo_org": {
+    "n_entries": 132,
+    "en": {
+      "n_entries": 132,
+      "n_nonempty": 130,
+      "total_tokens": 121563,
+      "mean": 920.9,
+      "median": 601,
+      "max": 5010
+    },
+    "ayo": {
+      "n_entries": 132,
+      "n_nonempty": 132,
+      "total_tokens": 89180,
+      "mean": 675.6,
+      "median": 385,
+      "max": 3397
+    },
+    "combined_total": 210743,
+    "per_section": {
+      "belief": {
+        "n_entries": 11,
+        "en_total": 6986,
+        "ayo_total": 3905,
+        "combined": 10891
+      },
+      "personal_narrative": {
+        "n_entries": 14,
+        "en_total": 9739,
+        "ayo_total": 6677,
+        "combined": 16416
+      },
+      "food": {
+        "n_entries": 1,
+        "en_total": 406,
+        "ayo_total": 196,
+        "combined": 602
+      },
+      "game": {
+        "n_entries": 6,
+        "en_total": 712,
+        "ayo_total": 319,
+        "combined": 1031
+      },
+      "medicine": {
+        "n_entries": 1,
+        "en_total": 359,
+        "ayo_total": 158,
+        "combined": 517
+      },
+      "song": {
+        "n_entries": 22,
+        "en_total": 5822,
+        "ayo_total": 4851,
+        "combined": 10673
+      },
+      "oral_history": {
+        "n_entries": 13,
+        "en_total": 4530,
+        "ayo_total": 4333,
+        "combined": 8863
+      },
+      "oral_tradition": {
+        "n_entries": 14,
+        "en_total": 11985,
+        "ayo_total": 6285,
+        "combined": 18270
+      },
+      "teaching": {
+        "n_entries": 50,
+        "en_total": 81024,
+        "ayo_total": 62456,
+        "combined": 143480
+      }
+    }
+  },
+  "bible": {
+    "n_entries": 759,
+    "en": {
+      "n_entries": 759,
+      "n_nonempty": 759,
+      "total_tokens": 487558,
+      "mean": 642.4,
+      "median": 632,
+      "max": 2465
+    },
+    "ayo": {
+      "n_entries": 759,
+      "n_nonempty": 759,
+      "total_tokens": 763889,
+      "mean": 1006.4,
+      "median": 954,
+      "max": 3328
+    },
+    "combined_total": 1251447,
+    "per_section": {
+      "Génesis": {
+        "n_entries": 50,
+        "en_total": 36712,
+        "ayo_total": 55970,
+        "combined": 92682
+      },
+      "Éxodo": {
+        "n_entries": 40,
+        "en_total": 29379,
+        "ayo_total": 50912,
+        "combined": 80291
+      },
+      "Números": {
+        "n_entries": 13,
+        "en_total": 9988,
+        "ayo_total": 17195,
+        "combined": 27183
+      },
+      "Deuteronomio": {
+        "n_entries": 3,
+        "en_total": 2557,
+        "ayo_total": 4338,
+        "combined": 6895
+      },
+      "Josué": {
+        "n_entries": 24,
+        "en_total": 17014,
+        "ayo_total": 33027,
+        "combined": 50041
+      },
+      "Jueces": {
+        "n_entries": 21,
+        "en_total": 17525,
+        "ayo_total": 27092,
+        "combined": 44617
+      },
+      "Rut": {
+        "n_entries": 4,
+        "en_total": 2735,
+        "ayo_total": 3977,
+        "combined": 6712
+      },
+      "1 Samuel": {
+        "n_entries": 31,
+        "en_total": 22972,
+        "ayo_total": 34243,
+        "combined": 57215
+      },
+      "2 Samuel": {
+        "n_entries": 24,
+        "en_total": 19180,
+        "ayo_total": 27462,
+        "combined": 46642
+      },
+      "1 Reyes": {
+        "n_entries": 22,
+        "en_total": 22069,
+        "ayo_total": 42094,
+        "combined": 64163
+      },
+      "2 Reyes": {
+        "n_entries": 25,
+        "en_total": 21407,
+        "ayo_total": 46736,
+        "combined": 68143
+      },
+      "Esdras": {
+        "n_entries": 10,
+        "en_total": 6529,
+        "ayo_total": 12549,
+        "combined": 19078
+      },
+      "Nehemías": {
+        "n_entries": 13,
+        "en_total": 9686,
+        "ayo_total": 18743,
+        "combined": 28429
+      },
+      "Ester": {
+        "n_entries": 10,
+        "en_total": 5570,
+        "ayo_total": 9367,
+        "combined": 14937
+      },
+      "Salmos": {
+        "n_entries": 150,
+        "en_total": 45094,
+        "ayo_total": 57460,
+        "combined": 102554
+      },
+      "Proverbios": {
+        "n_entries": 31,
+        "en_total": 14777,
+        "ayo_total": 27599,
+        "combined": 42376
+      },
+      "Isaías": {
+        "n_entries": 5,
+        "en_total": 2820,
+        "ayo_total": 1759,
+        "combined": 4579
+      },
+      "Daniel": {
+        "n_entries": 12,
+        "en_total": 12147,
+        "ayo_total": 17281,
+        "combined": 29428
+      },
+      "Oseas": {
+        "n_entries": 1,
+        "en_total": 604,
+        "ayo_total": 50,
+        "combined": 654
+      },
+      "Jonás": {
+        "n_entries": 4,
+        "en_total": 1339,
+        "ayo_total": 2357,
+        "combined": 3696
+      },
+      "Miqueas": {
+        "n_entries": 1,
+        "en_total": 438,
+        "ayo_total": 182,
+        "combined": 620
+      },
+      "Zacarías": {
+        "n_entries": 1,
+        "en_total": 582,
+        "ayo_total": 90,
+        "combined": 672
+      },
+      "Malaquías": {
+        "n_entries": 4,
+        "en_total": 2285,
+        "ayo_total": 3718,
+        "combined": 6003
+      },
+      "Mateo": {
+        "n_entries": 28,
+        "en_total": 23461,
+        "ayo_total": 30613,
+        "combined": 54074
+      },
+      "Marcos": {
+        "n_entries": 16,
+        "en_total": 14286,
+        "ayo_total": 22748,
+        "combined": 37034
+      },
+      "Lucas": {
+        "n_entries": 24,
+        "en_total": 24089,
+        "ayo_total": 37168,
+        "combined": 61257
+      },
+      "Juan": {
+        "n_entries": 21,
+        "en_total": 18838,
+        "ayo_total": 23705,
+        "combined": 42543
+      },
+      "Hechos": {
+        "n_entries": 28,
+        "en_total": 23220,
+        "ayo_total": 30007,
+        "combined": 53227
+      },
+      "Romanos": {
+        "n_entries": 16,
+        "en_total": 10450,
+        "ayo_total": 23828,
+        "combined": 34278
+      },
+      "1 Corintios": {
+        "n_entries": 16,
+        "en_total": 11113,
+        "ayo_total": 16243,
+        "combined": 27356
+      },
+      "2 Corintios": {
+        "n_entries": 13,
+        "en_total": 6621,
+        "ayo_total": 9667,
+        "combined": 16288
+      },
+      "Gálatas": {
+        "n_entries": 6,
+        "en_total": 3695,
+        "ayo_total": 5057,
+        "combined": 8752
+      },
+      "Efesios": {
+        "n_entries": 6,
+        "en_total": 3051,
+        "ayo_total": 9020,
+        "combined": 12071
+      },
+      "Filipenses": {
+        "n_entries": 4,
+        "en_total": 2296,
+        "ayo_total": 3198,
+        "combined": 5494
+      },
+      "Colosenses": {
+        "n_entries": 4,
+        "en_total": 2229,
+        "ayo_total": 3098,
+        "combined": 5327
+      },
+      "1 Tesalonicenses": {
+        "n_entries": 5,
+        "en_total": 2072,
+        "ayo_total": 2515,
+        "combined": 4587
+      },
+      "2 Tesalonicenses": {
+        "n_entries": 3,
+        "en_total": 1216,
+        "ayo_total": 1399,
+        "combined": 2615
+      },
+      "1 Timoteo": {
+        "n_entries": 6,
+        "en_total": 2625,
+        "ayo_total": 4070,
+        "combined": 6695
+      },
+      "2 Timoteo": {
+        "n_entries": 4,
+        "en_total": 1905,
+        "ayo_total": 2749,
+        "combined": 4654
+      },
+      "Tito": {
+        "n_entries": 3,
+        "en_total": 1083,
+        "ayo_total": 1785,
+        "combined": 2868
+      },
+      "Filemón": {
+        "n_entries": 1,
+        "en_total": 491,
+        "ayo_total": 678,
+        "combined": 1169
+      },
+      "Hebreos": {
+        "n_entries": 13,
+        "en_total": 8236,
+        "ayo_total": 10924,
+        "combined": 19160
+      },
+      "Santiago": {
+        "n_entries": 5,
+        "en_total": 2474,
+        "ayo_total": 3544,
+        "combined": 6018
+      },
+      "1 Pedro": {
+        "n_entries": 5,
+        "en_total": 2762,
+        "ayo_total": 3851,
+        "combined": 6613
+      },
+      "2 Pedro": {
+        "n_entries": 3,
+        "en_total": 1698,
+        "ayo_total": 2412,
+        "combined": 4110
+      },
+      "1 Juan": {
+        "n_entries": 5,
+        "en_total": 2809,
+        "ayo_total": 2907,
+        "combined": 5716
+      },
+      "2 Juan": {
+        "n_entries": 1,
+        "en_total": 338,
+        "ayo_total": 382,
+        "combined": 720
+      },
+      "3 Juan": {
+        "n_entries": 1,
+        "en_total": 354,
+        "ayo_total": 464,
+        "combined": 818
+      },
+      "Judas": {
+        "n_entries": 1,
+        "en_total": 745,
+        "ayo_total": 1149,
+        "combined": 1894
+      },
+      "Apocalipsis": {
+        "n_entries": 22,
+        "en_total": 11992,
+        "ayo_total": 16507,
+        "combined": 28499
+      }
+    }
+  },
+  "tokenizer": "whitespace_split"
+}
