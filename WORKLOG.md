@@ -15,6 +15,174 @@ This file supersedes the legacy `AGENT_LOGS.md`. The entries below preserve the 
 
 ---
 
+## 2026-05-12 — Reference-docs cleanup, BIBLE_CORPUS_REF, README and HOUSEKEEPING refresh
+- status: done
+- type: task
+- id: ayoreo_chatbot.worklog.2026_05_12_docs_cleanup
+- last_checked: 2026-05-12
+<!-- content -->
+**Agent:** Claude (Opus 4.7, Claude Code) + user (bulk deletions)
+**Task:** Consolidate `docs/reference/` so it only contains project-specific specs, add a dedicated Bible-corpus reference, and refresh the README and the HOUSEKEEPING protocol to match the new state.
+
+**Deletions (by user)**
+
+The following files were removed from `docs/reference/` because they were either generic agent guides that belong in the kb_mcp knowledge base or duplicates of KB content:
+
+- `AGENTS.md` — generic working-norms doc; the project now uses `README.md` + `WORKLOG.md` + `TODO_WORKFLOW.md` for this role, with the KB workflow (`content/workflows/CODING_AGENT_MAIN_WORKFLOW.md`) governing session protocol.
+- `MD_CONVENTIONS.md` — local copy of the KB's authoritative `MD_CONVENTIONS.md`; KB is now the only source of truth.
+- `GCLOUD_AGENT.md`, `LATENCY_AGENT.md`, `MCP_AGENT.md`, `PYUI_AGENT.md`, `RAGS_AGENT.md`, `TOKENOPT_SKILL.md` — generic Claude-agent how-tos; KB-only.
+- `HTML_SCRAPING_SKILL.md` — already noted as superseded by [AYOREO_SCRAPING_REF.md](docs/reference/AYOREO_SCRAPING_REF.md) in the prior worklog entry; deletion completes that migration.
+- `SCRAPER_AGENT.md` — documented an unrelated project's scraper; never used here.
+
+**Additions**
+
+- [docs/reference/BIBLE_CORPUS_REF.md](docs/reference/BIBLE_CORPUS_REF.md) — new project reference for the Bible side of the corpus: Bible.com sources and versions (Ayoré 2825 / Spanish 3291 / English 1932), scraping mechanics, on-disk file layout, `bible.json` entry schema, `alignment_map` format, the generalized header-deterministic alignment algorithm, current coverage snapshot (759 chapters / 261 mismatched / 261 aligned / 0 still needing Gemini / 0 broken), and usable EN↔AYO pair counts. Follows MD_CONVENTIONS: `type: reference`, `_REF.md` suffix, root-only metadata, `scope: project-specific`. After initial draft, surfaced the headline pair counts in the preamble and added a verse-level vs block-level breakdown — both interpretations now explicit: **20,324 EN verses with Ayoré coverage** (the count to use for seq2seq training, since each EN verse becomes one row), or equivalently **19,838 alignment blocks** with both sides non-empty (the count if each Ayoré chunk is one row, preserving the 436 fused multi-verse cases), plus 105 EN verses with no Ayoré coverage.
+- [docs/reference/AYOREO_TRANSLATION_PLAN.md](docs/reference/AYOREO_TRANSLATION_PLAN.md) — new project plan (authored by the user) for the NLLB-200 + LoRA + hybrid RAG-refinement translation pipeline. Staged rollout with measurable artifacts at each phase. Status `in-progress`.
+
+**Retrofits**
+
+- [docs/reference/AYOREO_SCRAPING_REF.md](docs/reference/AYOREO_SCRAPING_REF.md) gained the schema-compliant root metadata block it was missing (`type`, `id`, `description`, `label`, `injection`, `volatility`, `scope`, `last_checked`) and a cross-reference paragraph pointing at the new BIBLE_CORPUS_REF.
+
+**README**
+
+[README.md](README.md) updated to reflect:
+
+- Three root-level governance files now visible in the project-structure tree: `HOUSEKEEPING.md`, `WORKLOG.md`, `TODO_WORKFLOW.md`.
+- More accurate scraping module descriptions (hybrid positional + WPML pairing — the corrector model, not pure WPML).
+- New scripts surfaced in the tree: `align_bible_llm.py` and `verify_bible_completeness.py`.
+- New **Documentación de referencia** section listing all project-specific reference docs with one-line descriptions, plus an explicit note that generic agent guides live in the KB (`kb_mcp`), not in this repo.
+- `Fuentes de datos` section gained a `bible.com` line and a pointer to `BIBLE_CORPUS_REF.md`.
+
+**HOUSEKEEPING**
+
+[HOUSEKEEPING.md](HOUSEKEEPING.md) Phase 1 had stale references to the now-deleted `docs/reference/AGENTS.md` and `docs/reference/MD_CONVENTIONS.md`. Rewrote both steps:
+
+- Step 1 now points at the trio of root governance files (`README.md`, `WORKLOG.md`, `TODO_WORKFLOW.md`) and explicitly states there is no separate `AGENTS.md`.
+- Step 2 now instructs the agent to load `MD_CONVENTIONS.md` from the KB via `knowledge_base_read(path="MD_CONVENTIONS.md", intro_only=True)`, since the repo no longer keeps a local copy.
+
+**No code changes this session.** Pure documentation/governance hygiene.
+
+---
+
+## 2026-05-12 — Split scraping docs: KB stays generic, project specifics moved local
+- status: done
+- type: task
+- id: ayoreo_chatbot.worklog.2026_05_12_split_scraping_docs
+- last_checked: 2026-05-12
+<!-- content -->
+**Agent:** Claude (Opus 4.7, Claude Code)
+**Task:** Reconcile scraping documentation between the KB and `docs/reference/`. Enforce the rule that the knowledge base must remain generic; project-specific specifications belong in this repository.
+
+**Findings (grounded in code, not docs):**
+- The crawler ([src/scraping/crawler.py](src/scraping/crawler.py)) pairs EN+AYO positionally as a first guess; the page scraper ([src/scraping/page_scraper.py:255-271](src/scraping/page_scraper.py#L255-L271)) then reads the EN page's WPML switcher and **overwrites** any mismatched sibling URL with the switcher value (logged warning). This hybrid was misrepresented in both the KB and the prior local docs as either pure-positional or pure-WPML.
+- Anchor language is EN, not ES (ES is opt-in via `--scrape-es` or `scrape_es: true` in `configs/scraping.yaml`). `story_id` derives from the EN slug.
+- Glossary key on ayore.org entries is `english`, not `spanish` (consistent with the EN anchor).
+- UTF-8 is enforced in `src/scraping/utils.fetch_page` for ayore.org; the Bible scraper now sets `response.encoding = "utf-8"` in `extract_chapter_data` too.
+
+**KB changes — [content/how-to/WEB_SCRAPING_SKILL.md](knowledge_base/content/how-to/WEB_SCRAPING_SKILL.md):**
+- Stripped all `ayore.org`/`bible.com` content (URL tables, sections list, output schemas, percent-encoding note, production run log, single-output-file rule).
+- Generalized the WPML section: removed `ayore.org` URLs and the specific "13 of 14" production figure; documented both **switcher-only** and **hybrid (positional + WPML corrector)** strategies.
+- Replaced the `Linked-List Traversal: Bible.com` section with a generic `Linked-List Traversal Pattern` (safe resumption, cross-version mirroring, validation layers, translator-merge handling).
+- Cleaned the verification checklist of ayore-specific items.
+- MCMP-specific blocks left in place; flagged for the MCMP repo to clean up.
+
+**Local docs changes (in this repo):**
+- **Wrote** [docs/reference/AYOREO_SCRAPING_REF.md](docs/reference/AYOREO_SCRAPING_REF.md) — authoritative project spec covering ayore.org and bible.com, grounded in current code: hybrid pairing strategy, EN-anchor, EN-slug `story_id`, English glossary key, full schemas, traversal mechanics, validation, safe resumption.
+- **Deleted** `docs/reference/HTML_SCRAPING_SKILL.md` (content split between generic-KB and the new local doc; was internally stale on anchor language and pairing strategy).
+- **Deleted** `docs/reference/SCRAPER_AGENT.md` (documented the MCMP/LMU events scraper from a different project; not used here).
+- Updated [README.md](README.md) references from `HTML_SCRAPING_SKILL.md` → `AYOREO_SCRAPING_REF.md`.
+
+**Code change:** [scripts/scrape_bible.py](scripts/scrape_bible.py) now sets `response.encoding = "utf-8"` in `extract_chapter_data` before `BeautifulSoup` parsing (matches the policy already enforced in `src/scraping/utils.fetch_page`). User added the actual line with an explanatory comment.
+
+**Follow-up:** MCMP-specific blocks (events/people schemas, single-class `MCMPScraper` architecture, MCP field-name anti-pattern) remain in the KB doc. They belong in the MCMP repo's own reference file by the same logic applied here.
+
+---
+
+## 2026-05-12 — Generalized try_header_alignment + UTF-8 hardening for Bible scraper
+- status: done
+- type: task
+- id: ayoreo_chatbot.worklog.2026_05_12_generalize_header_alignment
+- last_checked: 2026-05-12
+<!-- content -->
+**Agent:** Claude (Opus 4.7, Claude Code)
+**Task:** Eliminate the remaining Gemini fallback in the Bible alignment pipeline by generalizing the header-deterministic algorithm to cover the 11 chapters the strict version couldn't handle, plus close a latent UTF-8 risk in the Bible scraper.
+
+**Generalized `try_header_alignment`** in [scripts/align_bible_llm.py](scripts/align_bible_llm.py):
+
+- The canonical verse set is now the *union* of verse numbers across all three languages instead of a strict 1..N requirement on every language. Per-language verses must still be distinct.
+- Each language may be a partial subset of the canon, so the previously-unhandled cases all resolve cleanly:
+  - **Partial AYO** (8 chapters: isa-7, isa-9, isa-11, isa-50, hos-11, mic-5, zec-11, num-27). Verses without an AYO chunk get `"ayo": []` in the block.
+  - **ES short at the end** (2 chapters: 3jn-1, rev-12). Trailing canonical verses without an ES chunk get `"es": []`.
+  - **ES silently skips an interior verse** (1 chapter: 1sa-20, ES skips v.30). The v.30 block gets `"es": []`.
+- Union-find still handles fused-chunk headers across any language.
+- Validation unchanged: per-language full chunk-index coverage and monotonic ordering across blocks (skipping languages with no chunk in a given block).
+
+**Regression-clean**: produces byte-identical maps for all 250 chapters the strict version already covered.
+
+**Corpus impact**
+
+| Metric | Before | After |
+|---|---|---|
+| Mismatched chapters resolvable via headers | 250/261 | **261/261** |
+| Chapters still needing Gemini fallback | 11 | **0** |
+| Maps with out-of-range chunk indices | 0 | 0 |
+| Maps with duplicate/missing chunk references | 0 | 0 |
+
+Two stored Gemini maps were replaced this session because the generalized header version is finer-grained:
+
+- `bible__num-27`: stored had 11 blocks (verses 1–11 bundled into a single AYO-empty block); new has 21 blocks (one per canonical verse, AYO empty where Ayoré doesn't translate). Same coverage, uniform granularity.
+- `bible__3jn-1`: stored bundled AYO chunks for v.14 and v.15 into a single 2:2 block; new gives one block per verse. Same Gemini-coarsening pattern fixed earlier for `bible__jdg-9`.
+
+Backup written to `data/raw/bible/aligned_bible_backup_<ts>_pre_v2.json` before the two-chapter rewrite.
+
+**UTF-8 hardening of [scripts/scrape_bible.py](scripts/scrape_bible.py)**
+
+Added `response.encoding = "utf-8"` after the status check in `extract_chapter_data`, mirroring the defense already in `src/scraping/utils.py:25` for ayore.org. Bible.com currently serves `charset=utf-8`, and a full audit of `data/raw/bible/bible.json` found zero mojibake patterns and zero replacement characters — but the previous code relied on the server doing the right thing, which is brittle. No re-scrape needed.
+
+**Net effect**
+
+The Bible alignment pipeline can now reach 100% coverage on the current corpus with zero Gemini calls. The Gemini fallback path remains in place for any future chapters whose headers don't determine the alignment (e.g. malformed or missing headers).
+
+---
+
+## 2026-05-12 — Drafted Firebase migration plan for the sanity_app reviewer tool
+- status: done
+- type: task
+- id: ayoreo_chatbot.worklog.2026_05_12_firebase_migration_plan
+- last_checked: 2026-05-12
+<!-- content -->
+**Agent:** Claude (Opus 4.7, Claude Code)
+**Task:** Produce a self-contained migration plan moving the Streamlit-based dataset reviewer ([sanity_app.py](sanity_app.py)) to a hosted web app on Firebase, so multiple allowlisted reviewers can verify and propose corrections to the semantic-alignment data without a local Python setup.
+
+**Architectural decisions (elicited via clarifying questions before drafting)**
+
+- **Access:** allowlisted reviewers via Google Sign-In, enforced both client-side and through Firestore security rules.
+- **Source of truth:** `data/raw/ayoreoorg/aligned_ayoreoorg.json` and `data/raw/bible/aligned_bible.json` remain canonical. Firestore stores a snapshot plus per-reviewer proposed corrections under `datasets/{dataset_id}/stories/{story_id}/proposals/{reviewer_uid}`. A maintainer-run export script applies approved proposals back to JSON; the maintainer commits manually (no agent staging, per the project rule).
+- **Frontend stack:** React + Vite on Firebase Hosting, matching the KB norm in `content/workflows/DEPLOY_FIREBASE_WORKFLOW.md` and `content/reference/FIREBASE_PLANNING_WEBAPP_REF.md`.
+- **Granularity:** one Firestore doc per story (~891 docs total: 759 bible + 132 ayoreoorg). Average ~35 KB per doc, well under the 1 MB Firestore limit.
+
+**Outcome**
+
+- Created [docs/reference/FIREBASE_MIGRATION_PLAN.md](docs/reference/FIREBASE_MIGRATION_PLAN.md) — 10 sequenced tasks (provision → scaffold → auth → schema → seed → port UI → proposals/triage → export → deploy → decommission). Schema follows MD_CONVENTIONS (`_PLAN.md` suffix, metadata on root and every task node, valid labels only, dynamic-context loads embedded in the tasks that need them).
+- Added one self-contained pickup task to [TODO_WORKFLOW.md](TODO_WORKFLOW.md) (`todo.firebase_migration_sanity_app`) that points future agents to the plan and instructs them to read it before executing.
+
+**No code changes this session** — planning only. Task `task_1` (project provisioning) is a `human` task in the plan and was deferred at the user's request.
+
+**KB context loaded**
+
+- `content/workflows/CODING_AGENT_MAIN_WORKFLOW.md` (root protocol).
+- `content/workflows/DEPLOY_FIREBASE_WORKFLOW.md` (intro only).
+- `content/reference/FIREBASE_DEFINITIONS_REF.md` (intro only).
+- `content/reference/FIREBASE_PLANNING_WEBAPP_REF.md` (TOC only, then referenced in plan tasks).
+- `MD_CONVENTIONS.md` (intro only), plan template via `knowledge_base_get_template`.
+
+**Follow-ups (not done this session)**
+
+- All ten subtasks in the plan remain `todo`. Pickup is via `todo.firebase_migration_sanity_app` in [TODO_WORKFLOW.md](TODO_WORKFLOW.md).
+- Consider whether `docs/reference/IMPROVE_SM_PLAN.md` overlaps with the new plan and should be linked or merged (called out in `task_10`).
+
+---
+
 ## 2026-05-12 — Repaired 41 corrupt stored Bible alignment maps
 - status: done
 - type: task

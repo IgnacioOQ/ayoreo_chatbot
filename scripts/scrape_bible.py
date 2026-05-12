@@ -29,6 +29,13 @@ def extract_chapter_data(url: str, expected_usfm_prefix: str) -> dict:
         print(f"  [Error] Exception fetching {url}: {e}")
         return None
 
+    # Force UTF-8 regardless of what the server's Content-Type header says.
+    # Bible.com currently serves charset=utf-8, but a CDN change or a missing
+    # header would make requests fall back to ISO-8859-1 and silently mojibake
+    # the Ayoré diacritics (ĩ, ã, ṍ, ẽ, combining marks). Mirrors the defense
+    # in src/scraping/utils.py for the ayore.org scraper.
+    response.encoding = "utf-8"
+
     soup = BeautifulSoup(response.text, 'html.parser')
     
     # Extract Title (e.g. "Éxodo 1")

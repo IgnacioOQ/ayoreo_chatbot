@@ -26,6 +26,35 @@ This file is the per-repository instance of the `TODO_WORKFLOW_TEMPLATE.md` patt
 
 ---
 
+## Migrate the Streamlit sanity_app to Firebase
+- status: todo
+- type: task
+- id: todo.firebase_migration_sanity_app
+- description: Execute the multi-phase migration of the dataset reviewer from Streamlit to a React + Vite SPA on Firebase Hosting with Firestore-backed proposed corrections.
+- owner: agent
+- blocked_by: []
+- last_checked: 2026-05-12
+<!-- content -->
+**Context:** [sanity_app.py](sanity_app.py) is a Streamlit app reviewers use to verify semantic alignment between EN and AYO paragraphs/verses in `data/raw/ayoreoorg/aligned_ayoreoorg.json` and `data/raw/bible/aligned_bible.json`. The migration moves it to a hosted web app so multiple allowlisted reviewers can collaborate without local Python setup, while keeping the canonical JSON files in the repo as source of truth.
+
+**Plan reference:** Full plan with locked architectural decisions and 10 sequenced subtasks lives at [docs/reference/FIREBASE_MIGRATION_PLAN.md](docs/reference/FIREBASE_MIGRATION_PLAN.md). Read it in full before starting — do not re-derive the design from this stub.
+
+**Preconditions:**
+- Maintainer is ready to perform `task_1` (Firebase project provisioning) themselves; this is a `human` task in the plan and cannot be delegated to the agent.
+- Allowlist of reviewer emails has been collected.
+
+**Steps:**
+1. Read [docs/reference/FIREBASE_MIGRATION_PLAN.md](docs/reference/FIREBASE_MIGRATION_PLAN.md) in full.
+2. Execute tasks `firebase_migration_sanity_app.task_1` through `task_10` in order. Respect each task's `blocked_by` chain and `owner` field (some are `human`, most are `agent`).
+3. Load the KB context references embedded in the plan as each task reaches them — do not preload all of them.
+4. After completing each task, update its `status` field in the plan from `todo` to `done` (or `in-progress` while working).
+
+**Verification:** All ten subtasks in [docs/reference/FIREBASE_MIGRATION_PLAN.md](docs/reference/FIREBASE_MIGRATION_PLAN.md) have `status: done`, the production URL is reachable by an allowlisted reviewer, one full reviewer-edit → maintainer-approve → export-to-JSON round trip has landed in `aligned_*.json`, and [README.md](README.md) documents the new workflow.
+
+**On completion:** Delete this entire task block from TODO_WORKFLOW.md (from the `---` above the `##` header to the `---` below the last line).
+
+---
+
 ## Task Template
 
 Copy the block below (without the outer fences), fill in all fields, and insert it as a new `## [Task Title]` task block.

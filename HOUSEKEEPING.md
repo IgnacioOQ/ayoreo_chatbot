@@ -14,8 +14,8 @@ The output of every housekeeping pass is a dated report appended to `WORKLOG.md`
 
 ## Phase 1 — Load conventions
 
-1. Read `docs/reference/AGENTS.md` for the project's working norms.
-2. Read `docs/reference/MD_CONVENTIONS.md` so any new or updated markdown follows the Markdown-JSON hybrid schema. The authoritative reference for the schema also lives in the knowledge base at `MD_CONVENTIONS.md`.
+1. Skim `README.md`, `WORKLOG.md`, and `TODO_WORKFLOW.md` at the repo root for the project's current state and any pending tasks. These three files are the working norms — there is no separate `AGENTS.md`.
+2. Load the schema preamble from the knowledge base so any new or updated markdown follows the Markdown-JSON hybrid schema: `knowledge_base_read(path="MD_CONVENTIONS.md", intro_only=True)`. The canonical conventions live only in the KB; the repo does not keep a local copy.
 
 ## Phase 2 — Map the dependency network
 

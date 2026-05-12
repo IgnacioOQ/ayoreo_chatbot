@@ -285,14 +285,18 @@ python scripts/run_finetune.py --base-model meta-llama/Llama-3.1-8B
 
 ```
 ayoreo_chatbot/
+├── README.md                     # Este archivo
+├── HOUSEKEEPING.md               # Protocolo recurrente de mantenimiento del repo
+├── WORKLOG.md                    # Historia append-only de cambios significativos
+├── TODO_WORKFLOW.md              # Backlog de tareas pendientes entre sesiones
 ├── app.py                        # Streamlit entry point principal
 ├── sanity_app.py                 # Streamlit app para verificar y corregir el dataset crudo
 ├── src/
 │   ├── scraping/                 # Scraping de ayore.org
-│   │   ├── crawler.py            # Descubrimiento de URLs por sección (EN+AYO por defecto)
-│   │   ├── page_scraper.py       # Extracción de contenido + WPML pairing desde página EN
+│   │   ├── crawler.py            # Descubrimiento de URLs + emparejamiento posicional ES/EN/AYO
+│   │   ├── page_scraper.py       # Extracción de contenido + corrección WPML del par EN→AYO
 │   │   ├── pdf_scraper.py        # Descarga de PDFs (diccionario, gramática)
-│   │   └── utils.py              # HTTP helpers, UTF-8, normalización de URLs
+│   │   └── utils.py              # HTTP helpers, UTF-8 forzado, normalización de URLs
 │   ├── processing/               # Limpieza, alineación EN↔AYO, corpus
 │   ├── pos_tagging/              # POS tagger para Ayoreo
 │   ├── training/                 # LoRA trainer, fine-tuning, evaluación
@@ -301,7 +305,7 @@ ayoreo_chatbot/
 ├── data/
 │   ├── raw/
 │   │   ├── ayoreoorg/            # Datos extraídos de ayore.org (ayoreoorg.json, aligned_ayoreoorg.json)
-│   │   ├── bible/                # Biblia completa procedente de Bible.com
+│   │   ├── bible/                # Biblia completa procedente de Bible.com (bible.json, aligned_bible.json)
 │   │   └── pdfs/                 # Diccionario y gramática en PDF
 │   ├── processed/                # Corpus paralelo EN↔AYO procesado
 │   └── splits/                   # Train/val/test
@@ -311,17 +315,34 @@ ayoreo_chatbot/
 ├── prompts/                      # System prompts y templates
 ├── scripts/
 │   ├── run_scraper.py            # Entry point del pipeline de scraping de ayore.org
-│   ├── scrape_bible.py           # Scraping de la Biblia desde Bible.com
-│   ├── align_mismatches_llm.py   # Alineación semántica EN↔AYO con Gemini (reanudable, con progreso)
+│   ├── scrape_bible.py           # Scraping de la Biblia desde Bible.com (linked-list, UTF-8 forzado)
+│   ├── verify_bible_completeness.py # Comparación de bible.json contra el canon (66 libros / 1189 caps)
+│   ├── align_mismatches_llm.py   # Alineación semántica EN↔AYO de ayore.org con Gemini (reanudable)
+│   ├── align_bible_llm.py        # Alineación de la Biblia: header-deterministic primero, Gemini como fallback
 │   ├── add_body_decomposition.py # Genera body_decomposition a nivel de párrafo para ayoreoorg.json
 │   └── run_processing.py         # Construcción del corpus y splits
 ├── tests/                        # Tests
-└── docs/reference/               # Guías para agentes (HTML_SCRAPING_SKILL.md, SEMANTIC_MATCHING.md, etc.)
+└── docs/reference/               # Especificaciones del proyecto y protocolos (ver más abajo)
 ```
+
+## Documentación de referencia
+
+Todas las especificaciones del proyecto viven en [docs/reference/](docs/reference/):
+
+- [AYOREO_SCRAPING_REF.md](docs/reference/AYOREO_SCRAPING_REF.md) — Especificación del scraping (ayore.org + bible.com): estructura de URLs, catálogo de secciones, estrategia híbrida posicional+WPML, regex de metadatos, UTF-8.
+- [BIBLE_CORPUS_REF.md](docs/reference/BIBLE_CORPUS_REF.md) — Referencia del corpus bíblico: schema de `bible.json`/`aligned_bible.json`, algoritmo header-deterministic para `alignment_map`, estado actual (cobertura por capítulo, número de pares EN↔AYO).
+- [SEMANTIC_MATCHING.md](docs/reference/SEMANTIC_MATCHING.md) — Protocolo de alineación semántica vía LLM (vigente para ayore.org; superado por el método header-deterministic en la Biblia).
+- [AYOREO_TRANSLATION_PLAN.md](docs/reference/AYOREO_TRANSLATION_PLAN.md) — Plan en curso del pipeline de traducción (NLLB-200 + LoRA + RAG híbrido).
+- [FIREBASE_MIGRATION_PLAN.md](docs/reference/FIREBASE_MIGRATION_PLAN.md) — Plan de migración de `sanity_app.py` a una web app colaborativa en Firebase.
+- [IMPROVE_SM_PLAN.md](docs/reference/IMPROVE_SM_PLAN.md) — Plan de mejora de la alineación semántica de ayore.org vía inyección de glosario.
+
+> **Nota:** `MD_CONVENTIONS.md` y otros documentos genéricos sobre agentes viven en la base de conocimiento global (`kb_mcp`), no en este repo. Los documentos en [docs/reference/](docs/reference/) son únicamente lo específico de este proyecto.
 
 ## Fuentes de datos
 
 - [ayore.org](https://ayore.org) — Textos paralelos EN/AYO, diccionario, gramática
+- [bible.com](https://www.bible.com) — Biblia paralela en Ayoré (ID 2825), Español (ID 3291), Inglés (ID 1932)
 - Ver [fuentes.txt](fuentes.txt) para URLs específicas
-- Ver [docs/reference/HTML_SCRAPING_SKILL.md](docs/reference/HTML_SCRAPING_SKILL.md) para detalles técnicos del scraper
+- Ver [docs/reference/AYOREO_SCRAPING_REF.md](docs/reference/AYOREO_SCRAPING_REF.md) para detalles técnicos del scraper
+- Ver [docs/reference/BIBLE_CORPUS_REF.md](docs/reference/BIBLE_CORPUS_REF.md) para el estado y schema del corpus bíblico
 - Ver [docs/reference/SEMANTIC_MATCHING.md](docs/reference/SEMANTIC_MATCHING.md) para el protocolo de alineación semántica

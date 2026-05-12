@@ -47,11 +47,19 @@ Anchor Heuristic Protocol:
 Input: ES, EN, and AYO text block arrays.
 Output: Array of unified semantic blocks mapping indices from ES/EN/AYO."""
 
-# Header-deterministic alignment: in this corpus the AYO translation labels
+# Header-deterministic alignment: in this corpus the Ayoré translation labels
 # every fused verse range in its own chunk header (e.g. "Éxodo 39,16-17-18"),
-# while ES and EN keep one chunk per verse. When every chunk's header parses
-# to a verse range and the per-language verse sequences are contiguous 1..N,
-# the alignment is fully determined by the headers — no LLM is needed.
+# and so do ES and EN where they fuse. When every chunk's header parses to a
+# verse range and per-language verses are distinct, the alignment is fully
+# determined by the headers — no LLM is needed.
+#
+# The algorithm is general:
+#   - The canonical verse set is the union of verses across all three languages.
+#     Languages may be partial subsets (e.g. AYO translates only Isaiah 7:14;
+#     ES ends one verse short of EN/AYO in 3 John).
+#   - Verses fused inside any one language's chunk are unioned into one block.
+#   - Each block lists, per language, the chunk indices covering that block's
+#     verses — or an empty list when the language has no chunk there.
 VERSE_RE = re.compile(r'[,:]\s*(\d+(?:[-–]\d+)*)\s*$')
 
 
@@ -65,12 +73,12 @@ def _parse_verses(header: str) -> List[int]:
 
 def try_header_alignment(entry: dict):
     """Build an alignment map from chunk headers alone, or return None if the
-    headers don't fully determine the alignment.
+    headers don't determine the alignment.
 
     Returns a list of {"es": [...], "en": [...], "ayo": [...]} blocks with
-    full coverage and monotonic order, or None when the strategy fails (any
-    chunk missing a parseable verse spec, language verse sequence not the same
-    contiguous 1..N set, etc.).
+    full chunk-index coverage and monotonic ordering, or None when any chunk
+    is missing a parseable verse spec, a language has duplicate verse numbers,
+    or the resulting blocks don't cover every chunk exactly once.
     """
     deco = entry.get('body_decomposition', {})
     if not (deco.get('es') and deco.get('en') and deco.get('ayo')):
@@ -78,21 +86,24 @@ def try_header_alignment(entry: dict):
 
     lang_verses = {}
     for lang in ('es', 'en', 'ayo'):
-        chunk_verses = [_parse_verses(c.get('header', '')) for c in deco[lang]]
-        if any(not v for v in chunk_verses):
+        cv = [_parse_verses(c.get('header', '')) for c in deco[lang]]
+        if any(not v for v in cv):
             return None
-        lang_verses[lang] = chunk_verses
-
-    # All three languages must agree on the canonical verse sequence 1..N.
-    flats = {lang: [v for vs in cv for v in vs] for lang, cv in lang_verses.items()}
-    N = len(flats['en'])
-    expected = list(range(1, N + 1))
-    for lang in ('es', 'en', 'ayo'):
-        if flats[lang] != expected:
+        # Per-language verses must be distinct — repeated verse numbers
+        # inside one language would be ambiguous.
+        flat = [v for vs in cv for v in vs]
+        if len(set(flat)) != len(flat):
             return None
+        lang_verses[lang] = cv
 
-    # Union-find: verses fused inside any one language's chunk belong together.
-    parent = list(range(N + 1))
+    # Canonical verse set = union across all languages.
+    canon = sorted({v for cv in lang_verses.values() for vs in cv for v in vs})
+    if not canon:
+        return None
+
+    # Union-find: verses fused inside any single chunk in any language are
+    # in the same alignment block.
+    parent = {v: v for v in canon}
 
     def find(x):
         while parent[x] != x:
@@ -103,7 +114,10 @@ def try_header_alignment(entry: dict):
     def union(a, b):
         ra, rb = find(a), find(b)
         if ra != rb:
-            parent[max(ra, rb)] = min(ra, rb)
+            if ra < rb:
+                parent[rb] = ra
+            else:
+                parent[ra] = rb
 
     for cv in lang_verses.values():
         for vs in cv:
@@ -111,11 +125,12 @@ def try_header_alignment(entry: dict):
                 union(vs[0], v)
 
     groups = defaultdict(list)
-    for v in range(1, N + 1):
+    for v in canon:
         groups[find(v)].append(v)
     ordered_groups = sorted(groups.values(), key=lambda g: g[0])
 
-    # verse -> chunk index, per language.
+    # verse -> chunk index, per language (verses absent from a language are
+    # simply not in that language's map).
     v2idx = {lang: {} for lang in lang_verses}
     for lang, cv in lang_verses.items():
         for i, vs in enumerate(cv):
@@ -124,18 +139,22 @@ def try_header_alignment(entry: dict):
 
     blocks = []
     for grp in ordered_groups:
-        blocks.append({
-            lang: sorted({v2idx[lang][v] for v in grp})
+        block = {
+            lang: sorted({v2idx[lang][v] for v in grp if v in v2idx[lang]})
             for lang in lang_verses
-        })
+        }
+        blocks.append(block)
 
-    # Validate: every chunk index appears exactly once, ordering is monotonic.
+    # Validate: every chunk index appears exactly once per language; monotonic
+    # ordering across blocks (skipping languages with no chunk in a block).
     for lang in ('es', 'en', 'ayo'):
         seen = sorted({i for b in blocks for i in b[lang]})
         if seen != list(range(len(deco[lang]))):
             return None
         last_max = -1
         for b in blocks:
+            if not b[lang]:
+                continue
             if min(b[lang]) <= last_max:
                 return None
             last_max = max(b[lang])
