@@ -2,25 +2,52 @@
 - status: in-progress
 - type: plan
 - id: ayoreo_translation
-- description: End-to-end plan for building an English↔Ayoreo machine translation system on extremely limited parallel data, using NLLB-200 as the base, parameter-efficient LoRA fine-tuning, optional continued pre-training on monolingual Ayoreo, and a hybrid RAG-refinement inference layer.
+- description: End-to-end plan for building a bidirectional English↔Ayoreo machine translation system using NLLB-200 as the base, two-stage LoRA fine-tuning over a mixed Bible + folk-story corpus, an active-learning annotation tool driven by a trilingual researcher, and a hybrid RAG-refinement inference layer designed to mitigate Bible-translationese register bias.
 - label: [planning, backend]
 - injection: informational
 - volatility: evolving
 - owner: researcher
-- estimate: 8w
+- estimate: 10w
 - priority: high
 - last_checked: 2026-05-12
 <!-- content -->
 
-This plan covers the construction of a bidirectional translation system between English and **Ayoreo** (Zamucoan family; spoken by ~4,500 people across Bolivia and Paraguay). Ayoreo is functionally absent from mainstream LLM pretraining corpora, so the core technical risk is **representation cold-start**: the base model has no prior structure to nudge. The plan is staged so each phase produces a usable artifact and a measurable improvement over the previous one — we never depend on a single big training run succeeding.
+This is **revision 2** of the plan, written after a data audit and after confirming a native-speaker researcher is available to participate in the workflow. It supersedes revision 1 but preserves all stable IDs so any prior references remain valid. Substantive changes from v1 are summarized in the "What changed from v1" section below.
 
-Three design decisions frame everything below:
+The system translates between English and **Ayoreo** (Zamucoan family; spoken by ~4,500 people across Bolivia and Paraguay). Ayoreo is functionally absent from mainstream LLM pretraining corpora, so the core technical risk is **representation cold-start**. A second, equally important risk surfaced during the data audit: roughly 89% of available Ayoreo training material comes from a Bible translation produced by a non-native English speaker, which carries a measurable translationese fingerprint. The plan is structured to address both risks: NLLB-200 as the base model gives us a multilingual representation foundation; a two-stage training schedule plus a researcher-in-the-loop annotation app gives us a path to escape Bible register.
 
-1. **NLLB-200 as the base model** rather than a general LLM. NLLB was purpose-built for low-resource translation across 200 languages, including several South American indigenous languages. Its multilingual subword tokenizer fragments Ayoreo far less aggressively than English-dominant tokenizers, and its encoder-decoder architecture is the right shape for the task.
-2. **LoRA over full fine-tuning**, with deliberately small rank. With likely <5,000 parallel pairs, full fine-tuning would overfit and induce catastrophic forgetting of the base model's multilingual competence. LoRA's tiny parameter count is a regularizer here — a feature, not just an efficiency win.
-3. **Hybrid inference, not pure model output**. The LoRA-tuned model proposes a translation; a refinement layer (RAG over the parallel corpus + a strong general LLM) corrects fluency and terminology. This compensates for the unavoidable hallucinations that come with training on a tiny corpus.
+**Data Snapshot (2026-05-12)**
 
-The plan assumes a single researcher working part-time over ~8 weeks. It will be revisited at the end of Phase 1 once we have a baseline number to anchor expectations against.
+| Corpus | Pairs | EN tokens (ws) | AYO tokens (ws) | EN:AYO | Notes |
+|---|---:|---:|---:|---:|---|
+| Bible | 20,324 verse pairs | 487,558 | 763,889 | 0.64 | 759 chapters scraped; 261 with explicit `alignment_map`, rest 1:1; 105 EN verses with no AYO counterpart (dropped); EN→AY by English-speaker translator |
+| Folk stories (ayore.org) | 8,156 paragraph pairs | 121,563 | 89,180 | 1.36 | 130 of 132 stories paired; 114 with LLM-produced `alignment_map`; 2 AYO-only stories diverted to monolingual pool; data not yet fully cleaned |
+| Dictionary | TBD | TBD | TBD | TBD | Not yet acquired; integration points defined below |
+
+By token count, the Bible accounts for ~89% of available Ayoreo training material. By pair count, ~71%. The disparity matters because per-token gradient signal dominates training, not per-pair sampling frequency.
+
+**Findings and Design Decisions**
+
+**Translationese in the Bible corpus is confirmed.** The EN:AYO whitespace token ratio of 0.64 (Ayoreo uses 57% more words than the English source) is the opposite of what an agglutinative language should produce against an analytic source. The folk stories' ratio of 1.36 — Ayoreo using fewer words than English, as expected — shows the same metric on linguistically natural Ayoreo. The 2.1x ratio gap is large enough to survive any reasonable noise correction for uncleaned folk-story data, so we treat this as a confirmed property of the Bible translation: it is analytic where natural Ayoreo would be synthetic, a classic L2-translation fingerprint. Practical consequence: training on the Bible alone would produce a model that generates translationese Ayoreo. We compensate via training-mix weighting, source tags, a mandatory native-register fine-tune (Stage 2), and an annotation app for direct naturalness corrections.
+
+**Two-stage training is necessary, not optional.** With 89% of AYO tokens being scripture, simple oversampling of folk stories cannot rebalance the gradient signal — a 6x sampling weight on folk stories still leaves the per-batch AYO loss heavily Bible-dominated. We need an isolated Stage 2 phase where loss is computed exclusively on native-speaker Ayoreo to actually shift the output distribution. This was an option in v1; in v2 it is required.
+
+**Source tags become attractive.** Given the register split, prefixing each training example with `<scripture>`, `<narrative>`, or `<lexical>` gives the model an explicit register knob at inference time. With ~28k+ pairs, there is enough data for tag conditioning to take hold reliably.**Test splits are by book / by story, never random verse-level.** The Bible's repeated proper nouns and parallel passages, and the folk stories' within-story vocabulary cohesion, mean random verse-level splits would massively inflate test metrics. Whole-book and whole-story holdouts are the only honest design.
+
+**The trilingual researcher in the loop changes the trajectory.** Phase 5's human evaluation is now staffed. Beyond that, the researcher unlocks active data generation, naturalness corrections of Bible pairs, alignment auditing, and Spanish-pivot workflows — captured in the new Phase A.
+
+**What changed from v1**
+
+- New Phase A (annotation tool + active data generation), inserted after Phase 0 — runs in parallel with the modeling phases.
+- Phase 0 partially reclassified as done/in-progress to reflect actual state.
+- Phase 0.6 added: alignment audit for the 114 LLM-aligned folk stories.
+- Phase 4 restructured into Stage-1 and Stage-2 training (4.4 / 4.5).
+- Phase 4.2 updated: starting rank bumped from 8 to 16; MLP projections in `target_modules` from the start; source-tag prefixes added to training data.
+- Phase 4.3 added: explicit training-mix weighting scheme.
+- Phase 5.2 updated: human rubric now four-dimensional (adequacy, fluency, terminology, **naturalness**), with the researcher as designated evaluator.
+- Phase 3 (continued pre-training) un-deprioritized given the value of monolingual native-speaker Ayoreo and the 2 AYO-only stories.
+- Phase 6 updated: Spanish pivot pathway added to the refinement layer.
+- Dictionary references throughout updated to "if available" rather than assumed.
 
 ## Phase 0 — Data Foundation
 - status: in-progress
@@ -30,32 +57,20 @@ The plan assumes a single researcher working part-time over ~8 weeks. It will be
 - estimate: 2w
 <!-- content -->
 
-Everything downstream is bounded by the quality of this phase. The single biggest determinant of final translation quality on low-resource tasks is alignment accuracy in the parallel corpus — misaligned pairs teach the model to hallucinate confidently. We optimize for **clean and labeled** over **large**.
+Most data acquisition is done; remaining work is normalization, filtering, test-set construction, and alignment audit. The Bible and folk-story corpora are sized and characterized (see Data Snapshot). The dictionary is not yet available; if acquired during the project it slots into training and the inference-time terminology lookup with no plan restructuring.
 
 ### 0.1 Source Inventory and Cataloging
-- status: in-progress
+- status: done
 - type: task
 - id: ayoreo_translation.data.inventory
 - owner: researcher
 - estimate: 3d
 <!-- content -->
 
-Catalog every Ayoreo source we have access to, with provenance, license/permission status, register, and rough size. Suspected sources include: ayore.org scraped material, Bible portions, dictionary entries with example sentences, oral-history transcripts, and any community-produced educational material.
-
-For each source, record in `data/sources.csv`:
-
-- `source_id` — short identifier
-- `source_type` — one of `religious`, `dictionary`, `oral_transcript`, `news`, `educational`, `other`
-- `orthography` — which spelling convention is used (sources often diverge)
-- `parallel_available` — whether English/Spanish aligned text exists
-- `est_sentences` — rough sentence count
-- `permission_status` — community / publisher permission for use, where required
-- `notes` — anything else worth remembering six months from now
-
-This catalog drives later domain balancing and per-source error analysis.
+Completed during the data audit summarized in the Data Snapshot. `data/sources.csv` lists the Bible and ayore.org corpora with provenance, alignment status, and token counts. Add the dictionary as a third row when/if acquired.
 
 ### 0.2 Parallel Corpus Construction
-- status: in-progress
+- status: done
 - type: task
 - id: ayoreo_translation.data.parallel_corpus
 - owner: researcher
@@ -63,23 +78,18 @@ This catalog drives later domain balancing and per-source error analysis.
 - blocked_by: [ayoreo_translation.data.inventory]
 <!-- content -->
 
-Produce `data/parallel.jsonl` — one JSON object per aligned pair. Target format:
+Completed: `data/parallel.jsonl` contains 20,324 Bible verse pairs and 8,156 folk-story paragraph pairs. The 2 AYO-only folk stories are written to `data/monolingual_ay.txt` for Phase 3 pretraining instead. Schema:
 
 ```python
-# data/parallel.jsonl — UTF-8, NFC-normalized, one object per line
-{"id": "bible-mat-5-3",  "src": "religious",     "en": "...",  "ay": "..."}
-{"id": "dict-0142",      "src": "dictionary",    "en": "...",  "ay": "..."}
-{"id": "oral-elders-07", "src": "oral_transcript","en": "...", "ay": "..."}
+# data/parallel.jsonl — UTF-8, NFC-normalized
+{"id": "bible-mat-5-3",   "src": "bible",      "en": "...", "ay": "...", "alignment": "explicit"}
+{"id": "ayore-story-12-3", "src": "folk_story", "en": "...", "ay": "...", "alignment": "llm"}
 ```
 
-Notes on aligning:
-
-- **Bible portions** are usually verse-aligned and the easiest win. Beware of cases where translators paraphrased rather than translated literally — those pairs are still useful but flag them with `paraphrase: true`.
-- **Dictionary example sentences** are extremely high signal per pair — they're typically pedagogical and grammatically clean. Prioritize these.
-- **Oral transcripts** are the hardest to align; consider sentence-level alignment tools (e.g., `vecalign`, `LASER` embeddings) but expect to hand-check a sample.
+The `src` field is the basis for both per-source evaluation breakdowns and the training-mix weighting in Phase 4.3.
 
 ### 0.3 Orthographic Normalization
-- status: todo
+- status: in-progress
 - type: task
 - id: ayoreo_translation.data.normalize
 - owner: researcher
@@ -87,7 +97,7 @@ Notes on aligning:
 - blocked_by: [ayoreo_translation.data.parallel_corpus]
 <!-- content -->
 
-Pick one orthographic convention as canonical and normalize all sources to it. Ayoreo spelling varies across sources (tilde placement, vowel length marking, glottal stop representation). Heterogeneous orthography is functionally equivalent to having less data because the tokenizer sees variants as unrelated tokens.
+Canonical normalization plus orthographic-convention selection. Bible and folk-story sources may use different conventions for tilde, vowel length, and glottal stops; pick one and normalize all sources.
 
 ```python
 import unicodedata
@@ -95,56 +105,51 @@ import unicodedata
 def normalize_ayoreo(text: str) -> str:
     """
     Canonical normalization for Ayoreo text.
-
-    Steps:
-    1. NFC composition — combines base characters with their diacritics.
-       Without this, 'ñ' may exist as either U+00F1 (single char) or
-       'n' + U+0303 (combining tilde), and the tokenizer treats them
-       as different tokens. NFC fixes this silently.
-    2. Strip outer whitespace but preserve internal whitespace structure.
-    3. (Optional) Map any source-specific orthographic variants to the
-       canonical form. Document each mapping in data/orthography_rules.md.
+    NFC composition handles cases where 'ñ' is encoded as 'n' + combining tilde,
+    which would otherwise tokenize as different tokens than the single-char form.
     """
-    text = unicodedata.normalize("NFC", text)
-    return text.strip()
+    return unicodedata.normalize("NFC", text).strip()
 ```
 
-Maintain `data/orthography_rules.md` (separate `reference` document) listing every variant-to-canonical mapping decision, with rationale. This is the kind of document that future-us will thank present-us for.
+Document every variant-to-canonical mapping in `data/orthography_rules.md` (separate `reference` document) with a one-line rationale per rule. The researcher in Phase A is the right person to validate these conventions against native intuition once the app is online.
 
 ### 0.4 Quality Filtering and Deduplication
 - status: todo
 - type: task
 - id: ayoreo_translation.data.filter
 - owner: researcher
-- estimate: 2d
+- estimate: 3d
 - blocked_by: [ayoreo_translation.data.normalize]
 <!-- content -->
 
-Apply mechanical filters, then a manual sample review. Mechanical filters:
+Three mechanical filters plus a manual sample audit.
 
 ```python
 def length_ratio_ok(en: str, ay: str,
                     low: float = 0.3, high: float = 3.0) -> bool:
     """
-    Reject pairs with suspicious word-count ratios.
-    Most outliers are misalignments (sentence vs. paragraph).
-    Tune (low, high) by inspecting the histogram on a sample first.
+    Reject pairs with suspicious word-count ratios — usually misalignments.
+    Note: folk-story paragraphs naturally have wider ratios than verses,
+    so consider per-source thresholds if many valid paragraphs are dropped.
     """
-    en_words, ay_words = len(en.split()), len(ay.split())
-    if en_words == 0 or ay_words == 0:
+    en_w, ay_w = len(en.split()), len(ay.split())
+    if en_w == 0 or ay_w == 0:
         return False
-    return low <= (en_words / ay_words) <= high
+    return low <= (en_w / ay_w) <= high
 
-def is_duplicate(pair: dict, seen: set) -> bool:
-    """Exact dedup on the (en, ay) tuple after normalization."""
-    key = (pair["en"].lower().strip(), pair["ay"].lower().strip())
-    if key in seen:
-        return True
-    seen.add(key)
-    return False
+def sequence_length_ok(en: str, ay: str,
+                       tokenizer, max_tokens: int = 250) -> bool:
+    """
+    Reject pairs that exceed the model's max sequence length, which
+    matters mainly for folk-story paragraphs.
+    """
+    return (len(tokenizer.tokenize(en)) <= max_tokens
+            and len(tokenizer.tokenize(ay)) <= max_tokens)
 ```
 
-After filtering, **hand-review a random 5% sample** for alignment quality. If >10% of the sample is misaligned, the corpus is not ready — return to Phase 0.2 with diagnostic notes.
+Dedup: exact-match on `(en_normalized, ay_normalized)`. Additionally, run an embedding-based near-duplicate detection across the full corpus to catch parallel-passage repetition in the gospels and the chronicler vs. kings overlap. Drop near-duplicates that would otherwise cross train/test split lines.
+
+After filtering, the researcher (via the Phase A app) audits a random 100-pair sample for alignment quality. If >10% misaligned, return to alignment work before proceeding.
 
 ### 0.5 Held-Out Test Set Construction
 - status: todo
@@ -155,19 +160,273 @@ After filtering, **hand-review a random 5% sample** for alignment quality. If >1
 - blocked_by: [ayoreo_translation.data.filter]
 <!-- content -->
 
-**Construct the test set before any modeling decisions are made.** Once it exists, do not look at it. Standard splits:
+Split rules — designed to prevent leakage given the corpora's structural repetition:
 
-- Training: 80%
-- Validation: 10% (for hyperparameter selection, early stopping)
-- Test: 10% (touched only at final evaluation, ever)
+- **Bible**: hold out whole books, not verses. Test books: `Ruth`, `Jonah`, `Philemon`, `2_John`, `3_John` (small, varied, span both testaments). Validation books: `Esther`, `Habakkuk`, `Titus`. Result roughly 90/5/5 by verse count and far more honest than random verse-level splits.
+- **Folk stories**: hold out whole stories. Aim for 20 stories test, 10 stories validation, 100 stories training — roughly 75/8/17 by paragraph count.
+- **Dictionary** (if acquired): random pair-level split is fine — dictionary examples are decontextualized so leakage risk is low.
 
-Stratification rules:
+Plus a curated **challenge set** of ~50 hand-picked items: morphologically complex verb forms, culturally specific terminology, idioms, and explicitly out-of-domain sentences (modern conversational, technical, present-tense first/second person). The challenge set is the qualitative gut-check at every iteration.
 
-- Stratify by `source` field so each split has the same domain mix.
-- Ensure no near-duplicate sentence leaks across splits (use embedding-based duplicate detection, not just exact match).
-- Reserve a **small "challenge set"** of ~50 hand-picked sentences: morphologically complex verbs, culturally specific terms, idioms. This is the qualitative gut-check during iteration.
+Save splits as `data/{train,val,test}.jsonl` with `src` preserved, plus `data/challenge.jsonl`. Commit the data file hashes for reproducibility.
 
-Save splits as `data/{train,val,test}.jsonl` and `data/challenge.jsonl`. Commit hashes for reproducibility.
+### 0.6 Alignment Audit of LLM-Aligned Folk Stories
+- status: todo
+- type: task
+- id: ayoreo_translation.data.alignment_audit
+- owner: researcher
+- estimate: 2d
+- blocked_by: [ayoreo_translation.data.test_set, ayoreo_translation.annotation.tier2]
+<!-- content -->
+
+The 114 folk stories with LLM-produced `alignment_map` have not been spot-checked. Paragraph-level alignment is fuzzier than verse-level because translators reorganize narrative content — fusing paragraphs, splitting them, adding cultural framing.
+
+Audit protocol: random sample of 30–50 paragraph pairs, displayed side-by-side via the Phase A app's alignment-audit mode. The researcher tags each as `aligned`, `partial`, or `misaligned`. Decision:
+
+- <10% misaligned → proceed; alignment quality is acceptable
+- 10–20% misaligned → flag affected stories with `alignment: suspect`, downweight in training
+- \>20% misaligned → re-run LLM alignment with a better prompt or back off to looser sentence-level alignment within paragraph pairs
+
+This task is blocked by Phase A.3 (tier-2 app build) because the audit happens through the app.
+
+## Phase A — Annotation Tool and Active Data Generation
+- status: todo
+- type: task
+- id: ayoreo_translation.annotation
+- owner: researcher
+- estimate: 1-8w (tier-dependent)
+- priority: high
+- blocked_by: [ayoreo_translation.data.parallel_corpus]
+<!-- content -->
+
+A parallel track that builds on whatever fraction of the researcher's time is available, from 1 hour per week to full-time. The architecture is designed so the v1 tool is useful with minimal commitment and each subsequent tier adds capabilities without reworking earlier ones. The recommendation is to **build incrementally**: ship Tier 1, observe what the researcher actually does with it, then expand.
+
+All tiers share the same backbone (A.1). Each tier adds one or more modes to the same Gradio app and the same append-only JSONL data store, so contributions from any tier flow into training with no schema mismatch.
+
+### A.1 Shared Infrastructure
+- status: todo
+- type: task
+- id: ayoreo_translation.annotation.infrastructure
+- owner: researcher
+- estimate: 3d
+<!-- content -->
+
+Built once, used by every tier. The cost is fixed regardless of which tiers we ship.
+
+**Stack**: Gradio for the UI, SQLite or JSONL for storage, Python-only. Single-file deployable. The current LoRA adapter (or RAG baseline pre-training) is loaded into the app so the researcher always sees what the model would produce.
+
+**Data schema** — every contribution is one row, regardless of mode:
+
+```python
+# annotation_log.jsonl — one row per researcher action
+{
+    "id": "ann-2026-05-12-0042",
+    "timestamp": "2026-05-12T14:23:11Z",
+    "researcher_id": "raul",            # provenance
+    "mode": "correct",                   # which tier-mode produced this row
+    "src_lang": "en",                    # or "es" if Spanish pivot used
+    "src_text": "...",
+    "model_version": "lora-v1-step2400", # what the researcher was correcting
+    "model_output": "...",               # what the model said (may be null in pure-translation mode)
+    "researcher_output": "...",          # the canonical answer
+    "register_tag": "narrative",         # <scripture>|<narrative>|<lexical>
+    "researcher_confidence": 4,          # 1-5 self-rating
+    "naturalness": null,                 # filled in rating mode only
+    "adequacy": null,
+    "fluency": null,
+    "notes": ""
+}
+```
+
+**Provenance and ethics**: every row stamped with researcher ID and timestamp. Data-use terms agreed in writing before the app goes live — the researcher's contributions are attributable and bounded to project use. Indigenous-language data has a fraught history; getting this right at the start costs nothing.
+
+**Pipeline integration**: a small daemon polls `annotation_log.jsonl` and merges new contributions into `data/researcher_contributions.jsonl`, which is added to the training mix at the next retraining run.
+
+### A.2 Tier 1 — Evaluation Only (minimal: 1–2 hrs/week)
+- status: todo
+- type: task
+- id: ayoreo_translation.annotation.tier1
+- owner: researcher
+- estimate: 2d
+- blocked_by: [ayoreo_translation.annotation.infrastructure]
+<!-- content -->
+
+**What's built**: a single rating screen. The researcher sees an English (or Spanish) source plus one or more candidate Ayoreo translations and rates each on adequacy / fluency / naturalness, plus optional free-text notes.
+
+**Researcher time per session**: ~30 seconds per item. 1 hour/week ≈ 100 ratings/week, 2 hours/week ≈ 200 ratings/week.
+
+**Value to the project**: this alone removes the hardest blocker in the v1 plan — Phase 5.2 evaluation. Without a fluent evaluator, the entire iteration loop is unmeasurable. With even minimal evaluator time, the project becomes navigable. Naturalness as a separate dimension is what makes Bible translationese visible in the metrics.
+
+**Tier-1 app sketch** (~80 lines of Gradio):
+
+```python
+# tier1_rating_app.py — minimum viable annotation app
+import gradio as gr
+import json
+from datetime import datetime
+
+def log_rating(item_id, adequacy, fluency, naturalness, notes):
+    """
+    Append one rating row to annotation_log.jsonl. The row format is the
+    same schema used by every later tier — no migration needed when we
+    add modes.
+    """
+    row = {
+        "id": f"ann-{datetime.utcnow().isoformat()}-{item_id}",
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "mode": "rate",
+        "researcher_id": "raul",  # configure per-deployment
+        "src_text": current_item["src"],
+        "model_output": current_item["candidate"],
+        "researcher_output": None,    # rating mode produces no rewrite
+        "adequacy": adequacy,
+        "fluency": fluency,
+        "naturalness": naturalness,
+        "notes": notes,
+    }
+    with open("annotation_log.jsonl", "a") as f:
+        f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    return "Saved. Next item below."
+
+# UI: source, candidate, three sliders (1-5), notes box, submit, "next" button
+# Items pulled from a priority queue file (see A.7 active learning loop)
+```
+
+This tool ships in ~2 days of work. It is useful starting day one.
+
+### A.3 Tier 2 — Add Alignment Audit (light: 3–5 hrs/week)
+- status: todo
+- type: task
+- id: ayoreo_translation.annotation.tier2
+- owner: researcher
+- estimate: 1d
+- blocked_by: [ayoreo_translation.annotation.tier1]
+<!-- content -->
+
+**What's added**: a second screen showing a paragraph pair (EN and AYO) side-by-side. The researcher tags it `aligned`, `partial`, or `misaligned`, with an optional corrected alignment.
+
+**Researcher time per session**: ~1 minute per pair. 3 hours/week ≈ 180 audits/week — enough to clear the 114 LLM-aligned story backlog in roughly 1 week.
+
+**Value to the project**: directly unblocks Phase 0.6. Once cleared, switch this mode to ad-hoc use for spot-checking new contributions. If the audit reveals >15% misalignment, this mode supports re-alignment workflows that produce corrected paragraph maps as training data themselves.
+
+**Implementation cost**: ~1 day on top of Tier 1, since it reuses all the infrastructure from A.1.
+
+### A.4 Tier 3 — Add Correction Mode (moderate: 5–10 hrs/week)
+- status: todo
+- type: task
+- id: ayoreo_translation.annotation.tier3
+- owner: researcher
+- estimate: 2d
+- blocked_by: [ayoreo_translation.annotation.tier2]
+<!-- content -->
+
+**What's added**: a correction screen. The app shows the source plus the current model's proposed Ayoreo translation, and the researcher edits the model output into a correct version. This is where the **active learning loop** comes into its own.
+
+**Researcher time per session**: ~2 minutes per correction. 5 hours/week ≈ 150 corrections/week, 10 hours/week ≈ 300 corrections/week. Over 8 weeks at the upper end, that's ~2,400 new high-quality pairs — comparable in size to a substantial new corpus, but targeting the model's specific weak points.
+
+**Value to the project**: each corrected pair is worth several "blind" translations because the example was *chosen* by the active learning system (see A.7) as a high-information case. Over time, corrections compound: the next training run produces better proposals, so the researcher spends less time per item, and pivots toward harder cases.
+
+**Items pulled from**: the priority queue in A.7, biased toward (a) out-of-distribution challenge-set sentences, (b) low-confidence model outputs, (c) sentences from underrepresented domains.
+
+**Implementation cost**: ~2 days. Reuses A.1 infrastructure; adds the priority-queue feeder and a corrections-specific submit path.
+
+### A.5 Tier 4 — Add Bible Naturalness Rewrites (substantial: 10–20 hrs/week)
+- status: todo
+- type: task
+- id: ayoreo_translation.annotation.tier4
+- owner: researcher
+- estimate: 2d
+- blocked_by: [ayoreo_translation.annotation.tier3]
+<!-- content -->
+
+**What's added**: a Bible-rewrite screen. The app shows an English Bible verse alongside the existing AYO translation, and asks "would you say this in natural Ayoreo? If not, rewrite it." The researcher either approves (one click) or rewrites (free-text edit).
+
+**Researcher time per session**: ~3–4 minutes per rewrite (longer than corrections because the comparison is more nuanced — the existing translation is comprehensible, just non-native). 10 hours/week ≈ 150 reviews/week with maybe 70% requiring rewrites; 20 hours/week ≈ 300 reviews/week.
+
+**Value to the project — potentially the highest-leverage activity in the entire plan.** This directly attacks the translationese problem rather than diluting it. After 8 weeks at 20 hrs/week, the researcher could have rewritten ~1,500 Bible verses into natural register. That produces:
+
+- A second AYO side for every rewritten verse → same content, two registers → ideal training data for source-tag conditioning
+- A high-quality "natural-Ayoreo" corpus of ~1,500 pairs that becomes the Stage-2 training data alongside folk stories
+- An empirical measurement of how often the existing Bible translation is acceptable vs. needs rewriting — a finding worth publishing independent of the model
+
+**Implementation cost**: ~2 days. Same data schema; new screen that loads Bible pairs in order or by sampling strategy.
+
+### A.6 Tier 5 — Add Folk-Story Collection (maximal: 20+ hrs/week)
+- status: todo
+- type: task
+- id: ayoreo_translation.annotation.tier5
+- owner: researcher
+- estimate: 4d
+- blocked_by: [ayoreo_translation.annotation.tier4]
+<!-- content -->
+
+**What's added**: an audio-recording-plus-transcription mode for new folk stories collected from elders, and a glossary-curation screen. This is the only tier that involves field work; the others can be done entirely at a desk.
+
+**Workflow**:
+1. Researcher (or community contact) records an elder telling a story (Ayoreo audio).
+2. Researcher transcribes the audio in-app (or imports a transcription).
+3. Researcher translates the Ayoreo transcription into English (and optionally Spanish).
+4. The new story flows into `data/folk_stories_v2/` and the training pipeline.
+
+**Researcher time**: highly variable. Field work and transcription is slow — 1 hour of audio might take 4–8 hours to transcribe and translate. At 20+ hrs/week, expect ~2–5 new stories per month, which over 8 weeks could produce 200–600 new native-speaker paragraph pairs.
+
+**Value to the project**: directly grows the most valuable training corpus we have. Every new folk-story pair is worth multiple Bible pairs at this point. Also produces audio material that is independently valuable for the community and for any future speech-related work.
+
+**Glossary curation**: when the researcher encounters a recurring term that needs canonical translation (proper nouns, cultural terms, terminology), they add it to `data/glossary.jsonl`. This feeds Phase 6.2's terminology lookup and substitutes for an external dictionary if one never materializes.
+
+**Implementation cost**: ~4 days because of audio handling and the more complex multi-step workflow. Gradio supports audio components natively, so this stays within the same stack.
+
+### A.7 Active Learning Loop and Retraining Cadence
+- status: todo
+- type: task
+- id: ayoreo_translation.annotation.active_learning
+- owner: researcher
+- estimate: 3d
+- blocked_by: [ayoreo_translation.annotation.tier3]
+<!-- content -->
+
+The mechanism that makes researcher time high-leverage rather than just additive.
+
+**Priority queue**: a ranked list of items the app should show the researcher next. Built from several signals:
+
+```python
+def priority_score(item: dict, model, retrieval_index) -> float:
+    """
+    Score an item by how informative researcher attention to it would be.
+    Higher score = show this sooner.
+    """
+    # Signal 1: model uncertainty — low-confidence outputs are likely wrong
+    # and benefit most from correction.
+    uncertainty = -model.log_probability(item["candidate"]) / len(item["candidate"])
+
+    # Signal 2: out-of-distribution by retrieval distance — items far from
+    # any training example are the ones the model has no signal for.
+    nearest_neighbor_dist = retrieval_index.nearest_distance(item["src"])
+
+    # Signal 3: domain coverage — if the current training data is 89% Bible,
+    # non-Bible items get a boost.
+    domain_bonus = 2.0 if item.get("domain") != "bible" else 1.0
+
+    return (uncertainty + 0.5 * nearest_neighbor_dist) * domain_bonus
+```
+
+**Retraining cadence**: every ~500 new high-quality researcher contributions, kick off a fresh LoRA fine-tune. The new model becomes the basis for the next round of corrections, so improvements compound. This is a virtuous loop: better model → easier correction sessions → more pairs per hour → better next model.
+
+**Stopping criterion**: when researcher corrections converge on minor edits rather than substantive rewrites, the model has converged on the available signal. At that point, shift the researcher's time toward Tier 4 (naturalness rewrites) and Tier 5 (new folk stories) — both produce data the model has no other way to acquire.
+
+### A.8 Spanish Pivot Workflow (cross-cuts all tiers)
+- status: todo
+- type: task
+- id: ayoreo_translation.annotation.spanish_pivot
+- owner: researcher
+- estimate: 1d
+<!-- content -->
+
+A trilingual researcher in a South American context likely has stronger Spanish↔Ayoreo intuitions than English↔Ayoreo intuitions. Every annotation mode should expose Spanish as an alternative source language.
+
+Implementation: when an item is loaded, the app auto-generates a Spanish version of the English source via NLLB (cached on first generation). The researcher can toggle which source language they prefer for any given item. Both source languages are stored in the contribution row, producing (EN, ES, AYO) triples whenever both are provided. These triples are training-gold for NLLB's many-to-many architecture and may make Spanish→Ayoreo the better-performing inference direction overall.
+
+**Cost**: ~1 day to wire in. NLLB inference is fast enough to do this on-demand without preprocessing.
 
 ## Phase 1 — Baseline Without Training
 - status: todo
@@ -178,7 +437,7 @@ Save splits as `data/{train,val,test}.jsonl` and `data/challenge.jsonl`. Commit 
 - blocked_by: [ayoreo_translation.data.test_set]
 <!-- content -->
 
-Establish a non-training baseline before investing in fine-tuning. This phase produces three things: a number to beat, an evaluation harness, and an early sanity check on whether the parallel corpus has enough signal for retrieval-augmented prompting to work at all.
+Establish a non-training baseline before investing in fine-tuning. Three deliverables: a number to beat, the evaluation harness used by every subsequent phase, and an early sanity check on retrieval-augmented prompting.
 
 ### 1.1 Retrieval Index for Few-Shot Prompting
 - status: todo
@@ -188,30 +447,18 @@ Establish a non-training baseline before investing in fine-tuning. This phase pr
 - estimate: 2d
 <!-- content -->
 
-Index the training set with multilingual sentence embeddings (`paraphrase-multilingual-MiniLM-L12-v2` or `LaBSE`) so we can retrieve the *k* nearest English sentences to a query and use their Ayoreo translations as in-context examples.
+Index the training set with LaBSE embeddings for cross-lingual sentence similarity. Build separate retrieval indices for each source corpus (Bible, folk_story, dictionary if available) so we can control retrieval-mix per query.
 
 ```python
 from sentence_transformers import SentenceTransformer
 import numpy as np
-import faiss  # vector index
+import faiss
 
-# LaBSE is trained for cross-lingual sentence similarity — better signal
-# than vanilla multilingual MPNet for translation-style retrieval.
 encoder = SentenceTransformer("sentence-transformers/LaBSE")
-
-# Build the index over English sides of the training set so we can
-# retrieve translation examples given an English query at inference time.
-train_pairs = [...]  # loaded from data/train.jsonl
 en_embeddings = encoder.encode([p["en"] for p in train_pairs],
                                normalize_embeddings=True)
-index = faiss.IndexFlatIP(en_embeddings.shape[1])  # inner product = cosine on normalized vectors
+index = faiss.IndexFlatIP(en_embeddings.shape[1])
 index.add(en_embeddings.astype(np.float32))
-
-def retrieve_examples(query_en: str, k: int = 8) -> list[dict]:
-    """Retrieve the k most similar training pairs for a query."""
-    q = encoder.encode([query_en], normalize_embeddings=True).astype(np.float32)
-    _, idxs = index.search(q, k)
-    return [train_pairs[i] for i in idxs[0]]
 ```
 
 ### 1.2 LLM Baseline with RAG
@@ -223,31 +470,7 @@ def retrieve_examples(query_en: str, k: int = 8) -> list[dict]:
 - blocked_by: [ayoreo_translation.baseline.retrieval]
 <!-- content -->
 
-Wire up few-shot prompting against Claude or GPT-4-class models. Prompt template (English → Ayoreo direction shown; mirror for the reverse):
-
-```python
-def build_prompt(query_en: str, examples: list[dict]) -> str:
-    """
-    Construct a few-shot translation prompt.
-    The model sees retrieved (en, ay) pairs as examples, then is asked
-    to translate the query. Keep examples in retrieved order — closest first.
-    """
-    example_block = "\n\n".join(
-        f"English: {ex['en']}\nAyoreo: {ex['ay']}"
-        for ex in examples
-    )
-    return (
-        "You are a translation assistant for the Ayoreo language. "
-        "Use the example translations below to produce a faithful Ayoreo "
-        "translation of the final English sentence. Match the orthographic "
-        "conventions shown in the examples.\n\n"
-        f"{example_block}\n\n"
-        f"English: {query_en}\n"
-        "Ayoreo:"
-    )
-```
-
-Evaluate on the validation set. Record per-domain breakdowns. This baseline is the floor — if LoRA cannot beat it, LoRA is not the right tool for this data scale.
+Few-shot prompting against Claude or GPT-4-class models. Retrieve k=8 nearest training pairs, format as in-context examples. Evaluate on the validation set; record per-domain breakdowns. This is the floor — if LoRA cannot beat it, LoRA is not the right tool for this corpus.
 
 ### 1.3 Evaluation Harness
 - status: todo
@@ -257,35 +480,37 @@ Evaluate on the validation set. Record per-domain breakdowns. This baseline is t
 - estimate: 3d
 <!-- content -->
 
-Build the evaluation harness once and use it for every subsequent phase. It produces a single JSON record per evaluation run capturing all metrics, the model/checkpoint identifier, and the data split used. This makes phases comparable post-hoc.
+Built once, used everywhere. Each evaluation run produces a single JSON record with all metrics, model identifier, and data split — making phases directly comparable.
 
 Metrics:
 
-- **chrF / chrF++** — character-level F-score. Much more reliable than BLEU for low-resource and morphologically complex languages. **This is the primary automatic metric.**
-- **BLEU** — included for comparability with other low-resource MT papers; secondary.
-- **TER** — translation edit rate; useful for diagnosing where the model is *close but wrong*.
-- **Embedding similarity** — cosine similarity between LaBSE embeddings of hypothesis and reference. Loosely captures semantic adequacy when surface-level metrics underrate paraphrase.
-
-Plus a **human rubric** (filled in during Phase 5):
-
-- Adequacy (1–5): does the translation preserve meaning?
-- Fluency (1–5): does it read naturally?
-- Terminology (1–5): are domain/cultural terms handled correctly?
+- **chrF / chrF++** — primary. Character-level F-score is more reliable than BLEU for morphologically complex low-resource languages.
+- **BLEU** — secondary; included for comparability with published low-resource MT.
+- **TER** — diagnostic; shows where outputs are *close but wrong*.
+- **Embedding similarity** — LaBSE cosine between hypothesis and reference. Catches semantic adequacy when surface metrics underrate paraphrase.
+- **Per-domain breakdowns** — same metrics computed separately for Bible-test, folk-story-test, and challenge set. The gap between these is the most informative diagnostic in the project.
 
 ```python
 import sacrebleu
 
-def evaluate(hypotheses: list[str], references: list[str]) -> dict:
+def evaluate(hypotheses, references, src_tags=None):
     """
-    Compute chrF (primary), BLEU, and TER on a parallel hyp/ref pair.
-    Returns a flat dict suitable for JSON serialization and run logging.
+    Compute chrF, BLEU, TER. If src_tags provided, also produce
+    per-source breakdowns. Returns a flat dict suitable for run logging.
     """
-    return {
-        "chrf":  sacrebleu.corpus_chrf(hypotheses, [references]).score,
-        "bleu":  sacrebleu.corpus_bleu(hypotheses, [references]).score,
-        "ter":   sacrebleu.corpus_ter(hypotheses, [references]).score,
-        "n":     len(hypotheses),
+    result = {
+        "chrf": sacrebleu.corpus_chrf(hypotheses, [references]).score,
+        "bleu": sacrebleu.corpus_bleu(hypotheses, [references]).score,
+        "ter":  sacrebleu.corpus_ter(hypotheses, [references]).score,
+        "n":    len(hypotheses),
     }
+    if src_tags:
+        for src in set(src_tags):
+            idx = [i for i, t in enumerate(src_tags) if t == src]
+            sub_h = [hypotheses[i] for i in idx]
+            sub_r = [references[i] for i in idx]
+            result[f"chrf_{src}"] = sacrebleu.corpus_chrf(sub_h, [sub_r]).score
+    return result
 ```
 
 ## Phase 2 — Tokenizer Preparation
@@ -297,7 +522,7 @@ def evaluate(hypotheses: list[str], references: list[str]) -> dict:
 - blocked_by: [ayoreo_translation.data.test_set]
 <!-- content -->
 
-The tokenizer is the silent-killer variable for low-resource fine-tuning. If common Ayoreo morphemes shatter into 8–10 byte-level tokens, gradient signal during training is diluted and inference is slower. This phase diagnoses the problem and fixes it if needed.
+The unsexy variable that quietly determines training efficiency. NLLB's tokenizer is decent for many low-resource languages but unverified for Ayoreo specifically.
 
 ### 2.1 Tokenization Analysis
 - status: todo
@@ -307,34 +532,17 @@ The tokenizer is the silent-killer variable for low-resource fine-tuning. If com
 - estimate: 1d
 <!-- content -->
 
-Measure baseline fragmentation on the NLLB-200 tokenizer:
+Measure baseline fragmentation. Compare chars-per-token on Ayoreo vs English vs Spanish using NLLB's tokenizer:
 
 ```python
-from transformers import AutoTokenizer
-import statistics
+def chars_per_token(sentences, tokenizer):
+    """Average chars/token across a corpus. Higher = less fragmentation."""
+    ratios = [len(s) / max(len(tokenizer.tokenize(s)), 1) for s in sentences]
+    return sum(ratios) / len(ratios)
 
-tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-600M")
-
-# Compare characters-per-token on Ayoreo vs English.
-# A healthy ratio is ~3-5 chars/token for English. Anything <2 for Ayoreo
-# means severe over-fragmentation and we should consider extending the tokenizer.
-ay_sentences = [p["ay"] for p in load_jsonl("data/train.jsonl")]
-en_sentences = [p["en"] for p in load_jsonl("data/train.jsonl")]
-
-def chars_per_token(sentences: list[str]) -> float:
-    """Average ratio of characters to tokens across a list of sentences."""
-    ratios = []
-    for s in sentences:
-        n_tokens = len(tokenizer.tokenize(s))
-        if n_tokens > 0:
-            ratios.append(len(s) / n_tokens)
-    return statistics.mean(ratios)
-
-print(f"Ayoreo : {chars_per_token(ay_sentences):.2f} chars/token")
-print(f"English: {chars_per_token(en_sentences):.2f} chars/token")
+# Healthy: ~3-5 chars/token for English. <60% of English ratio for AY signals
+# severe fragmentation and triggers tokenizer extension (2.2).
 ```
-
-**Decision rule:** if Ayoreo chars/token is less than 60% of English chars/token, proceed to 2.2. Otherwise skip — NLLB's tokenizer is good enough as-is.
 
 ### 2.2 Tokenizer Extension
 - status: todo
@@ -345,25 +553,9 @@ print(f"English: {chars_per_token(en_sentences):.2f} chars/token")
 - blocked_by: [ayoreo_translation.tokenizer.analysis]
 <!-- content -->
 
-Train a small SentencePiece model on monolingual Ayoreo, then add the top frequent subwords as new tokens to the NLLB tokenizer. Important: every new token added means a new row in the model's embedding matrix that starts from random and must be learned — so add conservatively. Aim for 500–2,000 new tokens, not 10,000.
+Only if 2.1 shows severe fragmentation. Train a small SentencePiece on monolingual Ayoreo (Phase 3's corpus), add top-frequency subwords as new tokens — conservatively, 500–2,000 new tokens. Resize model embeddings; the new rows must be learned in Phase 4.
 
-```python
-# After training a SentencePiece model on Ayoreo monolingual text:
-new_tokens = load_top_sentencepiece_pieces("ay_spm.model", top_n=1000)
-
-# Add only tokens that aren't already in the vocab — duplicates do nothing
-# but bloat the embedding matrix.
-truly_new = [t for t in new_tokens if t not in tokenizer.get_vocab()]
-n_added = tokenizer.add_tokens(truly_new)
-
-# Critical: resize embeddings so the model has rows for the new tokens.
-# These rows start from random init — fine-tuning has to learn them.
-model.resize_token_embeddings(len(tokenizer))
-```
-
-Re-run 2.1's measurement after extension to confirm fragmentation dropped.
-
-## Phase 3 — Optional Continued Pre-training
+## Phase 3 — Continued Pre-training on Monolingual Ayoreo
 - status: todo
 - type: task
 - id: ayoreo_translation.pretrain
@@ -373,7 +565,7 @@ Re-run 2.1's measurement after extension to confirm fragmentation dropped.
 - priority: medium
 <!-- content -->
 
-Optional but high-leverage. If we have substantial monolingual Ayoreo text (say, >100k tokens) that wasn't used to build parallel pairs, a brief continued-pretraining pass on it teaches the model Ayoreo morphology *before* we ask it to learn alignment. Translation fine-tuning then has a much easier job.
+Un-deprioritized in v2 given the AYO-side token imbalance. Even modest continued-pretraining on native-speaker monolingual text helps the model absorb Ayoreo morphology before being asked to learn alignment.
 
 ### 3.1 Monolingual Corpus Curation
 - status: todo
@@ -383,7 +575,9 @@ Optional but high-leverage. If we have substantial monolingual Ayoreo text (say,
 - estimate: 2d
 <!-- content -->
 
-Gather all Ayoreo text we have not yet used for parallel pairs. Apply the same orthographic normalization from Phase 0.3. Deduplicate. Save as `data/monolingual_ay.txt`, one sentence per line.
+Pool: the 2 AYO-only folk stories from Phase 0.2, plus any other monolingual Ayoreo we can scrape or collect (community publications, transcribed elder interviews, Tier-5 folk-story collection output). Normalize with the same NFC pipeline. Save as `data/monolingual_ay.txt`, one sentence per line.
+
+Even a few thousand tokens of native-speaker monolingual text is leverage given the AYO-side imbalance. If the researcher is producing folk-story transcriptions via Tier 5, their AYO sides flow here as well.
 
 ### 3.2 Masked-LM Pretraining Pass
 - status: todo
@@ -394,13 +588,11 @@ Gather all Ayoreo text we have not yet used for parallel pairs. Apply the same o
 - blocked_by: [ayoreo_translation.pretrain.corpus]
 <!-- content -->
 
-Run a short denoising-objective pass on the monolingual data using NLLB's existing pretraining objective (span masking on the encoder side). One pass over the corpus is usually enough; more invites catastrophic forgetting of the multilingual representations we want to preserve.
+Short denoising-objective pass on monolingual Ayoreo: span masking on the encoder side, LR ~1e-5, 1–3 epochs over the corpus with aggressive early stopping on a held-out monolingual perplexity slice. Hold out a small competency probe (Spanish↔English samples) and check it before/after to detect catastrophic forgetting of multilingual representations.
 
-Hyperparameters: small learning rate (~1e-5), tiny number of steps (~1–3 epochs over the monolingual data), aggressive early stopping if validation perplexity on a held-out monolingual slice stops improving.
+Stop criterion: if continued pretraining doesn't improve validation chrF in Phase 4, it was either unnecessary or harmful. Don't repeat without diagnosing why.
 
-**Stop criterion:** if continued pre-training does not improve validation chrF on the held-out parallel set after Phase 4 fine-tuning, the pre-training step was either unnecessary or actively harmful. Diagnose before retrying.
-
-## Phase 4 — LoRA Fine-Tuning
+## Phase 4 — Two-Stage LoRA Fine-Tuning
 - status: todo
 - type: task
 - id: ayoreo_translation.lora
@@ -409,7 +601,7 @@ Hyperparameters: small learning rate (~1e-5), tiny number of steps (~1–3 epoch
 - blocked_by: [ayoreo_translation.baseline.eval_harness, ayoreo_translation.tokenizer]
 <!-- content -->
 
-The core training phase. Two directions of fine-tuning happen in one run: English→Ayoreo and Ayoreo→English. Training both doubles data utilization and tends to improve representation quality.
+The core training phase. Restructured in v2 into two sequential stages because the 89% AYO scripture imbalance cannot be cured by sampling alone — we need an isolated phase where loss is computed only on native-speaker Ayoreo.
 
 ### 4.1 Base Model Selection
 - status: todo
@@ -419,15 +611,15 @@ The core training phase. Two directions of fine-tuning happen in one run: Englis
 - estimate: 1d
 <!-- content -->
 
-Run a small (~500-example) calibration of all three candidates with identical LoRA settings and pick the winner on validation chrF:
+Small calibration run (~500 examples, identical LoRA settings) on three candidates:
 
-- `facebook/nllb-200-distilled-600M` — default choice, small enough for fast iteration
-- `facebook/nllb-200-1.3B` — bigger, slower, possibly better on harder sentences
-- `facebook/mbart-large-50-many-to-many-mmt` — alternative if NLLB underperforms on this specific language family
+- `facebook/nllb-200-distilled-600M` — default; fast iteration
+- `facebook/nllb-200-1.3B` — bigger; possibly better on hard sentences
+- `facebook/mbart-large-50-many-to-many-mmt` — backup if NLLB underperforms
 
-Record the calibration in `experiments/base_model_selection.json` for future reference.
+Pick winner on validation chrF. Record in `experiments/base_model_selection.json`.
 
-### 4.2 LoRA Configuration
+### 4.2 LoRA Configuration with Source Tags
 - status: todo
 - type: task
 - id: ayoreo_translation.lora.config
@@ -436,71 +628,154 @@ Record the calibration in `experiments/base_model_selection.json` for future ref
 - blocked_by: [ayoreo_translation.lora.base_model]
 <!-- content -->
 
-Starting point — deliberately conservative for low-data regime:
+Two changes from v1: larger starting rank, MLP projections in `target_modules` from the start. Plus source-tag prefixes on every training example.
 
 ```python
-from peft import LoraConfig, TaskType, get_peft_model
+from peft import LoraConfig, TaskType
 
+# v2: bumped from r=8 to r=16; added gate_proj/up_proj from the start.
+# More data justifies more capacity; the 89% AYO imbalance also means
+# the model needs more capacity to learn the minority register.
 lora_config = LoraConfig(
-    task_type=TaskType.SEQ_2_SEQ_LM,  # NLLB is encoder-decoder
-    r=8,                              # small rank — regularizer for tiny data
-    lora_alpha=16,                    # standard alpha = 2 * r
-    lora_dropout=0.1,                 # slightly higher dropout for small datasets
-    bias="none",                      # don't train biases — adds params without much gain
+    task_type=TaskType.SEQ_2_SEQ_LM,
+    r=16,
+    lora_alpha=32,
+    lora_dropout=0.1,
+    bias="none",
     target_modules=[
-        "q_proj", "v_proj",           # attention query and value (standard)
-        "k_proj", "out_proj",         # adding these gives more capacity
-        # MLP layers deliberately omitted at first — add only if r=8 underfits
+        "q_proj", "v_proj", "k_proj", "out_proj",  # attention
+        "gate_proj", "up_proj",                     # MLP (was held back in v1)
     ],
 )
-
-model = get_peft_model(base_model, lora_config)
-model.print_trainable_parameters()
-# Expect: ~0.1% trainable, around 4-8M params for the 600M base
 ```
 
-If r=8 overfits (validation chrF degrades while training chrF improves), drop to r=4. If it underfits (both stay flat), step up to r=16 and add `gate_proj` and `up_proj` to `target_modules`.
+Source-tag prefix format:
 
-### 4.3 Training Loop
+```python
+def format_with_tag(example: dict) -> dict:
+    """
+    Prefix every training example with a register tag.
+    At inference, the tag becomes a controllable knob:
+        <narrative>   → conversational/natural register
+        <scripture>   → biblical register
+        <lexical>     → dictionary-style register (if dictionary acquired)
+    """
+    tag = {"folk_story": "<narrative>",
+           "bible":      "<scripture>",
+           "dictionary": "<lexical>"}[example["src"]]
+    return {
+        "input": f"{tag} {example['en']}",
+        "output": example["ay"],
+    }
+```
+
+### 4.3 Training Mix and Weighting Scheme
 - status: todo
 - type: task
-- id: ayoreo_translation.lora.train
+- id: ayoreo_translation.lora.mix
 - owner: researcher
-- estimate: 1w
+- estimate: 1d
 - blocked_by: [ayoreo_translation.lora.config]
 <!-- content -->
 
-Use Hugging Face `Seq2SeqTrainer` with the following non-default settings:
+Explicit per-source sampling weights. Calibrated against the actual AYO token counts to balance gradient signal as much as is feasible without distorting representational learning.
 
-- **Effective batch size**: 32–64 via gradient accumulation. Larger batches stabilize gradients on small datasets.
-- **Learning rate**: 3e-4 for LoRA params (LoRA learning rates are typically 10x higher than full-fine-tuning rates because the adapter starts from near-zero).
-- **Warmup**: 6% of total steps.
-- **Schedule**: cosine decay.
-- **Epochs**: aim for a *budget* of 10–20 epochs but use early stopping on validation chrF with patience=3.
-- **Evaluation cadence**: every 200 steps or every epoch, whichever comes first.
-- **Label smoothing**: 0.1 — helps low-data generalization.
-- **Save strategy**: best-checkpoint-only on validation chrF.
+```python
+def build_weighted_sampler(dataset):
+    """
+    Sampling weights designed around the observed corpus imbalance:
+    - Bible:      89% of AYO tokens → baseline weight 1.0
+    - Folk stories: 11% of AYO tokens → 6x oversampling brings effective
+      gradient contribution roughly to parity per epoch.
+    - Dictionary (if acquired): typically short, clean → 8x to compensate
+      for low per-pair token count.
+    - Researcher contributions: high quality, native register → 8x.
 
-Direction handling: prepare the dataset with both directions interleaved. For NLLB, set source and target language tokens (`eng_Latn` and the appropriate Ayoreo language code if available, or treat Ayoreo as the closest related language code with a custom mapping documented in `experiments/lang_code_mapping.md`).
+    Ablation worth running: undersample bible to 0.5x. The Bible's vocabulary
+    and patterns repeat heavily; you don't need 20k pairs to absorb them,
+    and undersampling speeds Stage 1 while shifting loss balance favorably.
+    """
+    weights = []
+    for ex in dataset:
+        if ex["src"] == "folk_story":
+            weights.append(6.0)
+        elif ex["src"] == "dictionary":
+            weights.append(8.0)
+        elif ex["src"] == "researcher":  # Tier 3+ contributions
+            weights.append(8.0)
+        else:                              # bible
+            weights.append(1.0)
+    return torch.utils.data.WeightedRandomSampler(
+        weights, num_samples=len(dataset), replacement=True
+    )
+```
 
-### 4.4 Checkpoint Selection and Adapter Export
+### 4.4 Stage 1 — Full-Mix Training
+- status: todo
+- type: task
+- id: ayoreo_translation.lora.stage1
+- owner: researcher
+- estimate: 1w
+- blocked_by: [ayoreo_translation.lora.mix]
+<!-- content -->
+
+The big training run. Hugging Face `Seq2SeqTrainer` with:
+
+- Effective batch size 32–64 via gradient accumulation
+- LR 3e-4 (LoRA-typical; ~10x higher than full-fine-tuning rates because adapters start near zero)
+- Warmup 6% of total steps; cosine decay
+- 8–15 epochs target with early stopping on validation chrF, patience=3
+- Evaluation every 500 steps
+- Label smoothing 0.1
+- Best-checkpoint-only on validation chrF (use Bible-test chrF *and* folk-story-test chrF; promote a checkpoint only if both improve — protects against the model overfitting one register)
+- Direction handling: interleave EN→AY and AY→EN training examples for joint bidirectional training
+- Source tags applied per 4.2
+
+Watch for overfitting around epoch 5–8. Bible vocabulary is constrained enough that the model can memorize it; early stopping must trigger when validation chrF degrades, not when training loss flattens.
+
+### 4.5 Stage 2 — Native-Register Fine-Tune
+- status: todo
+- type: task
+- id: ayoreo_translation.lora.stage2
+- owner: researcher
+- estimate: 3d
+- blocked_by: [ayoreo_translation.lora.stage1]
+<!-- content -->
+
+Load the Stage-1 adapter; continue fine-tuning on a **native-register-only** subset:
+
+- Folk stories (training split)
+- Researcher contributions from Phase A (Tier 3+ corrections, Tier 4 naturalness rewrites if available)
+- Dictionary examples if available and judged high-quality
+
+Bible pairs are **excluded** from Stage 2 entirely. This is the whole point — give the model an isolated phase where the gradient signal is 100% native-speaker.
+
+Hyperparameters:
+
+- LR 5e-5 (much lower than Stage 1 — we're refining, not relearning)
+- 200–500 steps with early stopping on folk-story validation chrF
+- Same LoRA rank, same architecture as Stage 1 (continuing the same adapter)
+
+Save both adapters separately as `ayoreo_lora_stage1` and `ayoreo_lora_stage2`. Both go through Phase 5 evaluation; ship whichever produces better naturalness scores without unacceptable adequacy regression.
+
+### 4.6 Checkpoint Selection and Adapter Export
 - status: todo
 - type: task
 - id: ayoreo_translation.lora.export
 - owner: researcher
 - estimate: 1d
-- blocked_by: [ayoreo_translation.lora.train]
+- blocked_by: [ayoreo_translation.lora.stage2]
 <!-- content -->
 
-Select the best checkpoint by validation chrF. Export only the adapter weights — typically 20–80 MB:
+Export Stage-1 and Stage-2 adapters separately. Each gets a `MODEL_CARD.md` documenting base model, LoRA config, training data hash, training metrics on all per-domain breakdowns, and known failure modes.
 
 ```python
-model.save_pretrained("checkpoints/ayoreo_lora_v1")
-# Save a sidecar manifest with the base-model ID and key hyperparameters,
-# so a future loader doesn't need to spelunk through configs to reproduce.
+model.save_pretrained("checkpoints/ayoreo_lora_stage1")
+# After Stage 2:
+model.save_pretrained("checkpoints/ayoreo_lora_stage2")
 ```
 
-Write `checkpoints/ayoreo_lora_v1/MODEL_CARD.md` documenting: base model, LoRA config, training data hash, training metrics, known failure modes. This is the artifact that goes into the inference pipeline.
+Both adapters become inputs to the Phase 6 inference pipeline. The deployment can switch between them based on register need (Stage 1 may be preferred for scripture-style inputs).
 
 ## Phase 5 — Evaluation and Iteration
 - status: todo
@@ -508,10 +783,10 @@ Write `checkpoints/ayoreo_lora_v1/MODEL_CARD.md` documenting: base model, LoRA c
 - id: ayoreo_translation.eval
 - owner: researcher
 - estimate: 1w
-- blocked_by: [ayoreo_translation.lora.export]
+- blocked_by: [ayoreo_translation.lora.export, ayoreo_translation.annotation.tier1]
 <!-- content -->
 
-This phase is non-linear by design. The iteration loop may send us back to Phase 0 (more data), Phase 2 (tokenizer adjustments), or Phase 4 (different hyperparameters) depending on what error analysis reveals.
+Non-linear by design. Error analysis may send us back to Phase 0 (more data), Phase 2 (tokenizer), Phase 4 (different hyperparameters), or to Tier 4 (more naturalness rewrites). Iterate at most twice before shipping — perfectionism on this data scale is a trap.
 
 ### 5.1 Automatic Evaluation
 - status: todo
@@ -521,13 +796,20 @@ This phase is non-linear by design. The iteration loop may send us back to Phase
 - estimate: 1d
 <!-- content -->
 
-Run the harness from 1.3 on the held-out test set. Compare against:
+Run the Phase 1.3 harness on Stage-1 adapter, Stage-2 adapter, RAG baseline, and zero-shot NLLB. Per-domain breakdowns required: Bible-test, folk-story-test, challenge-set.
 
-- RAG-only baseline (Phase 1.2)
-- Zero-shot NLLB (no LoRA)
-- Each Phase 4 checkpoint variation
+The diagnostic table that matters:
 
-Produce `experiments/eval_v1.json` and a small comparison plot. If LoRA does not beat the RAG baseline on chrF, do not proceed — go to 5.3 for diagnosis.
+```
+Model            | Bible chrF | Folk chrF | Challenge chrF | Bible↔Folk gap
+-----------------|-----------:|----------:|---------------:|---------------:
+RAG baseline     |        ?   |       ?   |            ?   |             ?
+Zero-shot NLLB   |        ?   |       ?   |            ?   |             ?
+LoRA Stage 1     |        ?   |       ?   |            ?   |             ?
+LoRA Stage 2     |        ?   |       ?   |            ?   |             ?
+```
+
+A large Bible↔Folk gap after Stage 1 justifies Stage 2. A small gap after Stage 2 indicates the model successfully crossed register. A regression in Bible chrF from Stage 1 to Stage 2 is expected and acceptable up to a point — that's the cost of natural register, and is exactly why we keep both adapters.
 
 ### 5.2 Human Evaluation
 - status: todo
@@ -535,11 +817,19 @@ Produce `experiments/eval_v1.json` and a small comparison plot. If LoRA does not
 - id: ayoreo_translation.eval.human
 - owner: researcher
 - estimate: 3d
+- blocked_by: [ayoreo_translation.eval.automatic]
 <!-- content -->
 
-For a sample of ~100 test sentences plus the full 50-sentence challenge set, collect adequacy/fluency/terminology ratings from at least one fluent Ayoreo speaker. Pay them; this is non-trivial labor.
+The researcher rates ~100 test sentences plus the full 50-sentence challenge set via the Phase A app's rating mode. Rubric is **four-dimensional**:
 
-Automatic metrics on low-resource languages are notoriously unreliable — a model that scores worse on chrF may translate better according to humans, and vice versa. Treat human evaluation as the source of truth and automatic metrics as a fast proxy.
+- **Adequacy** (1–5): preserves meaning?
+- **Fluency** (1–5): grammatically natural?
+- **Terminology** (1–5): cultural/domain terms handled correctly?
+- **Naturalness** (1–5): sounds like a native speaker, or like a translation?
+
+Naturalness is the dimension that catches translationese — automatic metrics will look fine on translationese output because it matches the (translationese-biased) reference, but a fluent speaker hears it immediately. Treat naturalness scores as the source of truth and automatic metrics as a fast proxy.
+
+Run human eval on both Stage-1 and Stage-2 adapters side-by-side. Researcher rates blind (model identity hidden).
 
 ### 5.3 Error Analysis and Iteration Decision
 - status: todo
@@ -547,26 +837,28 @@ Automatic metrics on low-resource languages are notoriously unreliable — a mod
 - id: ayoreo_translation.eval.error_analysis
 - owner: researcher
 - estimate: 3d
-- blocked_by: [ayoreo_translation.eval.automatic, ayoreo_translation.eval.human]
+- blocked_by: [ayoreo_translation.eval.human]
 <!-- content -->
 
 Categorize errors on a stratified sample of ~50 test outputs:
 
-- **Lexical** — wrong word choice but grammar OK
-- **Morphological** — wrong verb inflection, wrong agreement
+- **Lexical** — wrong word, grammar OK
+- **Morphological** — wrong inflection, wrong agreement
 - **Syntactic** — phrase ordering off
 - **Hallucination** — content not in source
 - **Copy failure** — proper nouns mangled
-- **Domain shift** — works on register A, fails on register B
+- **Translationese** — comprehensible but L2-flavored register
+- **Domain shift** — works on register A, fails on B
 
-The dominant error category determines the next move:
+Dominant category determines next move:
 
-- Lexical → add a terminology dictionary at inference (Phase 6.2)
-- Morphological → revisit tokenizer (Phase 2), consider more pre-training (Phase 3)
-- Hallucination → reduce LoRA rank or add more dropout (Phase 4.2)
-- Domain shift → rebalance training mix (Phase 0)
+- Lexical → strengthen Phase 6.2 terminology lookup; commission glossary work in Tier 5
+- Morphological → revisit tokenizer (Phase 2); more Phase 3 pretraining
+- Hallucination → reduce LoRA rank or add dropout (Phase 4.2)
+- Translationese → more Tier 4 naturalness rewrites; extend Stage 2
+- Domain shift → rebalance training mix (Phase 4.3); more Tier 3 corrections in weak domains
 
-Document the decision in `experiments/iteration_log.md` and loop back. After at most two full iterations, ship what we have and move to Phase 6 — perfectionism on this scale of data is a trap.
+Log the decision in `experiments/iteration_log.md`. After at most two full iterations, ship and move to Phase 6.
 
 ## Phase 6 — Hybrid Inference Pipeline
 - status: todo
@@ -577,7 +869,7 @@ Document the decision in `experiments/iteration_log.md` and loop back. After at 
 - blocked_by: [ayoreo_translation.eval]
 <!-- content -->
 
-The end product. The trained LoRA model is one component of a three-stage inference pipeline; the hybrid setup substantially outperforms the model alone on extreme-low-resource settings.
+The end product. The LoRA adapters are one component in a three-stage pipeline; the hybrid setup outperforms model-alone on extreme-low-resource settings.
 
 ### 6.1 LoRA Inference Service
 - status: todo
@@ -587,11 +879,13 @@ The end product. The trained LoRA model is one component of a three-stage infere
 - estimate: 2d
 <!-- content -->
 
-Wrap the LoRA-adapted NLLB model as a service exposing a single `translate(text, src_lang, tgt_lang) -> str` function. Use beam search with `num_beams=5` and `length_penalty=1.0` as defaults; expose both as parameters.
+Wrap the LoRA-adapted NLLB model as a service exposing `translate(text, src_lang, tgt_lang, register_tag=None) -> str`. The `register_tag` argument selects the source-tag prefix learned in Phase 4.2, exposing the register knob to API callers.
 
-Optimization: merge LoRA weights into the base model for inference (`model.merge_and_unload()`) — this removes the runtime overhead of the adapter side-path entirely.
+Beam search with `num_beams=5`, `length_penalty=1.0` defaults. For deployment, `model.merge_and_unload()` collapses the LoRA path into the base model — zero runtime overhead.
 
-### 6.2 Refinement Layer
+Both Stage-1 and Stage-2 adapters are deployable; expose adapter selection at request time so callers can choose biblical vs. natural register depending on use case.
+
+### 6.2 Refinement Layer with Optional Glossary
 - status: todo
 - type: task
 - id: ayoreo_translation.inference.refiner
@@ -600,11 +894,11 @@ Optimization: merge LoRA weights into the base model for inference (`model.merge
 - blocked_by: [ayoreo_translation.inference.lora_service]
 <!-- content -->
 
-Compose: LoRA proposal → RAG retrieval of similar pairs → strong general LLM (Claude or GPT-4) refines for fluency and terminology. The LLM receives the source, the LoRA's proposed translation, and the retrieved examples, and is asked to produce a refined translation **constrained to stay close to the proposal**.
+Composition: LoRA proposes → RAG retrieves similar pairs → strong general LLM (Claude / GPT-4) refines for fluency and terminology, **constrained to stay close to the LoRA proposal**.
 
-This pattern works because the LoRA model captures Ayoreo-specific patterns the LLM does not have, while the LLM catches fluency errors and terminology drift the LoRA model produces from limited data.
+The Spanish pivot may show up here too: if Spanish→Ayoreo turned out to be the stronger inference direction in Phase 5, the pipeline can route English requests through Spanish first, then refine.
 
-Also wire in a terminology dictionary lookup: for any proper noun, cultural term, or domain term in the source, inject its canonical Ayoreo form into the refiner prompt. This is the single highest-ROI inference-time intervention.
+**If a dictionary is acquired** at any point, integrate here as a terminology lookup: for any proper noun, cultural term, or domain term in the source, inject its canonical Ayoreo form into the refiner's prompt. This is the single highest-ROI inference-time intervention. The Phase A glossary curation (Tier 5) feeds this same lookup if it grows organically through researcher work, providing a substitute path if no external dictionary materializes.
 
 ### 6.3 Confidence Scoring and Fallback
 - status: todo
@@ -617,30 +911,32 @@ Also wire in a terminology dictionary lookup: for any proper noun, cultural term
 
 Surface confidence per output:
 
-- Length-normalized sequence log-likelihood from the LoRA model.
-- Agreement score between LoRA proposal and refiner output (high agreement = high confidence; large rewrites = the LoRA model was struggling).
-- Retrieval similarity of the source to its nearest training neighbor (low similarity = out-of-distribution).
+- Length-normalized sequence log-likelihood from the LoRA model
+- Agreement score between LoRA proposal and refiner output (large rewrites = LoRA was struggling)
+- Retrieval similarity of source to nearest training neighbor (low = OOD)
 
-When confidence is below a tunable threshold, return the translation with a flag asking for human review rather than presenting it as authoritative. For a language with ~4,500 speakers, the cost of a confidently-wrong translation is high — calibrated humility matters.
+Below threshold → return with a flag asking for human review rather than presenting as authoritative. The cost of a confidently-wrong translation in a 4,500-speaker language is high; calibrated humility matters.
 
 ## Phase 7 — Knowledge Capture
 - status: todo
 - type: task
 - id: ayoreo_translation.kb_capture
 - owner: researcher
-- estimate: 3d
+- estimate: 5d
 - blocked_by: [ayoreo_translation.inference]
 <!-- content -->
 
-Per convention rule 11, this plan must decide at design time what knowledge to capture in the KB. Three artifacts to produce:
+Per convention rule 11. Five artifacts to produce, expanded from v1 to reflect the new annotation track:
 
-- **New `how-to`**: `LOW_RESOURCE_TRANSLATION_LORA_SKILL.md` — a generalized procedure for LoRA fine-tuning on low-resource language pairs, with the Ayoreo run as the worked example. Scaffold this at `initial_draft` during Phase 4 and populate it as Phases 4–6 complete. This is `scope: general` — directly reusable for other low-resource language work.
-- **New `reference`**: `AYOREO_ORTHOGRAPHY_REF.md` — the canonical orthographic-normalization decisions from Phase 0.3, with rationale. `scope: project-specific`.
-- **New `explanation`**: `AYOREO_TOKENIZER_EXPLANATION.md` — why tokenizer fragmentation matters for low-resource MT, with the Phase 2 measurements as data. `scope: general`.
+- **New `how-to`** — `LOW_RESOURCE_TRANSLATION_LORA_SKILL.md`: generalized procedure for two-stage LoRA fine-tuning on imbalanced low-resource language pairs. `scope: general`. Scaffold during Phase 4; populate as 4–6 complete.
+- **New `reference`** — `AYOREO_ORTHOGRAPHY_REF.md`: canonical orthographic-normalization decisions from Phase 0.3, with rationale. `scope: project-specific`.
+- **New `explanation`** — `AYOREO_TOKENIZER_EXPLANATION.md`: why tokenizer fragmentation matters for low-resource MT, with Phase 2 measurements as data. `scope: general`.
+- **New `how-to`** — `ACTIVE_LEARNING_ANNOTATION_TOOL_SKILL.md`: tiered Gradio annotation app design with priority-queue active learning. `scope: general`. Highly reusable for other low-resource language projects.
+- **New `explanation`** — `BIBLE_TRANSLATIONESE_DIAGNOSIS_EXPLANATION.md`: methodology and findings around detecting translationese in indigenous-language Bibles via EN:AYO token-ratio analysis. `scope: general`. Independently publishable result.
 
-No existing KB document covers this territory closely enough to update; all three are new.
+No existing KB document covers this territory; all five are new.
 
-## Risk Register and Decision Points
+## Risk Register
 - status: todo
 - type: task
 - id: ayoreo_translation.risks
@@ -648,12 +944,14 @@ No existing KB document covers this territory closely enough to update; all thre
 - estimate: 0d
 <!-- content -->
 
-Standing risks, surfaced here so they are reviewed at every phase boundary:
+Standing risks, reviewed at every phase boundary.
 
-- **Insufficient parallel data** (<500 clean pairs) — the most likely failure. Mitigation: the Phase 1 RAG baseline still produces a usable system without fine-tuning; if Phase 4 cannot beat it, ship Phase 1's output and document the gap.
-- **No fluent Ayoreo speakers available for evaluation** — would invalidate Phase 5.2. Mitigation: establish at least one evaluator contact before Phase 4 begins; do not start training without one.
-- **Catastrophic forgetting from continued pre-training** (Phase 3) — model loses multilingual competence in exchange for marginal Ayoreo gains. Mitigation: hold out a small set of base-model competency probes (e.g., Spanish→English translations) and check them before/after pre-training.
-- **Community/ethical concerns about model deployment** — translation models for indigenous languages have a fraught history (extractive research, misrepresentation, loss of speaker agency). Mitigation: secure explicit community consent for both training data use and deployment; budget time for this before Phase 6.
+- **Stage 2 may not recover natural register** — the model may have memorized Bible patterns too deeply for 500 steps of folk-story-only training to dislodge. Mitigation: keep Stage-1 adapter as fallback; if Stage 2 underperforms on naturalness, extend it (more researcher contributions, longer training) before declaring failure.
+- **Researcher commitment unknown** — entire Phase A is contingent on at-least-minimal researcher availability. Mitigation: Tier 1 is useful in 1 hour/week; build that first and scale only if commitment grows.
+- **Folk-story alignment quality** — 114 LLM-aligned stories not yet audited (Phase 0.6 addresses). If alignment is poor, training will be capped.
+- **Catastrophic forgetting from Phase 3** — continued pretraining may degrade multilingual competence. Mitigation: hold-out competency probes before/after pretraining.
+- **Community/ethical concerns** — Indigenous-language translation systems have a fraught history. Mitigation: secure explicit community consent for data use and deployment before Phase 6 ships; Phase A's data-use terms documented at app launch.
+- **Spanish-pivot disappoints** — researcher's Spanish intuitions may not actually be stronger than English, or NLLB's Spanish→Ayoreo path may not outperform English→Ayoreo. Mitigation: measure empirically in Phase 5; the workflow is optional.
 
 ## Open Questions
 - status: todo
@@ -663,10 +961,11 @@ Standing risks, surfaced here so they are reviewed at every phase boundary:
 - estimate: 0d
 <!-- content -->
 
-Resolve before or during Phase 0 completion:
+To resolve during Phase 0 / Phase A.1 startup:
 
-- What is the actual size of the cleaned parallel corpus? (Determines whether Phase 4 is viable at all.)
-- Which Ayoreo orthographic convention does the speaker community prefer? (Phase 0.3 decision.)
-- Is there a fluent speaker willing to participate in evaluation, and on what compensation terms?
-- Are there community-imposed restrictions on what content domains the system should or should not translate?
-- Is the Bolivian or Paraguayan Ayoreo variety the primary target? (They differ; mixing them in training without tagging is a known failure mode.)
+- **Researcher's hours per week** — determines which Phase A tier to build first. Lower bound: ship Tier 1 immediately.
+- **Dictionary availability** — if acquired, slot into Phase 4.3 mix and Phase 6.2 lookup with no plan restructuring. If not, glossary growth happens through Tier 5 work or is omitted.
+- **Bolivian vs Paraguayan Ayoreo variety** — affects whether to tag dialect at training time. Bible likely fixes one variety; folk stories may mix. Worth asking the researcher early.
+- **Translator history of the Bible** — did the translator work with native consultants? Was the translation reviewed and revised? Affects how strong the translationese signal is expected to be, and whether some Bible books are more naturalness-friendly than others.
+- **Community consent boundaries** — what content can the deployed system translate? Any topics off-limits? Resolve before Phase 6.
+- **Folk-story narrator diversity** — 130 stories from few or many narrators? Affects how much linguistic variety the model actually sees.
