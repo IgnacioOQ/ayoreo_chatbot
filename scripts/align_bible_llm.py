@@ -1,7 +1,9 @@
 import json
 import os
+import re
 import time
 import logging
+from collections import defaultdict
 from pathlib import Path
 from pydantic import BaseModel
 from typing import List
@@ -44,6 +46,102 @@ Anchor Heuristic Protocol:
 
 Input: ES, EN, and AYO text block arrays.
 Output: Array of unified semantic blocks mapping indices from ES/EN/AYO."""
+
+# Header-deterministic alignment: in this corpus the AYO translation labels
+# every fused verse range in its own chunk header (e.g. "Éxodo 39,16-17-18"),
+# while ES and EN keep one chunk per verse. When every chunk's header parses
+# to a verse range and the per-language verse sequences are contiguous 1..N,
+# the alignment is fully determined by the headers — no LLM is needed.
+VERSE_RE = re.compile(r'[,:]\s*(\d+(?:[-–]\d+)*)\s*$')
+
+
+def _parse_verses(header: str) -> List[int]:
+    """Extract the verse numbers from a chunk header (e.g. 'Exodus 7,8-9' -> [8, 9])."""
+    m = VERSE_RE.search(header or '')
+    if not m:
+        return []
+    return [int(p) for p in re.split(r'[-–]', m.group(1))]
+
+
+def try_header_alignment(entry: dict):
+    """Build an alignment map from chunk headers alone, or return None if the
+    headers don't fully determine the alignment.
+
+    Returns a list of {"es": [...], "en": [...], "ayo": [...]} blocks with
+    full coverage and monotonic order, or None when the strategy fails (any
+    chunk missing a parseable verse spec, language verse sequence not the same
+    contiguous 1..N set, etc.).
+    """
+    deco = entry.get('body_decomposition', {})
+    if not (deco.get('es') and deco.get('en') and deco.get('ayo')):
+        return None
+
+    lang_verses = {}
+    for lang in ('es', 'en', 'ayo'):
+        chunk_verses = [_parse_verses(c.get('header', '')) for c in deco[lang]]
+        if any(not v for v in chunk_verses):
+            return None
+        lang_verses[lang] = chunk_verses
+
+    # All three languages must agree on the canonical verse sequence 1..N.
+    flats = {lang: [v for vs in cv for v in vs] for lang, cv in lang_verses.items()}
+    N = len(flats['en'])
+    expected = list(range(1, N + 1))
+    for lang in ('es', 'en', 'ayo'):
+        if flats[lang] != expected:
+            return None
+
+    # Union-find: verses fused inside any one language's chunk belong together.
+    parent = list(range(N + 1))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[max(ra, rb)] = min(ra, rb)
+
+    for cv in lang_verses.values():
+        for vs in cv:
+            for v in vs[1:]:
+                union(vs[0], v)
+
+    groups = defaultdict(list)
+    for v in range(1, N + 1):
+        groups[find(v)].append(v)
+    ordered_groups = sorted(groups.values(), key=lambda g: g[0])
+
+    # verse -> chunk index, per language.
+    v2idx = {lang: {} for lang in lang_verses}
+    for lang, cv in lang_verses.items():
+        for i, vs in enumerate(cv):
+            for v in vs:
+                v2idx[lang][v] = i
+
+    blocks = []
+    for grp in ordered_groups:
+        blocks.append({
+            lang: sorted({v2idx[lang][v] for v in grp})
+            for lang in lang_verses
+        })
+
+    # Validate: every chunk index appears exactly once, ordering is monotonic.
+    for lang in ('es', 'en', 'ayo'):
+        seen = sorted({i for b in blocks for i in b[lang]})
+        if seen != list(range(len(deco[lang]))):
+            return None
+        last_max = -1
+        for b in blocks:
+            if min(b[lang]) <= last_max:
+                return None
+            last_max = max(b[lang])
+
+    return blocks
+
 
 def get_mismatched_entries(dataset):
     mismatches = {}
@@ -132,58 +230,72 @@ AYO: {json.dumps(ayo_flat, separators=(',', ':'), ensure_ascii=False)}"""
         logger.error(f"Failed to parse model output: {e}\nOutput: {response.text}")
         return None
 
+def _save_alignment(dataset, story_id, alignment_map):
+    dataset[story_id]["alignment_map"] = json.dumps(alignment_map)
+    with open(ALIGNED_JSON_PATH, "w", encoding="utf-8") as f:
+        json.dump(dataset, f, indent=2, ensure_ascii=False)
+
+
 def main():
-    try:
-        client = genai.Client()
-    except Exception as e:
-        print(f"Failed to initialize Gemini Client. Make sure you have authentication configured. Error: {e}")
-        return
-    
     load_path = ALIGNED_JSON_PATH if ALIGNED_JSON_PATH.exists() else JSON_PATH
     with open(load_path, "r", encoding="utf-8") as f:
         dataset = json.load(f)
-        
+
     mismatches = get_mismatched_entries(dataset)
     print(f"Found {len(mismatches)} mismatched stories.")
-    
-    import time
-    
-    print("Creating Context Cache for System Prompt...")
-    try:
-        cache = client.caches.create(
-            model="gemini-2.5-flash",
-            config=types.CreateCachedContentConfig(
-                display_name="bible_alignment_cache",
-                system_instruction=SYSTEM_PROMPT,
-                ttl="3600s" # 1 hour
-            )
-        )
-        cache_name = cache.name
-        print(f"Cache created successfully: {cache_name}")
-    except Exception as e:
-        print(f"Failed to create cache. Ensure your model supports explicit caching. Error: {e}")
-        return
+
+    # Lazy: only created when a chapter actually needs the LLM fallback.
+    client = None
+    cache_name = None
+    header_count = 0
+    llm_count = 0
 
     for story_id, entry in mismatches.items():
         if "alignment_map" in entry:
             print(f"Skipping {story_id}, already aligned.")
             continue
-            
+
+        # Try the zero-cost header-deterministic strategy first.
+        alignment_map = try_header_alignment(entry)
+        if alignment_map is not None:
+            _save_alignment(dataset, story_id, alignment_map)
+            header_count += 1
+            print(f"[headers] {story_id}: {len(alignment_map)} blocks")
+            continue
+
+        # Fallback to Gemini. Initialize the client and the cached system
+        # prompt on first need — a fully header-deterministic dataset will
+        # never enter this branch and will issue zero API calls.
+        if client is None:
+            try:
+                client = genai.Client()
+            except Exception as e:
+                print(f"Failed to initialize Gemini Client. Make sure you have authentication configured. Error: {e}")
+                return
+            print("Creating Context Cache for System Prompt...")
+            try:
+                cache = client.caches.create(
+                    model="gemini-2.5-flash",
+                    config=types.CreateCachedContentConfig(
+                        display_name="bible_alignment_cache",
+                        system_instruction=SYSTEM_PROMPT,
+                        ttl="3600s",  # 1 hour
+                    ),
+                )
+                cache_name = cache.name
+                print(f"Cache created successfully: {cache_name}")
+            except Exception as e:
+                print(f"Failed to create cache. Ensure your model supports explicit caching. Error: {e}")
+                return
+
         alignment_map = align_story(client, cache_name, story_id, entry)
-        
         if alignment_map:
-            print(f"\nResult for {story_id}:")
-            print(json.dumps(alignment_map, indent=2))
-            
-            # Save it back as a string to the JSON format used in sanity_app.py
-            dataset[story_id]["alignment_map"] = json.dumps(alignment_map)
-            with open(ALIGNED_JSON_PATH, "w", encoding="utf-8") as f:
-                json.dump(dataset, f, indent=2, ensure_ascii=False)
-            print("Saved update to aligned_bible.json!")
-            
-            time.sleep(2) # rate limit safety
-    
-    print("Alignment process complete.")
+            _save_alignment(dataset, story_id, alignment_map)
+            llm_count += 1
+            print(f"[gemini ] {story_id}: {len(alignment_map)} blocks")
+            time.sleep(2)  # rate limit safety
+
+    print(f"\nAlignment complete. headers={header_count}  gemini={llm_count}")
 
 if __name__ == "__main__":
     main()

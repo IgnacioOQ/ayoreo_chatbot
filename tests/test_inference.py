@@ -4,33 +4,33 @@ from src.inference.translator import build_translation_prompt
 from src.pos_tagging.rule_engine import tokenize, RuleBasedTagger
 
 
-def test_build_translation_prompt_ayo_to_es():
+def test_build_translation_prompt_ayo_to_en():
     examples = [
-        {"ayoreo": "Ore ajnai.", "spanish": "Nosotros caminamos."},
+        {"ayoreo": "Ore ajnai.", "english": "We walk."},
     ]
     prompt = build_translation_prompt(
         "Ore ajnai guejna.",
         examples=examples,
         dict_entries=[],
-        direction="ayo_to_es",
+        direction="ayo_to_en",
     )
     assert "Ayoreo" in prompt
-    assert "Español" in prompt
+    assert "English" in prompt
     assert "Ore ajnai." in prompt
 
 
-def test_build_translation_prompt_es_to_ayo():
+def test_build_translation_prompt_en_to_ayo():
     examples = [
-        {"ayoreo": "Ore ajnai.", "spanish": "Nosotros caminamos."},
+        {"ayoreo": "Ore ajnai.", "english": "We walk."},
     ]
     prompt = build_translation_prompt(
-        "Nosotros caminamos bien.",
+        "We walk well.",
         examples=examples,
         dict_entries=[],
-        direction="es_to_ayo",
+        direction="en_to_ayo",
     )
-    assert "Español" in prompt
-    assert "Nosotros caminamos." in prompt
+    assert "English" in prompt
+    assert "We walk." in prompt
 
 
 def test_tokenize():
